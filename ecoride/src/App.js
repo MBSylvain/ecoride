@@ -2,15 +2,15 @@ import React from "react";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import CardAnnonce from "./components/Card-Annonce";
 
 function App() {
   return (
     <div className="App">
-      <Header />
+      <CardAnnonce />
       <div>
         <h1>Bienvenue dans mon application</h1>
       </div>
-      <Footer />
     </div>
   );
 }
