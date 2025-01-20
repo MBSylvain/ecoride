@@ -2,11 +2,18 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8">
+    <footer className="bg-primary-100 text-white py-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <img
+              src="./logoeco.png"
+              width={40}
+              height={40}
+              alt="logo"
+              className="mb-4"
+            />
             <ul>
               <li>
                 <a href="#" className="hover:underline">
