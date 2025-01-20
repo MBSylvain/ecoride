@@ -6,25 +6,30 @@ const SearchPage = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       {/* Bloc de recherche */}
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md mb-8">
-        <h1 className="text-2xl font-bold mb-4">Rechercher des annonces</h1>
-        <input
-          type="text"
-          placeholder="Départ"
-          className="mb-4 p-3 w-full border border-gray-300 rounded-lg"
-        />
-        <input
-          type="text"
-          placeholder="Arrivée"
-          className="mb-4 p-3 w-full border border-gray-300 rounded-lg"
-        />
-        <input
-          type="date"
-          className="mb-4 p-3 w-full border border-gray-300 rounded-lg"
-        />
-        <button className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-full">
-          Rechercher
-        </button>
+      <div
+        className="w-full p-8 bg-cover bg-center mb-8"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        <div className="bg-white bg-opacity-75 p-8 rounded-lg shadow-md max-w-md mx-auto">
+          <h1 className="text-2xl font-bold mb-4">Rechercher des annonces</h1>
+          <input
+            type="text"
+            placeholder="Départ"
+            className="mb-4 p-3 w-full border border-gray-300 rounded-lg"
+          />
+          <input
+            type="text"
+            placeholder="Arrivée"
+            className="mb-4 p-3 w-full border border-gray-300 rounded-lg"
+          />
+          <input
+            type="date"
+            className="mb-4 p-3 w-full border border-gray-300 rounded-lg"
+          />
+          <button className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-full">
+            Rechercher
+          </button>
+        </div>
       </div>
 
       {/* Bloc d'annonces */}
