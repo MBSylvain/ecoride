@@ -3,14 +3,14 @@ import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Button from "./components/Button";
+import Accuiel from "./pages/accueil";
 
 function App() {
   return (
     <div className="App">
       <Header />
       <div>
-        <h1>Bienvenue dans mon application</h1>
-        <Button />
+        <Accuiel />
       </div>
       <Footer />
     </div>
