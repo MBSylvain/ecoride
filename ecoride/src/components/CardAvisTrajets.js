@@ -21,7 +21,7 @@ const ReviewCard = ({ photo, text, rating }) => {
       <img
         src={"https://via.placeholder.com/150"}
         alt="Reviewer"
-        className="w-24 h-24 rounded-full border-black border-2 mx-auto mb-4"
+        className="w-20 h-20 rounded-full border-black border-2 mx-auto mb-4"
       />
       <p className="text-base mb-4">{text}</p>
       <div className="flex justify-center space-x-1">{renderStars()}</div>
