@@ -11,9 +11,12 @@ const AboutUsPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       {/* Premier bloc */}
+      <div>
+        <h1 className="text-2xl font-semibold">A propos de nous</h1>
+      </div>
       <div className="w-full p-8 bg-white shadow-md mb-8 flex flex-col md:flex-row items-center">
-        <div className="md:w-1/3 flex flex-col items-center md:items-start">
-          <img src="./logoeco.png" alt="Logo" className="w-32 h-32 mb-4" />
+        <div className="md:w-1/3 flex flex-col items-center md:center">
+          <img src="./logoecov.png" alt="Logo" className="w-32 h-32" />
           <p className="text-xl font-bold">10 ans d'expérience</p>
           <p className="text-lg">500 trajets/jour</p>
         </div>
@@ -70,7 +73,10 @@ const AboutUsPage = () => {
         </div>
       </div>
       {/* Deuxième bloc */}
-      <div className="w-full p-8 bg-white">
+      <div>
+        <h1 className="text-2xl font-semibold">Nos convictions</h1>
+      </div>
+      <div className="w-full p-8 shadow-md mb-8 bg-white">
         <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-8">
           {/* Carte 1 */}
           <div className="bg-white p-6 rounded-lg shadow-md text-center w-full md:w-1/3">
@@ -94,7 +100,10 @@ const AboutUsPage = () => {
         </div>
       </div>
       {/* Troisième bloc */}
-      <div className="w-full p-8 bg-white">
+      <div>
+        <h1 className="text-2xl font-medium">Les créateurs</h1>
+      </div>
+      <div className="w-full p-8 h-auto bg-white">
         <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-8">
           {/* Carte 1 */}
           <div className="bg-white p-6 rounded-lg shadow-md text-center w-full md:w-1/3">
