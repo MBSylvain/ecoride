@@ -3,9 +3,9 @@ import React from "react";
 const ProfilePage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-gray-100">
-      <div className="w-full max-w-4xl p-8 bg-white rounded-lg shadow-md flex flex-col md:flex-row">
+      <div className="flex flex-col lg:flex-row w-full max-w-7xl p-4 md:p-6 lg:p-8 bg-white rounded-lg shadow-md gap-8">
         {/* Informations de base sur le profil */}
-        <div className="md:w-2/3 p-4">
+        <div className="w-full md:w-2/3 p-4">
           <h1 className="text-2xl md:text-3xl font-bold mb-4">
             Informations de Profil
           </h1>
@@ -23,17 +23,17 @@ const ProfilePage = () => {
             <strong>Adresse :</strong> 123 Rue Exemple, Ville, Pays
           </p>
         </div>
-      </div>
-      {/* Photo de profil */}
-      <div className="md:w-1/3 p-4 flex flex-col items-center">
-        <img
-          src={`${process.env.PUBLIC_URL}/profile-photo.jpg`}
-          alt="Photo de Profil"
-          className="w-32 h-32 rounded-full mb-4"
-        />
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-          Mettre à jour la photo de profil
-        </button>
+        {/* Photo de profil */}
+        <div className="w-full md:w-1/3 p-3 flex flex-col items-center">
+          <img
+            src={`${process.env.PUBLIC_URL}/profile-photo.jpg`}
+            alt="Photo de Profil"
+            className="w-32 h-32 rounded-full mb-4"
+          />
+          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+            Mettre à jour la photo de profil
+          </button>
+        </div>
       </div>
     </div>
   );
