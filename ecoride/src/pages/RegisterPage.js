@@ -4,7 +4,7 @@ import carregister from "../assets/car-registrer.jpg";
 const RegisterPage = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="flex flex-col items-start justify-center w-1/2 p-8">
+      <div className="flex flex-col justify-center w-96 mx-auto p-8">
         <h1 className="text-4xl font-bold mb-4">Enregistrement</h1>
         <input
           type="text"
