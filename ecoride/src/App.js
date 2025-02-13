@@ -3,6 +3,7 @@ import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import CardAnnonce from "./components/Card-Annonce";
+import Cardfiltre from "./components/Card-trajet";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <CardAnnonce />
       <div>
         <h1>Bienvenue dans mon application</h1>
+        <Cardfiltre />
       </div>
     </div>
   );
