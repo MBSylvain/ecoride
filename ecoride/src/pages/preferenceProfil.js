@@ -2,7 +2,7 @@ import React from "react";
 
 const ProfilePreferencesBlock = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 p-4">
+    <div className="flex items-center justify-center p-4 w-full bg-gray-100">
       <div className="flex flex-col lg:flex-row w-full max-w-7xl p-4 md:p-6 lg:p-8 bg-white rounded-lg shadow-md gap-8">
         {/* Préférence Contact */}
         <div className="w-full lg:w-1/3">

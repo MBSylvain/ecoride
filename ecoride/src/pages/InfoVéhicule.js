@@ -3,7 +3,7 @@ import React from "react";
 export default function InfoVéhicule() {
   return (
     <div>
-      <div className="flex items-center  justify-center min-h-72 w-full bg-gray-100">
+      <div className="flex items-center  justify-center p-4 w-full bg-gray-100">
         <div className="flex flex-col lg:flex-row w-full max-w-7xl p-4 md:p-6 lg:p-8 bg-white rounded-lg shadow-md gap-8">
           {/* Informations du véhicule */}
           <div className="md:w-1/2 p-4">

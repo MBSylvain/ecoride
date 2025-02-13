@@ -2,10 +2,10 @@ import React from "react";
 
 const ProfilePage = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gray-100">
+    <div className="flex items-center justify-center w-full p-4 bg-gray-100">
       <div className="flex flex-col lg:flex-row w-full max-w-7xl p-4 md:p-6 lg:p-8 bg-white rounded-lg shadow-md gap-8">
         {/* Informations de base sur le profil */}
-        <div className="w-full md:w-2/3 p-4">
+        <div className="w-full md:w-2/3 p-2">
           <h1 className="text-2xl md:text-3xl font-bold mb-4">
             Informations de Profil
           </h1>
@@ -24,7 +24,7 @@ const ProfilePage = () => {
           </p>
         </div>
         {/* Photo de profil */}
-        <div className="w-full md:w-1/3 p-3 flex flex-col items-center">
+        <div className="w-full md:w-1/3 p-2 flex flex-col items-center">
           <img
             src={`${process.env.PUBLIC_URL}/profile-photo.jpg`}
             alt="Photo de Profil"
