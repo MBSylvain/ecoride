@@ -2,20 +2,21 @@ import React from "react";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import CardAnnonce from "./components/Card-Annonce";
-import CardTrajet from "./components/Card-trajet";
-import CardAvis from "./components/CardAvisTrajets";
+import Button from "./components/Button";
+import Accuiel from "./pages/accueil";
+import Profil from "./pages/profil";
+import Document from "./pages/documents";
+import Prefere from "./pages/preferenceProfil";
+import Infocar from "./pages/InfoVéhicule";
 
 function App() {
   return (
     <div className="App">
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <CardAnnonce />
-        <CardTrajet />
-        <CardAvis text="emplacement du texte" />
-        <div>
-          <h1>Bienvenue dans mon application</h1>
-        </div>
+      <Header />
+      <div className="xl:flex-col md:flex-row container mx-auto px-4">
+        <Profil />
+        <Infocar />
+        <Prefere />
       </div>
     </div>
   );
