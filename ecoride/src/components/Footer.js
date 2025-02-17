@@ -4,15 +4,17 @@ const Footer = () => {
   return (
     <footer className="bg-primary-100 text-white py-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="flex flex-row mx-10 justify-center gap-x-24">
           <div>
             <img
               src="./logoecoblanc.png"
-              width={40}
-              height={40}
+              width={50}
+              height={50}
               alt="logo"
-              className="mb-4"
+              className=""
             />
+          </div>
+          <div>
             <h3 className="text-lg font-semibold mb-4">Company</h3>
 
             <ul>
