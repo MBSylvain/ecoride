@@ -4,15 +4,14 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Button from "./components/Button";
 import Accuiel from "./pages/accueil";
-import Registrer from "./pages/RegisterPage";
+import About from "./pages/Aboutus";
 
 function App() {
   return (
     <div className="App">
       <Header />
       <div>
-        <Accuiel />
-        <Registrer />
+        <About />
       </div>
     </div>
   );
