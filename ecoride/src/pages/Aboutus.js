@@ -82,11 +82,7 @@ const AboutUsPage = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center w-full md:w-1/3">
             <h2 className="text-xl font-bold mb-2">Titre 1</h2>
             <h3 className="text-lg mb-4">Sous-titre 1</h3>
-            <img
-              src="https://via.placeholder.com/150"
-              alt="Image 1"
-              className="mx-auto mb-4"
-            />
+            <img src="#" alt="profil" className="mx-auto mb-4" />
             <p className="text-base mb-4">Description de la carte 1.</p>
             <div className="flex justify-center space-x-4">
               <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">

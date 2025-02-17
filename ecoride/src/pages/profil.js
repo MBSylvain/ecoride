@@ -1,4 +1,5 @@
 import React from "react";
+import profil from "../assets/portrait-3157821.jpg";
 
 const ProfilePage = () => {
   return (
@@ -26,8 +27,8 @@ const ProfilePage = () => {
         {/* Photo de profil */}
         <div className="w-full md:w-1/3 p-2 flex flex-col items-center">
           <img
-            src={`${process.env.PUBLIC_URL}/profile-photo.jpg`}
-            alt="Photo de Profil"
+            src={profil}
+            alt="Profil"
             className="w-32 h-32 rounded-full mb-4"
           />
           <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
