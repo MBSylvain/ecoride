@@ -55,26 +55,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Services</h3>
-            <ul>
-              <li>
-                <a href="#" className="hover:underline">
-                  Consulting
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Sales
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Support
-                </a>
-              </li>
-            </ul>
-          </div>
+
           <div>
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
