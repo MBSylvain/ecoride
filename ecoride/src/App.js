@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import SearchPages from "./pages/SearchPage";
 import Contact from "./pages/contact";
 import Help from "./pages/Helpcenter";
+import Privaty from "./pages/privaty";
 
 function App() {
   return (
