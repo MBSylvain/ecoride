@@ -1,4 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -16,22 +23,21 @@ const Footer = () => {
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Company</h3>
-
             <ul>
               <li>
-                <a href="#" className="hover:underline">
-                  About Us
-                </a>
+                <Link to="/" className="hover:underline">
+                  Accueil
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:underline">
-                  Careers
-                </a>
+                <Link to="/Search" className="hover:underline">
+                  Trouver un trajet
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:underline">
-                  Press
-                </a>
+                <Link to="/Aboutus" className="hover:underline">
+                  A propos de nous
+                </Link>
               </li>
             </ul>
           </div>
@@ -39,19 +45,19 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Support</h3>
             <ul>
               <li>
-                <a href="#" className="hover:underline">
+                <Link to="/help" className="hover:underline">
                   Help Center
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <Link to="/contact" className="hover:underline">
                   Contact Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <Link to="/privacy" className="hover:underline">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -59,36 +65,45 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Services</h3>
             <ul>
               <li>
-                <a href="#" className="hover:underline">
+                <Link to="/consulting" className="hover:underline">
                   Consulting
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <Link to="/sales" className="hover:underline">
                   Sales
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <Link to="/support" className="hover:underline">
                   Support
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-gray-400">
-                <i className="fab fa-facebook-f"></i>
+              <a
+                href="https://www.facebook.com"
+                className="hover:text-gray-400"
+              >
+                <FaFacebookF />
               </a>
-              <a href="#" className="hover:text-gray-400">
-                <i className="fab fa-twitter"></i>
+              <a href="https://www.twitter.com" className="hover:text-gray-400">
+                <FaTwitter />
               </a>
-              <a href="#" className="hover:text-gray-400">
-                <i className="fab fa-instagram"></i>
+              <a
+                href="https://www.instagram.com"
+                className="hover:text-gray-400"
+              >
+                <FaInstagram />
               </a>
-              <a href="#" className="hover:text-gray-400">
-                <i className="fab fa-linkedin-in"></i>
+              <a
+                href="https://www.linkedin.com"
+                className="hover:text-gray-400"
+              >
+                <FaLinkedinIn />
               </a>
             </div>
           </div>

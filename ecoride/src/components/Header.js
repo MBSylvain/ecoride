@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-primary-100 p-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white text-lg font-bold">EcoRide</div>
         <div className="block lg:hidden">
@@ -35,24 +36,24 @@ const Header = () => {
         >
           <ul className="lg:flex lg:space-x-4">
             <li>
-              <a href="#" className="block text-white py-2 px-4">
-                Home
-              </a>
+              <Link to="/" className="block text-white py-2 px-4">
+                Accueil
+              </Link>
             </li>
             <li>
-              <a href="#" className="block text-white py-2 px-4">
-                About
-              </a>
+              <Link to="/Search" className="block text-white py-2 px-4">
+                Recherche un trajet
+              </Link>
             </li>
             <li>
-              <a href="#" className="block text-white py-2 px-4">
-                Services
-              </a>
+              <Link to="/login" className="block text-white py-2 px-4">
+                Se connecter
+              </Link>
             </li>
             <li>
-              <a href="#" className="block text-white py-2 px-4">
-                Contact
-              </a>
+              <Link to="/Aboutus" className="block text-white py-2 px-4">
+                A propos de nous
+              </Link>
             </li>
           </ul>
         </div>
