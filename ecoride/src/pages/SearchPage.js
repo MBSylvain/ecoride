@@ -1,6 +1,7 @@
 import React from "react";
 import backgroundImage from "../assets/map.jpg";
 import backgroundImage2 from "../assets/fog-bg.jpg";
+import backgroundImage3 from "../assets/road-besttravel.jpg";
 
 const SearchPage = () => {
   return (
@@ -36,10 +37,10 @@ const SearchPage = () => {
 
       {/* Bloc d'annonces */}
       <div
-        className="w-full p-8 bg-cover bg-center mb-8"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
+        className="w-full p-8 h-96 bg-cover bg-center mb-8"
+        style={{ backgroundImage: `url(${backgroundImage2})` }}
       >
-        <div className="flex flex-col md:flex-row flex-wrap -mx-4">
+        <div className="flex flex-col h-full md:flex-row flex-wrap -mx-4">
           <div className="w-full md:w-1/3 p-4">
             <div className="bg-white bg-opacity-75 p-6 rounded-lg mb-4">
               <h2 className="text-xl font-bold mb-2">Annonce 1</h2>
@@ -63,8 +64,8 @@ const SearchPage = () => {
       {/* Bloc meilleurs destinations */}
 
       <div
-        className="w-full p-8 bg-cover bg-center mb-8"
-        style={{ backgroundImage: `url(${backgroundImage2})` }}
+        className="w-full h-96 p-8 bg-cover bg-center mb-8"
+        style={{ backgroundImage: `url(${backgroundImage3})` }}
       >
         <div className="flex flex-col md:flex-row flex-wrap -mx-4">
           <div className="w-full md:w-1/3 p-4">
