@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Carlogin from "../assets/car-login.jpg";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -77,8 +78,8 @@ const LoginPage = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="flex flex-col justify-center w-1/2 p-8">
-        <h1 className="text-4xl font-bold mb-4">
-          Connecez-vous à votre compte ecoride
+        <h1 className="text-4xl font-bold mb-8">
+          Connectez-vous à votre compte ecoride
         </h1>
         {Object.keys(errors).length > 0 && (
           <p className="text-red-500 text-sm mb-3">
@@ -124,6 +125,12 @@ const LoginPage = () => {
             {isSubmitting ? "Connexion..." : "Login"}
           </button>
         </form>
+        <div className="mt-4">
+          <p>Vous n'avez pas de compte?</p>
+          <Link to="/register" className="text-blue-500 hover:underline">
+            Créer un compte en 2 munites!
+          </Link>
+        </div>
       </div>
       <div className="w-1/2">
         <img

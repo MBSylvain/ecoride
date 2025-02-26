@@ -107,8 +107,11 @@ const RegisterPage = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="flex flex-col justify-center w-96 mx-auto p-8">
-        <h1 className="text-2xl font-bold mb-4">
-          Créer votre compte ecoride! et commence à partager vos trajets
+        <h1 className="text-4xl font-bold w-100">
+          Créer votre compte ecoride!
+        </h1>
+        <h1 className="text-xl font-bold px-4 ">
+          commence à partager vos trajets
         </h1>
         {Object.keys(errors).length > 0 && (
           <p className="text-red-500 text-sm mb-3">
