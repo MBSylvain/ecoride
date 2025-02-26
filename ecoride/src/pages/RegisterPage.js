@@ -180,7 +180,7 @@ const RegisterPage = () => {
 
           <button
             type="submit"
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-6 py-3 w-80 justify-center bg-primary-100 text-white border-2 border-primary-100 rounded-lg hover:bg-white hover:text-primary-100  hover:border-customPink-80"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Enregistrement..." : "S'enregistrer"}
