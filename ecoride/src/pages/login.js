@@ -1,142 +1,119 @@
 import React, { useState } from "react";
-import Carlogin from "../assets/car-login.jpg";
 import { Link } from "react-router-dom";
+import Carlogin from "../assets/car-login.jpg"; // Mets à jour le chemin si besoin
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    validateField(name, value);
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+    setApiError("");
   };
 
-  const validateField = (name, value) => {
-    let newErrors = { ...errors };
-
-    switch (name) {
-      case "email":
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!value || !emailRegex.test(value)) {
-          newErrors.email = "Email invalide";
-        } else {
-          delete newErrors.email;
-        }
-        break;
-      case "password":
-        if (value.length < 6) {
-          newErrors.password =
-            "Le mot de passe doit contenir au moins 6 caractères";
-        } else {
-          delete newErrors.password;
-        }
-        break;
-      default:
-        break;
-    }
-
-    setErrors(newErrors);
-  };
-
-  const validateForm = () => {
+  const validate = () => {
     const newErrors = {};
-
-    // Validation de l'email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email || !emailRegex.test(formData.email)) {
-      newErrors.email = "Email invalide";
-    }
-
-    // Validation du mot de passe
-    if (formData.password.length < 6) {
-      newErrors.password =
-        "Le mot de passe doit contenir au moins 6 caractères";
-    }
-
+    if (!formData.email) newErrors.email = "L'email est requis";
+    if (!formData.password) newErrors.password = "Le mot de passe est requis";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setIsSubmitting(true);
-      // Traitement du formulaire
-      console.log("Formulaire valide", formData);
-      // Simulate form submission
-      setTimeout(() => {
-        setIsSubmitting(false);
-      }, 2000);
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    setApiError("");
+
+    try {
+      const response = await fetch("http://localhost/ecoride-apie/Controllers/UtilisateurController.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        setApiError(data.error || "Erreur lors de la connexion.");
+      } else {
+        // Redirige ou gère la connexion réussie ici
+        // ex: navigate("/dashboard");
+      }
+    } catch (err) {
+      setApiError("Erreur de connexion au serveur.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="flex flex-col justify-center w-1/2 p-8">
-        <h1 className="text-4xl font-bold mb-8">
-          Connectez-vous à votre compte ecoride
-        </h1>
-        {Object.keys(errors).length > 0 && (
-          <p className="text-red-500 text-sm mb-3">
-            Veuillez corriger les erreurs ci-dessous.
-          </p>
-        )}
-        <form onSubmit={handleSubmit} className="flex flex-col items-center">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            aria-label="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className={`mb-4 p-3 w-80 border  ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            } rounded-lg`}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mb-3">{errors.email}</p>
+    <div className="flex flex-col md:flex-row min-h-screen">
+      <div className="md:w-1/2 p-8 flex items-center justify-center">
+        <div className="max-w-md w-full">
+          <h1 className="text-3xl font-bold mb-6">Connexion</h1>
+
+          {apiError && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+              {apiError}
+            </div>
           )}
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Mot de passe"
-            aria-label="Mot de passe"
-            value={formData.password}
-            onChange={handleChange}
-            className={`mb-6 p-3 w-80 border ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            } rounded-lg`}
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm mb-3">{errors.password}</p>
-          )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`w-full p-3 border rounded-lg ${errors.email ? "border-red-500" : "border-gray-300"}`}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
 
-          <button
-            type="submit"
-            className="px-6 py-3 w-80 justify-center bg-primary-100 text-white border-2 border-primary-100 rounded-lg hover:bg-white hover:text-primary-100  hover:border-customPink-80"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Connexion..." : "Login"}
-          </button>
-        </form>
-        <div className="mt-4">
-          <p>Vous n'avez pas de compte?</p>
-          <Link to="/register" className="text-blue-500 hover:underline">
-            Créer un compte en 2 munites!
-          </Link>
+            <div>
+              <label className="block mb-2">Mot de passe</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full p-3 border rounded-lg ${errors.password ? "border-red-500" : "border-gray-300"}`}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Connexion..." : "Se connecter"}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <Link to="/register" className="text-blue-600 hover:underline">
+              Créer un compte
+            </Link>
+          </div>
         </div>
       </div>
-      <div className="w-1/2">
+
+      <div className="md:w-1/2">
         <img
           src={Carlogin}
           alt="Connexion"
-          className="w-full h-full object-cover rounded-2xl"
+          className="w-full h-full object-cover"
         />
       </div>
     </div>
