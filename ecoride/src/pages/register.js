@@ -44,13 +44,14 @@ const RegisterPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, action: "register" }),
+        credentials: "include", // Pour envoyer les cookies de session
       });
       const data = await response.json();
       if (!response.ok || data.error) {
         setError(data.error || "Erreur lors de l'inscription.");
       } else {
         // Redirige ou affiche un message de succès
-        // ex: navigate("/login");
+         //navigate("/login");
       }
     } catch (err) {
       setError("Erreur de connexion au serveur.");

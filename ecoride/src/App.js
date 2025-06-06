@@ -11,6 +11,7 @@ import SearchPages from "./pages/SearchPage";
 import Contact from "./pages/contact";
 import Help from "./pages/Helpcenter";
 import Privaty from "./pages/privaty";
+import TestApi from "./pages/testapi"; 
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/helpcenter" element={<Help />} />
           <Route path="/privaty" element={<Privaty />} />
+          <Route path="/testapi" element={<TestApi />} />
+          {/* Add more routes as needed */}
         </Routes>
         <Footer />
       </div>
