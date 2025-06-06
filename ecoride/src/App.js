@@ -6,7 +6,7 @@ import Footer from "./components/Footer";
 import Accueil from "./pages/accueil";
 import Aboutus from "./pages/Aboutus";
 import Login from "./pages/login";
-import RegisterPage from "./pages/RegisterPage";
+import Register from "./pages/register";
 import SearchPages from "./pages/SearchPage";
 import Contact from "./pages/contact";
 import Help from "./pages/Helpcenter";
@@ -21,7 +21,7 @@ function App() {
           <Route exact path="/" element={<Accueil />} />
           <Route path="/aboutus" element={<Aboutus />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SearchPages />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/helpcenter" element={<Help />} />

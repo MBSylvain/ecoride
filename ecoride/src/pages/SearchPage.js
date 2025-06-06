@@ -1,7 +1,7 @@
 import React from "react";
 import backgroundImage from "../assets/map.jpg";
 import backgroundImage2 from "../assets/fog-bg.jpg";
-import backgroundImage3 from "../assets/road-besttravel.jpg";
+import backgroundImage3 from "../assets/routebois.jpg";
 
 const SearchPage = () => {
   return (

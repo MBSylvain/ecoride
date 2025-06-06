@@ -1,10 +1,10 @@
 import React from "react";
 import { FaCar, FaSeedling, FaEuroSign, FaLeaf, FaUsers, FaLock, FaLightbulb, FaMapMarkerAlt, FaPhone, FaEnvelope, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import logoEcov from "../assets/logo/logoecov.png";
-import mapImg from "../assets/image/map.jpg";
-import femme1 from "../assets/image/femme1.jpg";
-import home1 from "../assets/image/home1.jpg";
-import femme2 from "../assets/image/femme2.jpg";
+import mapImg from "../assets/map.jpg";
+import femme1 from "../assets/femme1.jpg";
+import home1 from "../assets/homme1.jpg";
+import femme2 from "../assets/femme2.jpg";
 
 const infoCards = [
   {

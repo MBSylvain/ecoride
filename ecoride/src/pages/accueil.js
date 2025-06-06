@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import equipeImg from "../assets/image/avett-brothers.jpg";
-import roadImg from "../assets/image/road-besttravel.jpg";
-import ampouleImg from "../assets/image/ampoulevert.jpg";
+import equipeImg from "../assets/avett-brothers.jpg";
+import roadImg from "../assets/routeautonne.jpg";
+import ampouleImg from "../assets/ampoule.jpg";
 const HomePage = () => (  
 <div className="mt-4 font-sans leading-relaxed bg-gray-100 text-gray-900">    
   <div className="p-8 mx-auto max-w-7xl">      {/* Section Bienvenue */}      
