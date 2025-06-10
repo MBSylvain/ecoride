@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg"; // Mets à jour le chemin si besoin
+import axios from "axios";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
@@ -30,36 +34,48 @@ const LoginPage = () => {
     setApiError("");
 
     try {
-      const response = await fetch("http://localhost/ecoride-apie/Controllers/UtilisateurController.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-        credentials: "include", // Pour envoyer les cookies de session
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || data.error) {
-        setApiError(data.error || "Erreur lors de la connexion.");
+      const response = await axios.post(
+        "http://localhost/api/Controllers/UtilisateurController.php",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          withCredentials: true
+        }
+      );
+      
+      console.log("Réponse complète:", response.data);
+      const data = response.data;
+      
+      if (data.success === true || data.success === "true" || data.success === 1) {
+        if (data.user) {
+          localStorage.setItem("utilisateur_id", data.user.id);
+          localStorage.setItem("user_info", JSON.stringify(data.utilisateur));
+          navigate("/Dashboard"); // Utilisation de navigate pour la redirection
+          // Redirection correcte
+        } else {
+          setApiError("Données utilisateur manquantes dans la réponse");
+        }
       } else {
-        // Redirige ou gère la connexion réussie ici
-        // ex: navigate("/dashboard");
+        setApiError(data.error || "Erreur non spécifiée");
       }
     } catch (err) {
-      setApiError("Erreur de connexion au serveur.");
+      console.error("Erreur complète:", err);
+      setApiError(err.response?.data?.error || "Erreur de connexion au serveur");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
-      <div className="md:w-1/2 p-8 flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <h1 className="text-3xl font-bold mb-6">Connexion</h1>
+    <div className="flex flex-col min-h-screen md:flex-row">
+      <div className="flex items-center justify-center p-8 md:w-1/2">
+        <div className="w-full max-w-md">
+          <h1 className="mb-6 text-3xl font-bold">Connexion</h1>
 
           {apiError && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+            <div className="p-3 mb-4 text-red-700 bg-red-100 rounded">
               {apiError}
             </div>
           )}
@@ -75,7 +91,7 @@ const LoginPage = () => {
                 className={`w-full p-3 border rounded-lg ${errors.email ? "border-red-500" : "border-gray-300"}`}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
               )}
             </div>
 
@@ -89,13 +105,13 @@ const LoginPage = () => {
                 className={`w-full p-3 border rounded-lg ${errors.password ? "border-red-500" : "border-gray-300"}`}
               />
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition"
+              className="w-full px-4 py-3 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Connexion..." : "Se connecter"}
@@ -114,7 +130,7 @@ const LoginPage = () => {
         <img
           src={Carlogin}
           alt="Connexion"
-          className="w-full h-full object-cover"
+          className="object-cover w-full h-full"
         />
       </div>
     </div>

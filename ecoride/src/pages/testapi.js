@@ -5,12 +5,19 @@ function TestApi() {
 
   const handleTest = async () => {
     try {
-      const response = await fetch("http://localhost/ecoride-apie/config/Database.php");
+      const response = await fetch("http://localhost/ecorideapireact/config/Database.php", {
+        
+      
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       
       const data = await response.json();
       setResult(data);
     } catch (err) {
-      setResult({ error: "Erreur de connexion à l'API" });
+      setResult({ error: `Erreur de connexion à l'API: ${err.message}` });
     }
   };
 

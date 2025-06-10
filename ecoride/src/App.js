@@ -11,7 +11,11 @@ import SearchPages from "./pages/SearchPage";
 import Contact from "./pages/contact";
 import Help from "./pages/Helpcenter";
 import Privaty from "./pages/privaty";
-import TestApi from "./pages/testapi"; 
+import TestApi from "./pages/testapi";
+import Dashboard from "./pages/Dashboard";
+import Userinfo from "./features/Userinfo"; 
+import Carinfo from "./features/Carinfo"; // Assurez-vous que ce chemin est correct
+
 
 function App() {
   return (
@@ -28,6 +32,10 @@ function App() {
           <Route path="/helpcenter" element={<Help />} />
           <Route path="/privaty" element={<Privaty />} />
           <Route path="/testapi" element={<TestApi />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/Userinfo" element={<Userinfo />} />
+          <Route path="/Carinfo" element={<Carinfo />} />
+          
           {/* Add more routes as needed */}
         </Routes>
         <Footer />

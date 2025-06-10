@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"; // Assurez-vous d'importer axios
 
 // Simule la récupération de l'utilisateur connecté (à remplacer par ton auth context)
-const getUserId = () => localStorage.getItem("utilisateur_id") || 1;
-
+console.log(localStorage);
+console.log(localStorage.getItem("user"));
+console.log(localStorage.getItem("utilisateur_id"));
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const utilisateur_id = getUserId();
-
-  // States pour chaque section
-  const [user, setUser] = useState(null);
-  const [voitures, setVoitures] = useState([]);
-  const [trajets, setTrajets] = useState([]);
-  const [reservations, setReservations] = useState([]);
-  const [avisRecus, setAvisRecus] = useState([]);
-  const [avisDonnes, setAvisDonnes] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Modals
+const utilisateur_email = localStorage.getItem("user.email") || localStorage.getItem("email");
+const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
+   // Modals
   const [showUserModal, setShowUserModal] = useState(false);
   const [showCarModal, setShowCarModal] = useState(false);
   const [carToEdit, setCarToEdit] = useState(null);
@@ -25,34 +17,131 @@ const Dashboard = () => {
   const [tripToEdit, setTripToEdit] = useState(null);
 
   // Charger les données du dashboard
+  //Données utilisateur
+  const [user, setUser] = useState(localStorage);
+  const [userLoading, setUserLoading] = useState(true);
+  
   useEffect(() => {
-    const fetchAll = async () => {
-      setLoading(true);
+    const fetchUserData = async () => {
+      setUserLoading(true);
       try {
-        // À adapter selon tes endpoints
-        const [userRes, voituresRes, trajetsRes, reservationsRes, avisRecusRes, avisDonnesRes] = await Promise.all([
-          fetch(`http://localhost/ecoride-apie/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`).then(r => r.json()),
-          fetch(`http://localhost/ecoride-apie/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`).then(r => r.json()),
-          fetch(`http://localhost/ecoride-apie/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`).then(r => r.json()),
-          fetch(`http://localhost/ecoride-apie/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`).then(r => r.json()),
-          fetch(`http://localhost/ecoride-apie/Controllers/AvisController.php?destinataire_id=${utilisateur_id}`).then(r => r.json()),
-          fetch(`http://localhost/ecoride-apie/Controllers/AvisController.php?auteur_id=${utilisateur_id}`).then(r => r.json()),
-        ]);
-        setUser(userRes);
-        setVoitures(Array.isArray(voituresRes) ? voituresRes : []);
-        setTrajets(Array.isArray(trajetsRes) ? trajetsRes : []);
-        setReservations(Array.isArray(reservationsRes) ? reservationsRes : []);
-        setAvisRecus(Array.isArray(avisRecusRes) ? avisRecusRes : []);
-        setAvisDonnes(Array.isArray(avisDonnesRes) ? avisDonnesRes : []);
-      } catch {
-        // Gère les erreurs ici
+        const response = await axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`
+, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true
+      },
+        );
+        
+        setUser(response.data);
+
+        console.log("Données utilisateur chargées:", response.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données utilisateur", error);
+      } finally {
+        setUserLoading(false);
       }
-      setLoading(false);
     };
-    fetchAll();
+    
+    fetchUserData();
+  }, [utilisateur_id]);
+  //données voitures de l 'utilisateur
+  const [voitures, setVoitures] = useState([]);
+  const [voituresLoading, setVoituresLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchVoitures = async () => {
+      setVoituresLoading(true);
+      try {
+        const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`);
+        setVoitures(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Erreur lors du chargement des voitures", error);
+      } finally {
+        setVoituresLoading(false);
+      }
+    };
+    
+    fetchVoitures();
+  }, [utilisateur_id]);
+  //données trajets de l'utilisateur
+  const [trajets, setTrajets] = useState([]);
+  const [trajetsLoading, setTrajetsLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchTrajets = async () => {
+      setTrajetsLoading(true);
+      try {
+        const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`);
+        setTrajets(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Erreur lors du chargement des trajets", error);
+      } finally {
+        setTrajetsLoading(false);
+      }
+    };
+    
+    fetchTrajets();
+  }, [utilisateur_id]);
+  //données réservations de l'utilisateur
+  const [reservations, setReservations] = useState([]);
+  const [reservationsLoading, setReservationsLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchReservations = async () => {
+      setReservationsLoading(true);
+      try {
+        const response = await axios.get(`http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`);
+        setReservations(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Erreur lors du chargement des réservations", error);
+      } finally {
+        setReservationsLoading(false);
+      }
+    };
+    
+    fetchReservations();
+  }, [utilisateur_id]);
+  //données avis reçus de l'utilisateur
+  const [avisRecus, setAvisRecus] = useState([]);
+  const [avisRecusLoading, setAvisRecusLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchAvisRecus = async () => {
+      setAvisRecusLoading(true);
+      try {
+        const response = await axios.get(`http://localhost/api/Controllers/AvisController.php?destinataire_id=${utilisateur_id}`);
+        setAvisRecus(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Erreur lors du chargement des avis reçus", error);
+      } finally {
+        setAvisRecusLoading(false);
+      }
+    };
+    
+    fetchAvisRecus();
+  }, [utilisateur_id]);
+  //données avis donnés par l'utilisateur
+  const [avisDonnes, setAvisDonnes] = useState([]);
+  const [avisDonnesLoading, setAvisDonnesLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchAvisDonnes = async () => {
+      setAvisDonnesLoading(true);
+      try {
+        const response = await axios.get(`http://localhost/api/Controllers/AvisController.php?auteur_id=${utilisateur_id}`);
+        setAvisDonnes(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Erreur lors du chargement des avis donnés", error);
+      } finally {
+        setAvisDonnesLoading(false);
+      }
+    };
+    
+    fetchAvisDonnes();
   }, [utilisateur_id]);
 
-  if (loading) return <div className="p-8 text-center">Chargement...</div>;
 
   // Helpers
   const roleClass = (role) => {
@@ -73,7 +162,7 @@ const Dashboard = () => {
       {/* Section 1: Infos utilisateur */}
       <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
         <h2 className="mb-4 text-xl font-semibold">Mes informations personnelles</h2>
-        {user ? (
+        {userLoading ? (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div><p className="text-gray-600">Nom:</p><p className="font-medium">{user.nom}</p></div>
             <div><p className="text-gray-600">Prénom:</p><p className="font-medium">{user.prenom}</p></div>
@@ -93,7 +182,7 @@ const Dashboard = () => {
       {/* Modal modification utilisateur */}
       {showUserModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="w-3/4 p-6 bg-white rounded-lg shadow-lg h-3/4 overflow-y-auto">
+          <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
             <h2 className="mb-4 text-xl font-semibold">Modifier mes informations</h2>
             {/* Ici, place ton formulaire de modification utilisateur */}
             <button onClick={() => setShowUserModal(false)} className="mt-4 text-red-600 hover:text-red-800">Annuler</button>
@@ -151,7 +240,7 @@ const Dashboard = () => {
       {/* Modal modification voiture */}
       {showCarModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="w-3/4 p-6 bg-white rounded-lg shadow-lg h-3/4 overflow-y-auto">
+          <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
             <h2 className="mb-4 text-xl font-semibold">Modifier ma voiture</h2>
             {/* Ici, place ton formulaire de modification voiture avec carToEdit */}
             <button onClick={() => setShowCarModal(false)} className="mt-4 text-red-600 hover:text-red-800">Annuler</button>
@@ -203,7 +292,7 @@ const Dashboard = () => {
       {/* Modal modification trajet */}
       {showTripModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="w-3/4 p-6 bg-white rounded-lg shadow-lg h-3/4 overflow-y-auto">
+          <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
             <h2 className="mb-4 text-xl font-semibold">Modifier mon trajet</h2>
             {/* Ici, place ton formulaire de modification trajet avec tripToEdit */}
             <button onClick={() => setShowTripModal(false)} className="mt-4 text-red-600 hover:text-red-800">Annuler</button>
