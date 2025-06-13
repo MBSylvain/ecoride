@@ -15,6 +15,7 @@ import TestApi from "./pages/testapi";
 import Dashboard from "./pages/Dashboard";
 import Userinfo from "./features/Userinfo"; 
 import Carinfo from "./features/Carinfo"; // Assurez-vous que ce chemin est correct
+import UpdateVehicleForm from "./features/UpdateVehicleForm"; // Assurez-vous que ce chemin est correct
 
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/Userinfo" element={<Userinfo />} />
           <Route path="/Carinfo" element={<Carinfo />} />
-          
+<Route path="/UpdateVehicleForm/:voitureId" element={<UpdateVehicleForm />} />          
           {/* Add more routes as needed */}
         </Routes>
         <Footer />

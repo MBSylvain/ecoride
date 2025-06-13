@@ -74,7 +74,7 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit}  className="space-y-4">
         <div>
           <label className="block mb-1 text-sm font-medium text-primary-100">Modèle</label>
           <input
@@ -83,6 +83,7 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
             value={formData.modele}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded"
+            action="POST" //
             required
             
           />
@@ -161,8 +162,8 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
           <div>
             <label className="block mb-1 text-sm font-medium text-primary-100">Année</label>
             <input
-              type="number"
-              name="annee"
+              type="date"
+              name="date_premiere_immatriculation"
               min="1990"
               max={new Date().getFullYear()}
               value={formData.annee}

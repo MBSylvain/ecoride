@@ -3,15 +3,17 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from '../components/Button'; // Adjust path as needed
 import EditVehicleModal from './EditVehicleModal'; // Adjust path as needed
+import { useNavigate } from 'react-router-dom';
 
 const VehiclesSection = ( ) => {
 // Récupération de l'ID utilisateur depuis le localStorage
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
   // Définition des states pour les voitures et le chargement
-  const [voitures, setVoitures] = React.useState([]);
-  const [voituresLoading, setVoituresLoading] = React.useState(true);
+  const [voitures, setVoitures] = useState([]);
+  const [voituresLoading, setVoituresLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
+    const navigate = useNavigate();
 
 
 // Fonction pour récupérer les voitures de l'utilisateur
@@ -22,7 +24,21 @@ const VehiclesSection = ( ) => {
       setVoituresLoading(true);
       try {
         const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`);
-        setVoitures(Array.isArray(response.data) ? response.data : []);
+        console.log(response.data.modele);
+        console.log("Structure de la réponse:", {
+          type: typeof response.data,
+          isArray: Array.isArray(response.data),
+          keys: response.data ? Object.keys(response.data) : null,
+          data: response.data
+        });
+        
+        if (response.data && typeof response.data === 'object' && response.data.voitures) {
+          // Si les données sont dans une propriété "voitures"
+          setVoitures(Array.isArray(response.data.voitures) ? response.data.voitures : []);
+        } else {
+          // Si les données sont directement dans response.data
+          setVoitures(Array.isArray(response.data) ? response.data : []);
+        }
       } catch (error) {
         console.error("Erreur lors du chargement des voitures", error);
       } finally {
@@ -32,18 +48,27 @@ const VehiclesSection = ( ) => {
     
     fetchVoitures();
   }, [utilisateur_id]);
+  
   const handleEditVehicle = (vehicle) => {
     setSelectedCar(vehicle);
     setShowModal(true);
+  };
+
+  const handleUpdateVehicle = (voiture_id) => {
+// Using URL parameters (cleaner for REST-style routes)
+//navigate(`../UpdateVehicleForm/${voiture_id}`);
+
+// OR using query parameters (better for optional/multiple parameters)
+navigate(`../UpdateVehicleForm/voiture_id=${voiture_id}`);
   };
 
 
 
 return (
     <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-        <h2 className="mb-4 text-xl font-semibold">Mes voitures</h2>
+        <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes voitures</h2>
         {voituresLoading ? (
-            <div className="p-4 text-center">Chargement...</div>
+            <div className="p-4 text-center text-primary-90">Chargement...</div>
         ) : voitures.length > 0 ? (
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white">
@@ -66,25 +91,26 @@ return (
                                 <td className="px-4 py-3">{voit.couleur}</td>
                                 <td className="px-4 py-3">{voit.nombre_places}</td>
                                 <td className="px-4 py-3">
-                                    <Button 
-                                      onClick={() => handleEditVehicle(voit)} 
-                                      variant="text"
-                                      className="mr-2"
+                                    <button 
+                                      onClick={() => handleUpdateVehicle(voit.voiture_id)} 
+                                      voiture_id={voit.voiture_id}
+                                      type="button"
+                                      className="px-3 py-1 text-white bg-blue-600 rounded hover:bg-pink-700"
                                     >
                                         Modifier
-                                    </Button>
+                                    </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 <div className="mt-4">
-                    <Button 
+                    <button 
                     onClick={() => setShowModal(true)} 
                       variant="primary"
                     >
                         Ajouter une voiture
-                    </Button>
+                    </button>
                 </div>
             </div>
         ) : (
@@ -108,6 +134,7 @@ return (
             isOpen={showModal}
             onClose={() => setShowModal(false)}                                  
             />
+
         
         
     </div>
