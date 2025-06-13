@@ -20,7 +20,7 @@ console.log("ID de la voiture:", voitureId); // Pour débogage
   useEffect(() => {
     const fetchVehicleData = async () => {
       try {
-        const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?voiture_id=${voitureId}`);
+        const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?${voitureId}`);
         console.log("Réponse de l'API:", response.data); // Pour débogage
         if (response.data && response.data.length > 0) {
           // Si c'est un tableau (comme dans votre API actuelle)

@@ -18,37 +18,38 @@ const VehiclesSection = ( ) => {
 
 // Fonction pour récupérer les voitures de l'utilisateur
 
-  
   useEffect(() => {
     const fetchVoitures = async () => {
       setVoituresLoading(true);
       try {
         const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`);
-        console.log(response.data.modele);
-        console.log("Structure de la réponse:", {
-          type: typeof response.data,
-          isArray: Array.isArray(response.data),
-          keys: response.data ? Object.keys(response.data) : null,
-          data: response.data
-        });
         
-        if (response.data && typeof response.data === 'object' && response.data.voitures) {
-          // Si les données sont dans une propriété "voitures"
-          setVoitures(Array.isArray(response.data.voitures) ? response.data.voitures : []);
+        // Handle different response formats cleanly
+        if (response.data && typeof response.data === 'object') {
+          if (response.data.voitures) {
+            setVoitures(Array.isArray(response.data.voitures) ? response.data.voitures : []);
+          } else {
+            setVoitures(Array.isArray(response.data) ? response.data : []);
+          }
         } else {
-          // Si les données sont directement dans response.data
-          setVoitures(Array.isArray(response.data) ? response.data : []);
+          setVoitures([]);
         }
       } catch (error) {
         console.error("Erreur lors du chargement des voitures", error);
+        setVoitures([]);
       } finally {
         setVoituresLoading(false);
       }
     };
     
-    fetchVoitures();
+    if (utilisateur_id) {
+      fetchVoitures();
+    }
+    
+    return () => {
+      // Cleanup if needed
+    };
   }, [utilisateur_id]);
-  
   const handleEditVehicle = (vehicle) => {
     setSelectedCar(vehicle);
     setShowModal(true);
