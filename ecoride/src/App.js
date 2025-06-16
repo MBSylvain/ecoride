@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Userinfo from "./features/Userinfo"; 
 import Carinfo from "./features/Carinfo"; // Assurez-vous que ce chemin est correct
 import UpdateVehicleForm from "./features/UpdateVehicleForm"; // Assurez-vous que ce chemin est correct
+import Trajetinfo from "./features/Trajetinfo"; // Assurez-vous que ce chemin est correct
 
 function App() {
   return (
@@ -35,7 +36,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/Userinfo" element={<Userinfo />} />
           <Route path="/Carinfo" element={<Carinfo />} />
-          <Route path="/UpdateVehicleForm/:voitureId" element={<UpdateVehicleForm />} />          
+          <Route path="/UpdateVehicleForm/:voitureId" element={<UpdateVehicleForm />} />
+          <Route path="/Trajetinfo" element={<Trajetinfo />} />
+                  
           {/* Add more routes as needed */}
         </Routes>
         <Footer />

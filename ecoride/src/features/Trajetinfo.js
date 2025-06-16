@@ -1,7 +1,49 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const TripsSection = ({ trajets, trajetsLoading, onEditTrip }) => {
+const Trajetinfo = () => {
+  const navigate = useNavigate();
+  const [trajets, setTrajets] = useState([]);
+  const [trajetsLoading, setTrajetsLoading] = useState(true);
+  const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
+  const [trajetsError, setTrajetsError] = useState(null);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+
+  // Recupération des informations des trajets de l'utilisateur
+    useEffect(() => {
+      const fetchTrajets = async () => {
+        setTrajetsLoading(true);
+        try {
+          const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`);
+          
+          // Handle different response formats cleanly
+          if (response.data && typeof response.data === 'object') {
+            if (response.data.trajets) {
+              setTrajets(Array.isArray(response.data.trajets) ? response.data.trajets : []);
+            } else {
+              setTrajets(Array.isArray(response.data) ? response.data : []);
+            }
+          } else {
+            setTrajets([]);
+          }
+        } catch (error) {
+          console.error("Erreur lors du chargement des trajets", error);
+          setTrajetsError(error.message);
+          setTrajets([]);
+        } finally {
+          setTrajetsLoading(false);
+        }
+      };
+      
+      if (utilisateur_id) {
+        fetchTrajets();
+      }
+      
+      return () => {
+        // Cleanup if needed
+      };
+    }, [utilisateur_id]);
   return (
     <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
       <h2 className="mb-4 text-xl font-semibold">Mes trajets récents</h2>
@@ -30,28 +72,34 @@ const TripsSection = ({ trajets, trajetsLoading, onEditTrip }) => {
                   <td className="px-4 py-3">{trajet.nombre_places}</td>
                   <td className="px-4 py-3">
                     <button onClick={() => onEditTrip(trajet)} className="px-3 py-1 text-white bg-blue-600 rounded hover:bg-blue-700">Détails</button>
-                    <Link to={`/dashboard/reservations/${trajet.trajet_id}`} className="ml-2 text-green-600 hover:text-green-800">Réservations</Link>
+                    <button onClick={() => navigate(`/dashboard/reservations/${trajet.trajet_id}`)} className="ml-2 text-green-600 hover:text-green-800">Réservations</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="mt-4">
-            <Link to="/dashboard/trajet/ajouter" className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">Proposer un trajet</Link>
+            <button className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">Proposer un trajet</button>
           </div>
         </div>
       ) : (
         <>
           <p>Vous n'avez pas encore proposé de trajet.</p>
           <div className="mt-4">
-            <Link to="/dashboard/trajet/ajouter" className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
+            <button  className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
               Proposer un trajet
-            </Link>
+            </button>
           </div>
         </>
       )}
     </div>
   );
+  
+  // Function to handle viewing trip details
+  const onEditTrip = (trajet) => {
+    setSelectedTrip(trajet);
+    navigate(`/dashboard/trajet/${trajet.trajet_id}`);
+  };
 };
 
-export default TripsSection;
+export default Trajetinfo;
