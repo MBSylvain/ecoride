@@ -1,92 +1,85 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const EditVehicleForm = () => {
-const { voitureId } = useParams(); // Récupérer l'ID depuis l'URL
+  const { voitureId } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  // État pour les données du formulaire
   const [formData, setFormData] = useState({
+    voiture_id: '',
     modele: '',
     immatriculation: '',
     energie: '',
     couleur: '',
     nombre_places: '',
-    date_premiere_immatriculation: ''
+    date_premiere_immatriculation: '',
+    image: '',
+    description: ''
   });
-console.log("ID de la voiture:", voitureId); // Pour débogage
-  // Charger les données de la voiture au chargement du composant
+
+  console.log("ID de la voiture:", voitureId);
+
+  // Charger les données de la voiture uniquement au montage du composant
   useEffect(() => {
     const fetchVehicleData = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?${voitureId}`);
-        console.log("Réponse de l'API:", response.data); // Pour débogage
+        
         if (response.data && response.data.length > 0) {
-          // Si c'est un tableau (comme dans votre API actuelle)
           setFormData(response.data[0]);
-        } else if (response.data && response.data.success) {
-          // Si c'est un objet avec une propriété data
+        } else if (response.data && response.data.data) {
           setFormData(response.data.data);
-            console.log("Données du formulaire initiales:", formData); // Pour débogage
-
         } else {
-          setError('Voiture non trouvée');
+          setError('Véhicule non trouvé');
         }
       } catch (err) {
         console.error('Erreur lors du chargement des données:', err);
-        setError('Erreur lors du chargement des données');
+        setError('Erreur lors du chargement des données du véhicule');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchVehicleData();
-  }, [voitureId]);
+  }, [voitureId]); // Seulement l'ID comme dépendance
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [name]: value
-    }));
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    
     try {
-      const response = await axios.post(
-        'http://localhost/api/Controllers/VoitureController.php',
+      const response = await axios.put(
+        `http://localhost/api/Controllers/VoitureController.php?${voitureId}`,
         {
           ...formData,
-          voiture_id: voitureId,
-          action: 'update',
           utilisateur_id: localStorage.getItem("utilisateur_id")
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
         }
       );
-      
-      if (response.data && response.data.success) {
-        // Redirection vers la page des voitures après mise à jour
-        navigate('/vehicles');
+
+      if (response.data.success) {
+        alert('Véhicule mis à jour avec succès!');
+        navigate('/Carinfo'); // Redirection après succès
       } else {
-        setError(response.data?.message || 'Erreur lors de la mise à jour');
+        setError(response.data.message || 'Erreur lors de la mise à jour');
       }
     } catch (err) {
-      console.error('Erreur:', err);
-      setError(`Erreur de connexion: ${err.message}`);
-    } finally {
-      setIsLoading(false);
+      console.error('Erreur lors de la modification:', err);
+      setError('Erreur lors de la mise à jour du véhicule');
     }
   };
 
-  if (isLoading) return <div className="p-6">Chargement...</div>;
-  if (error) return <div className="p-6 text-red-600">{error}</div>;
+  if (isLoading) return <div>Chargement en cours...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="max-w-lg p-6 mx-auto bg-white rounded-lg shadow-md">
@@ -177,11 +170,34 @@ console.log("ID de la voiture:", voitureId); // Pour débogage
             className="w-full px-3 py-2 border rounded"
           />
         </div>
-        
+        <div>
+          <label htmlFor="image" className="block mb-1 font-medium">Image (URL)</label>
+          <input
+            type="text"
+            id="image"
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+            placeholder="URL de l'image de la voiture"
+          />                   
+          </div>
+          <div>
+          <label htmlFor="description" className="block mb-1 font-medium">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description || ''}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+            rows="4"
+            placeholder="Description de la voiture"
+          ></textarea>
+          </div>        
         <div className="flex pt-4 space-x-3 border-t">
           <button
             type="button"
-            onClick={() => navigate('/vehicles')}
+            onClick={() => navigate('/Carinfo')}
             className="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
           >
             Annuler
