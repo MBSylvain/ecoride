@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import EditTrajetModal from './EditTrajetModal'; // Assurez-vous que ce chemin est correct
+import CreateTrajetModal from './CreateTrajetModal'; // Assurez-vous que ce chemin est correct
 
 const Trajetinfo = () => {
   const navigate = useNavigate();
@@ -9,6 +11,26 @@ const Trajetinfo = () => {
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
   const [trajetsError, setTrajetsError] = useState(null);
   const [selectedTrip, setSelectedTrip] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+// Fonction pour gérer la création d'un trajet
+const handleTrajetCreated = (newTrajet) => {
+    setTrajets((prevTrajets) => [newTrajet, ...prevTrajets]);
+  };
+  // Fonction pour gérer l'édition d'un trajet
+  const onEditTrip = (trajet) => {
+    setSelectedTrip(trajet);
+    setIsEditModalOpen(true);
+  };
+  // Fonction pour gérer la mise à jour d'un trajet
+  const handleTrajetUpdated = (updatedTrajet) => {
+    setTrajets((prevTrajets) =>
+      prevTrajets.map((trajet) => 
+        trajet.trajet_id === updatedTrajet.trajet_id ? updatedTrajet : trajet
+      )    
+    );
+  };
 
   // Recupération des informations des trajets de l'utilisateur
     useEffect(() => {
@@ -44,6 +66,7 @@ const Trajetinfo = () => {
         // Cleanup if needed
       };
     }, [utilisateur_id]);
+    console.log("utilisateur_id", utilisateur_id);
   return (
     <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
       <h2 className="mb-4 text-xl font-semibold">Mes trajets récents</h2>
@@ -79,27 +102,38 @@ const Trajetinfo = () => {
             </tbody>
           </table>
           <div className="mt-4">
-            <button className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">Proposer un trajet</button>
+            <button onClick={() => setIsCreateModalOpen(true)}
+ className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">Proposer un trajet</button>
           </div>
         </div>
       ) : (
         <>
           <p>Vous n'avez pas encore proposé de trajet.</p>
           <div className="mt-4">
-            <button  className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
+            <button onClick={() => setIsCreateModalOpen(true)}  className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
               Proposer un trajet
             </button>
           </div>
         </>
       )}
+
+      {/* Modal pour créer un trajet */}
+      <CreateTrajetModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTrajetCreated={handleTrajetCreated}
+      /> 
+    
+    <EditTrajetModal 
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        trajet={selectedTrip}
+        onTrajetUpdated={handleTrajetUpdated}
+      />
+
     </div>
   );
-  
-  // Function to handle viewing trip details
-  const onEditTrip = (trajet) => {
-    setSelectedTrip(trajet);
-    navigate(`/dashboard/trajet/${trajet.trajet_id}`);
-  };
+ 
 };
 
 export default Trajetinfo;
