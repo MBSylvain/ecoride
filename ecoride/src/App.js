@@ -17,6 +17,9 @@ import Userinfo from "./features/Userinfo";
 import Carinfo from "./features/Carinfo"; // Assurez-vous que ce chemin est correct
 import UpdateVehicleForm from "./features/UpdateVehicleForm"; // Assurez-vous que ce chemin est correct
 import Trajetinfo from "./features/Trajetinfo"; // Assurez-vous que ce chemin est correct
+import Reservations from "./features/Reservations"; // Assurez-vous que ce chemin est correct
+import Reservetrajet from "./pages/reservetrajet"; // Assurez-vous que ce chemin est correct
+
 
 function App() {
   return (
@@ -38,7 +41,8 @@ function App() {
           <Route path="/Carinfo" element={<Carinfo />} />
           <Route path="/UpdateVehicleForm/:voitureId" element={<UpdateVehicleForm />} />
           <Route path="/Trajetinfo" element={<Trajetinfo />} />
-                  
+          <Route path="/Reservations" element={<Reservations />} />
+          <Route path="/reservetrajet/:trajetId" element={<Reservetrajet />} />                  
           {/* Add more routes as needed */}
         </Routes>
         <Footer />

@@ -1,44 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-
-const fakeTrajet = {
-  ville_depart: "Paris",
-  adresse_depart: "Gare de Lyon",
-  ville_arrivee: "Lyon",
-  adresse_arrivee: "Part-Dieu",
-  date_depart: "2025-06-10",
-  heure_depart: "08:00",
-  heure_arrivee: "12:00",
-  prix: 25,
-  nombre_places: 3,
-  bagages_autorises: true,
-  utilisateur_id: 2,
-  voiture: {
-    marque: "Renault",
-    modele: "Clio",
-    couleur: "Bleu",
-    energie: "Essence",
-  },
-};
-
-const fakeConducteur = {
-  photo: "",
-  pseudo: "JeanD",
-  prenom: "Jean",
-  nom: "Dupont",
-  note_moyenne: 4.7,
-};
-
-const fakePlacesReservees = 1;
+import axios from "axios";
 
 const ReserverPage = () => {
+  // Correction de la faute de frappe dans le nom du paramètre
   const { trajetId } = useParams();
   const navigate = useNavigate();
+  const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
 
-  // Remplace ces states par des fetch API réels
+  // States pour les données et l'UI
   const [trajet, setTrajet] = useState(null);
   const [conducteur, setConducteur] = useState(null);
   const [placesRestantes, setPlacesRestantes] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [hasReservation, setHasReservation] = useState(false);
   const [reservationSuccess, setReservationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -48,19 +22,83 @@ const ReserverPage = () => {
     commentaire: "",
   });
 
+  // Récupération des données du trajet et du conducteur
   useEffect(() => {
-    // Simule le fetch des données
-    setTrajet(fakeTrajet);
-    setConducteur(fakeConducteur);
-    setPlacesRestantes(fakeTrajet.nombre_places - fakePlacesReservees);
-    setHasReservation(false); // À remplacer par un vrai check utilisateur
-  }, [trajetId]);
+    const fetchTrajetDetails = async () => {
+      setIsLoading(true);
+      console.log("Tentative de chargement du trajet ID:", trajetId);
+      
+      // 1. Récupération des détails du trajet
+      try {
+        
+        const trajetResponse  = await axios.get(`http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`);
+        
+        console.log("Réponse trajet:", trajetResponse.data);
+        
+        if (!trajetResponse.data) {
+          throw new Error("Aucune donnée reçue pour ce trajet");
+        }
+        
+        // Récupérer les données du trajet, quelle que soit la structure
+        const trajetData = trajetResponse.data.trajet || trajetResponse.data.data || trajetResponse.data;
+        console.log("Données du trajet:", trajetData);
+        setTrajet(trajetData);
+        
+        // 2. Récupération des détails du conducteur - CORRIGÉ
+        const conducteur_Id = trajetData.utilisateur_id;
+        console.log("ID du conducteur:", conducteur_Id);
+        if (conducteur_Id) {
+          const conducteurResponse = await axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${conducteur_Id}`);
+          
+          console.log("Réponse conducteur:", conducteurResponse.data);
+          const conducteurData = conducteurResponse.data.utilisateur || conducteurResponse.data;
+          setConducteur(conducteurData);
+        }
+        
+        // 3. Calcul des places restantes - CORRIGÉ
+                
+        let placesOccupees = 0;
+        if (trajetResponse.data) {
+          const reservations = Array.isArray(trajetResponse.data) 
+            ? trajetResponse.data
+            : (trajetResponse.data.reservations || []);
+          
+          // Calcul des places réservées avec validation
+          placesOccupees = reservations
+            .filter(r => r.statut && r.statut.toLowerCase() !== "annulé" && r.statut.toLowerCase() !== "refusé")
+            .reduce((sum, r) => sum + parseInt(r.nombre_places_reservees || 1), 0);
+          
+          // Vérifie si l'utilisateur connecté a déjà une réservation
+          const userReservation = reservations.find(r => r.utilisateur_id == utilisateur_id);
+          setHasReservation(!!userReservation);
+        } else {
+          // Default if no reservation data
+          placesOccupees = 0;
+        }
+        
+        // Calcul sécurisé des places restantes
+        const totalPlaces = parseInt(trajetData.nombre_places || 0);
+        setPlacesRestantes(Math.max(0, totalPlaces - placesOccupees));
+      } catch (error) {
+        console.error("Erreur détaillée:", error);
+        if (error.response) {
+          console.error("Statut:", error.response.status);
+          console.error("Données:", error.response.data);
+        }
+        setErrorMessage(`Erreur lors du chargement: ${error.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  if (!trajet || !conducteur) return <div>Chargement...</div>;
-
-  const dateDepart = new Date(trajet.date_depart).toLocaleDateString("fr-FR");
-  const heureDepart = trajet.heure_depart?.slice(0, 5);
-  const heureArrivee = trajet.heure_arrivee?.slice(0, 5) || "Non précisée";
+    if (trajetId) {
+      fetchTrajetDetails();
+    } else {
+      console.error("Aucun ID de trajet fourni");
+      setErrorMessage("Identifiant de trajet manquant");
+      setIsLoading(false);
+    }
+  }, [trajetId, utilisateur_id]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -81,21 +119,90 @@ const ReserverPage = () => {
       setErrorMessage(`Il n'y a pas assez de places disponibles. Places restantes: ${placesRestantes}`);
       return;
     }
-    // Ici, envoie la réservation à ton backend
-    setReservationSuccess(true);
+    
+    try {
+      console.log("Tentative de création de réservation pour le trajet:", trajetId);
+      
+      
+      // Ajout de l'utilisateur_id dans la requête POST
+      const response = await axios.post(`http://localhost/api/Controllers/ReservationController.php`, {
+          
+          utilisateur_id: utilisateur_id,
+          trajet_id: trajetId,
+          nombre_places_reservees: form.nombre_places,
+          commentaire: form.commentaire,
+          bagages: form.bagages ? 1 : 0,
+          
+        },
+        {
+          responseType: 'json',
+                  headers: {
+            "Content-Type": "application/json"
+          },
+          withCredentials: true
+        }
+      );
+      
+      console.log("Réponse de création de réservation:", response.data);
+      
+      if (response.data && response.data.success) {
+        setReservationSuccess(true);
+        setHasReservation(true);
+      } else {
+        setErrorMessage(response.data?.message || "Erreur lors de la création de la réservation");
+      }
+    } catch (error) {
+      console.error("Erreur détaillée lors de la réservation:", error);
+      if (error.response) {
+        console.error("Statut:", error.response.status);
+        console.error("Données:", error.response.data);
+      }
+      setErrorMessage(`Erreur: ${error.message}`);
+    }
   };
 
+  if (isLoading) return (
+    <div className="flex items-center justify-center min-h-screen py-8 bg-gray-100">
+      <div className="text-center">
+        <div className="inline-block w-8 h-8 mb-2 border-b-2 border-green-700 rounded-full animate-spin"></div>
+        <p>Chargement des informations...</p>
+      </div>
+    </div>
+  );
+
+  if (!trajet && !isLoading) return (
+    <div className="min-h-screen py-8 bg-gray-100">
+      <div className="container px-4 mx-auto">
+        <div className="p-4 mb-6 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
+          <p className="font-bold">Trajet introuvable</p>
+          <p>Ce trajet n'existe pas ou a été supprimé.</p>
+          <Link to="/search" className="block mt-2 text-red-700 hover:underline">
+            Retour à la recherche
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Protection contre les erreurs de formatage
+  const dateDepart = trajet?.date_depart ? new Date(trajet.date_depart.split(' ')[0]).toLocaleDateString("fr-FR") : "";
+  const heureDepart = trajet?.date_depart?.split(' ')[1]?.slice(0, 5) || trajet?.heure_depart?.slice(0, 5) || "Non précisée";
+  const heureArrivee = trajet?.heure_arrivee?.slice(0, 5) || "Non précisée";
+
+  // Sécurisation pour le nombre de places à afficher
+  const safeNumPlaces = Math.max(0, Math.min(4, placesRestantes));
+
   return (
-    <div className="bg-gray-100 min-h-screen py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen py-8 bg-gray-100">
+      <div className="container px-4 mx-auto">
         <div className="mb-6">
-          <Link to="/trajets" className="text-green-700 hover:text-green-800">
-            &larr; Retour aux trajets
+          <Link to="/search" className="text-green-700 hover:text-green-800">
+            &larr; Retour à la recherche
           </Link>
         </div>
 
         {reservationSuccess && (
-          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
+          <div className="p-4 mb-6 text-green-700 bg-green-100 border-l-4 border-green-500 rounded">
             <div className="flex items-center">
               <span className="mr-2">✔️</span>
               <div>
@@ -104,7 +211,7 @@ const ReserverPage = () => {
               </div>
             </div>
             <div className="mt-4">
-              <Link to="/dashboard" className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+              <Link to="/dashboard" className="inline-block px-4 py-2 font-bold text-white bg-green-600 rounded hover:bg-green-700">
                 Voir mes réservations
               </Link>
             </div>
@@ -112,7 +219,7 @@ const ReserverPage = () => {
         )}
 
         {errorMessage && (
-          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+          <div className="p-4 mb-6 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
             <div className="flex">
               <span className="mr-2">❗</span>
               <div>
@@ -124,7 +231,7 @@ const ReserverPage = () => {
         )}
 
         {hasReservation && !reservationSuccess && (
-          <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded">
+          <div className="p-4 mb-6 text-blue-700 bg-blue-100 border-l-4 border-blue-500 rounded">
             <div className="flex">
               <span className="mr-2">ℹ️</span>
               <div>
@@ -133,7 +240,7 @@ const ReserverPage = () => {
               </div>
             </div>
             <div className="mt-4">
-              <Link to="/dashboard" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <Link to="/dashboard" className="inline-block px-4 py-2 font-bold text-white bg-blue-600 rounded hover:bg-blue-700">
                 Voir mes réservations
               </Link>
             </div>
@@ -141,9 +248,9 @@ const ReserverPage = () => {
         )}
 
         {/* Détails du trajet */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-green-600 to-green-700 text-white p-6">
-            <h1 className="text-2xl font-bold mb-2">Réservation de trajet</h1>
+        <div className="mb-6 overflow-hidden bg-white rounded-lg shadow-md">
+          <div className="p-6 text-white bg-gradient-to-r from-green-600 to-green-700">
+            <h1 className="mb-2 text-2xl font-bold">Réservation de trajet</h1>
             <p className="text-lg">
               {trajet.ville_depart} → {trajet.ville_arrivee}
             </p>
@@ -153,14 +260,14 @@ const ReserverPage = () => {
           </div>
 
           <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Infos trajet */}
               <div>
-                <h2 className="text-lg font-semibold mb-4 text-gray-800">Détails du trajet</h2>
-                <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                <h2 className="mb-4 text-lg font-semibold text-gray-800">Détails du trajet</h2>
+                <div className="p-4 mb-4 rounded-lg bg-gray-50">
                   <div className="flex mb-4">
-                    <div className="flex-shrink-0 w-8 flex justify-center">
-                      <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs">A</div>
+                    <div className="flex justify-center flex-shrink-0 w-8">
+                      <div className="flex items-center justify-center w-6 h-6 text-xs text-white bg-green-600 rounded-full">A</div>
                     </div>
                     <div className="ml-2">
                       <h3 className="font-medium">{trajet.ville_depart}</h3>
@@ -171,66 +278,70 @@ const ReserverPage = () => {
                     </div>
                   </div>
                   <div className="flex">
-                    <div className="flex-shrink-0 w-8 flex justify-center">
-                      <div className="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs">B</div>
+                    <div className="flex justify-center flex-shrink-0 w-8">
+                      <div className="flex items-center justify-center w-6 h-6 text-xs text-white bg-red-600 rounded-full">B</div>
                     </div>
                     <div className="ml-2">
                       <h3 className="font-medium">{trajet.ville_arrivee}</h3>
                       {trajet.adresse_arrivee && (
                         <p className="text-sm text-gray-600">{trajet.adresse_arrivee}</p>
                       )}
-                      {trajet.heure_arrivee && (
+                      {heureArrivee !== "Non précisée" && (
                         <p className="text-sm text-gray-500">Arrivée estimée à {heureArrivee}</p>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                  <h3 className="font-medium mb-2">Conducteur</h3>
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 mr-4 flex items-center justify-center">
-                      {conducteur.photo ? (
-                        <img src={conducteur.photo} alt="Photo de profil" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-green-700 text-xl">👤</span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-medium">
-                        {conducteur.pseudo || `${conducteur.prenom} ${conducteur.nom[0]}.`}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {conducteur.note_moyenne ? `${conducteur.note_moyenne}/5` : "Nouveau conducteur"}
-                      </p>
+                {conducteur && (
+                  <div className="p-4 mb-4 rounded-lg bg-gray-50">
+                    <h3 className="mb-2 font-medium">Conducteur</h3>
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center w-12 h-12 mr-4 overflow-hidden bg-gray-200 rounded-full">
+                        {conducteur.photo ? (
+                          <img src={conducteur.photo} alt="Photos de profil" className="object-cover w-full h-full" />
+                        ) : (
+                          <span className="text-xl text-primary-100">👤</span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium">
+                          {conducteur.pseudo || `${conducteur.prenom || ''} ${conducteur.nom ? conducteur.nom[0] + '.' : ''}`}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {conducteur.note_moyenne ? `${conducteur.note_moyenne}/5` : "Nouveau conducteur"}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-medium mb-2">Véhicule</h3>
-                  <p className="text-gray-700">{trajet.voiture.marque} {trajet.voiture.modele}</p>
-                  <p className="text-sm text-gray-600">{trajet.voiture.couleur} • {trajet.voiture.energie}</p>
-                </div>
+                {trajet.voiture && (
+                  <div className="p-4 rounded-lg bg-gray-50">
+                    <h3 className="mb-2 font-medium">Véhicule</h3>
+                    <p className="text-gray-700">{trajet.voiture.marque} {trajet.voiture.modele}</p>
+                    <p className="text-sm text-gray-600">{trajet.voiture.couleur} • {trajet.voiture.energie}</p>
+                  </div>
+                )}
               </div>
 
               {/* Formulaire de réservation */}
               <div>
-                <h2 className="text-lg font-semibold mb-4 text-gray-800">Votre réservation</h2>
+                <h2 className="mb-4 text-lg font-semibold text-primarr=y-100">Votre réservation</h2>
                 {placesRestantes <= 0 && !reservationSuccess ? (
-                  <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+                  <div className="p-4 text-yellow-700 bg-yellow-100 border-l-4 border-yellow-500">
                     <p className="font-bold">Trajet complet</p>
                     <p>Il n'y a plus de places disponibles pour ce trajet.</p>
                   </div>
                 ) : (!hasReservation || reservationSuccess) && (
-                  <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                    <div className="flex justify-between items-center mb-4">
+                  <div className="p-4 mb-4 rounded-lg bg-gray-50">
+                    <div className="flex items-center justify-between mb-4">
                       <div>
-                        <p className="text-lg font-bold text-green-700">{trajet.prix.toFixed(2)} €</p>
-                        <p className="text-sm text-gray-500">Par personne</p>
+                        <p className="text-lg font-bold text-primary-80">{parseFloat(trajet.prix).toFixed(2)} €</p>
+                        <p className="text-sm text-primary-50">Par personne</p>
                       </div>
                       <div>
-                        <span className="text-green-600">
+                        <span className="text-customGreen-100">
                           {placesRestantes} place{placesRestantes > 1 ? "s" : ""} disponible{placesRestantes > 1 ? "s" : ""}
                         </span>
                       </div>
@@ -238,36 +349,34 @@ const ReserverPage = () => {
                     {!reservationSuccess && (
                       <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                          <label className="block text-gray-700 font-medium mb-2">Nombre de places à réserver</label>
+                          <label className="block mb-2 font-medium text-gray-700">Nombre de places à réserver</label>
                           <select
                             name="nombre_places"
                             value={form.nombre_places}
                             onChange={handleChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                           >
-                            {[...Array(Math.min(4, placesRestantes)).keys()].map((i) => (
+                            {[...Array(safeNumPlaces).keys()].map((i) => (
                               <option key={i + 1} value={i + 1}>
-                                {i + 1} place{i + 1 > 1 ? "s" : ""} ({(trajet.prix * (i + 1)).toFixed(2)} €)
+                                {i + 1} place{i + 1 > 1 ? "s" : ""} ({(parseFloat(trajet?.prix || 0) * (i + 1)).toFixed(2)} €)
                               </option>
                             ))}
                           </select>
                         </div>
-                        {trajet.bagages_autorises && (
-                          <div className="mb-4">
-                            <label className="flex items-center">
-                              <input
-                                type="checkbox"
-                                name="bagages"
-                                checked={form.bagages}
-                                onChange={handleChange}
-                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                              />
-                              <span className="ml-2 text-gray-700">J'ai des bagages</span>
-                            </label>
-                          </div>
-                        )}
+                        <div className="mb-4">
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              name="bagages"
+                              checked={form.bagages}
+                              onChange={handleChange}
+                              className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                            />
+                            <span className="ml-2 text-gray-700">J'ai des bagages</span>
+                          </label>
+                        </div>
                         <div className="mb-6">
-                          <label className="block text-gray-700 font-medium mb-2">Message pour le conducteur (facultatif)</label>
+                          <label className="block mb-2 font-medium text-gray-700">Message pour le conducteur (facultatif)</label>
                           <textarea
                             name="commentaire"
                             rows="3"
@@ -277,9 +386,9 @@ const ReserverPage = () => {
                             placeholder="Informations supplémentaires, heure précise de rendez-vous..."
                           ></textarea>
                         </div>
-                        <div className="bg-gray-100 p-4 rounded-lg mb-4">
-                          <h4 className="font-medium text-sm mb-2">Conditions de réservation</h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
+                        <div className="p-4 mb-4 bg-gray-100 rounded-lg">
+                          <h4 className="mb-2 text-sm font-medium">Conditions de réservation</h4>
+                          <ul className="space-y-1 text-sm text-gray-600">
                             <li>• Votre réservation doit être acceptée par le conducteur</li>
                             <li>• Le paiement s'effectue directement auprès du conducteur</li>
                             <li>• En cas d'annulation tardive, vous pourriez recevoir un avis négatif</li>
@@ -287,10 +396,14 @@ const ReserverPage = () => {
                         </div>
                         <button
                           type="submit"
-                          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200"
+                          className="w-full px-4 py-3 font-bold text-white transition duration-200 bg-green-600 rounded-lg hover:bg-green-700"
+                          disabled={!utilisateur_id}
                         >
                           Réserver maintenant
                         </button>
+                        {!utilisateur_id && (
+                          <p className="mt-2 text-sm text-red-600">Vous devez être connecté pour réserver un trajet.</p>
+                        )}
                       </form>
                     )}
                   </div>
