@@ -63,6 +63,40 @@ switch ($method) {
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"));
+        
+        // Ajout: action de validation
+        if (isset($data->action) && $data->action === 'validate') {
+            if (!isset($data->reservation_id) || !isset($data->status)) {
+                http_response_code(400);
+                echo json_encode(['message' => 'Données invalides ou incomplètes']);
+                break;
+            }
+            $reservation->reservation_id = $data->reservation_id;
+            $statut = $data->status === 'valide' ? 'confirmée' : 'refusée';
+            $reservation->statut = $statut;
+            if ($statut === 'confirmée') {
+                $reservation->date_confirmation = date('Y-m-d H:i:s');
+            }
+            if ($reservation->update()) {
+                // Récupérer l'email de l'utilisateur concerné
+                if ($reservation->read_single()) {
+                    $email_utilisateur = $reservation->getUserEmail($reservation->utilisateur_id); // À adapter selon ton modèle
+                    $subject = ($statut === 'confirmée') ? "Votre réservation a été validée" : "Votre réservation a été refusée";
+                    $message = ($statut === 'confirmée') ?
+                        "Bonjour, votre réservation pour le trajet a été validée." :
+                        "Bonjour, votre réservation pour le trajet a été refusée.";
+                    $headers = "From: noreply@tonsite.com\r\nContent-Type: text/plain; charset=UTF-8";
+                    if ($email_utilisateur) {
+                        mail($email_utilisateur, $subject, $message, $headers);
+                    }
+                }
+                echo json_encode(['message' => 'Statut de la réservation mis à jour et email envoyé']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['message' => 'Échec de la mise à jour']);
+            }
+            break;
+        }
 
         $reservation->utilisateur_id = $data->utilisateur_id;
         $reservation->trajet_id = $data->trajet_id;
