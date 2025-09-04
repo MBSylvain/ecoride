@@ -164,7 +164,7 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
             <input
               type="date"
               name="date_premiere_immatriculation"
-              min="1990"
+              min="1980"
               max={new Date().getFullYear()}
               value={formData.annee}
               onChange={handleChange}
@@ -183,7 +183,7 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
           </button>
           <button
             type="submit"
-            className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700"
+            className="px-4 py-2 text-white rounded bg-primary-100-600 hover:bg-customPink-80 focus:outline-none focus:ring-2 focus:ring-customPink-80"
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}

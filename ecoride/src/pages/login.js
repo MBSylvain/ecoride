@@ -72,7 +72,7 @@ const LoginPage = () => {
     <div className="flex flex-col min-h-screen md:flex-row">
       <div className="flex items-center justify-center p-8 md:w-1/2">
         <div className="w-full max-w-md">
-          <h1 className="mb-6 text-3xl font-bold">Connexion</h1>
+          <h1 className="mb-6 text-3xl font-bold text-primary-100">Connexion</h1>
 
           {apiError && (
             <div className="p-3 mb-4 text-red-700 bg-red-100 rounded">
@@ -111,7 +111,7 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full px-4 py-3 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
+              className="w-full px-4 py-3 text-white transition rounded-lg bg-primary-100 hover:bg-customPink-80 focus:outline-none focus:ring-2 focus:ring-customPink-80"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Connexion..." : "Se connecter"}
@@ -119,7 +119,7 @@ const LoginPage = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/register" className="text-blue-600 hover:underline">
+            <Link to="/register" className="text-customGreen-100 hover:text-customGreen2-80">
               Créer un compte
             </Link>
           </div>

@@ -40,6 +40,34 @@ module.exports = {
           20: "#ffb1aa",
         },
       },
+      typography: {
+        title1: {
+          fontSize: "2.25rem",
+          fontWeight: "700",
+          lineHeight: "2.5rem",
+          color: "#003051",
+        },
+        title2: {
+          fontSize: "1.875rem",
+          fontWeight: "700",
+          lineHeight: "2.25rem",
+          color: "#003051",
+        },
+        title3: {
+          fontSize: "1.5rem",
+          fontWeight: "700",
+          lineHeight: "2rem",
+          color: "#003051",
+        },
+        title4: {
+          fontSize: "1.25rem",
+          fontWeight: "700",
+          lineHeight: "1.75rem",
+          color: "#003051",
+        },
+        
+
+      }
     },
   },
   plugins: [],

@@ -29,6 +29,18 @@ const RegisterPage = () => {
       setError("Tous les champs obligatoires doivent être remplis.");
       return false;
     }
+    // regex pour l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("L'email n'est pas valide.");
+      return false;
+    }
+    // regex pour le mot de passe (au moins 8 caractères, une majuscule, un chiffre)
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(formData.mot_de_passe)) {
+      setError("Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.");
+      return false;
+    }
     if (formData.mot_de_passe !== formData.confirm_password) {
       setError("Les mots de passe ne correspondent pas.");
       return false;
@@ -65,7 +77,7 @@ const RegisterPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen px-4 py-12 sm:px-6 lg:px-8 bg-gray-50">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow">
-        <h2 className="text-3xl font-extrabold text-center text-gray-900">
+        <h2 className="text-3xl font-extrabold text-center text-primary-100">
           Créer un compte
         </h2>
 
@@ -78,106 +90,106 @@ const RegisterPage = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Nom</label>
+              <label className="block text-sm font-medium text-primary-80">Nom</label>
               <input
                 name="nom"
                 type="text"
                 required
                 value={formData.nom}
                 onChange={handleChange}
-                className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+                className="w-full p-3 mt-1 border rounded-lg border-primary-20"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Prénom</label>
+              <label className="block text-sm font-medium text-primary-80">Prénom</label>
               <input
                 name="prenom"
                 type="text"
                 required
                 value={formData.prenom}
                 onChange={handleChange}
-                className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+                className="w-full p-3 mt-1 border rounded-lg border-primary-80"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-primary-80">Email</label>
             <input
               name="email"
               type="email"
               required
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
+            <label className="block text-sm font-medium text-primary-80">Mot de passe</label>
             <input
               name="mot_de_passe"
               type="password"
               required
               value={formData.mot_de_passe}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+            <label className="block text-sm font-medium text-primary-80">Confirmer le mot de passe</label>
             <input
               name="confirm_password"
               type="password"
               required
               value={formData.confirm_password}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Pseudo (optionnel)</label>
+            <label className="block text-sm font-medium text-primary-80">Pseudo (optionnel)</label>
             <input
               name="pseudo"
               type="text"
               value={formData.pseudo}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Téléphone (optionnel)</label>
+            <label className="block text-sm font-medium text-primary-80">Téléphone (optionnel)</label>
             <input
               name="telephone"
               type="tel"
               value={formData.telephone}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Adresse (optionnelle)</label>
+            <label className="block text-sm font-medium text-primary-80">Adresse (optionnelle)</label>
             <textarea
               name="adresse"
               value={formData.adresse}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
               rows="2"
             ></textarea>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Date de naissance (optionnelle)</label>
+            <label className="block text-sm font-medium text-primary-80">Date de naissance (optionnelle)</label>
             <input
               name="date_naissance"
               type="date"
               value={formData.date_naissance}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
             />
           </div>
 
@@ -187,7 +199,7 @@ const RegisterPage = () => {
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg"
+              className="w-full p-3 mt-1 border rounded-lg border-primary-80"
             >
               <option value="Passager">Passager</option>
               <option value="Conducteur">Conducteur</option>
@@ -196,7 +208,7 @@ const RegisterPage = () => {
 
           <button
             type="submit"
-            className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 text-sm font-medium text-white border border-transparent rounded-lg shadow-sm bg-primary-100 hover:bg-customPink-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Inscription..." : "S'inscrire"}
@@ -204,7 +216,7 @@ const RegisterPage = () => {
         </form>
 
         <div className="text-sm text-center">
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link to="/login" className="font-medium text-customGreen-100 hover:text-customGreen2-100">
             Déjà un compte ? Se connecter
           </Link>
         </div>

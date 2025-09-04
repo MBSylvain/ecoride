@@ -196,7 +196,7 @@ const ReserverPage = () => {
     <div className="min-h-screen py-8 bg-gray-100">
       <div className="container px-4 mx-auto">
         <div className="mb-6">
-          <Link to="/search" className="text-green-700 hover:text-green-800">
+          <Link to="/search" className="text-customGreen2-100 hover:text-green-800">
             &larr; Retour à la recherche
           </Link>
         </div>
@@ -249,7 +249,7 @@ const ReserverPage = () => {
 
         {/* Détails du trajet */}
         <div className="mb-6 overflow-hidden bg-white rounded-lg shadow-md">
-          <div className="p-6 text-white bg-gradient-to-r from-green-600 to-green-700">
+          <div className="p-6 text-white bg-gradient-to-r from-customGreen2-20 to-customGreen-100">
             <h1 className="mb-2 text-2xl font-bold">Réservation de trajet</h1>
             <p className="text-lg">
               {trajet.ville_depart} → {trajet.ville_arrivee}
@@ -263,11 +263,11 @@ const ReserverPage = () => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Infos trajet */}
               <div>
-                <h2 className="mb-4 text-lg font-semibold text-gray-800">Détails du trajet</h2>
+                <h2 className="mb-4 text-lg font-semibold text-customGreen-80">Détails du trajet</h2>
                 <div className="p-4 mb-4 rounded-lg bg-gray-50">
                   <div className="flex mb-4">
                     <div className="flex justify-center flex-shrink-0 w-8">
-                      <div className="flex items-center justify-center w-6 h-6 text-xs text-white bg-green-600 rounded-full">A</div>
+                      <div className="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-customGreen2-100">A</div>
                     </div>
                     <div className="ml-2">
                       <h3 className="font-medium">{trajet.ville_depart}</h3>
@@ -279,7 +279,7 @@ const ReserverPage = () => {
                   </div>
                   <div className="flex">
                     <div className="flex justify-center flex-shrink-0 w-8">
-                      <div className="flex items-center justify-center w-6 h-6 text-xs text-white bg-red-600 rounded-full">B</div>
+                      <div className="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-customPink-80">B</div>
                     </div>
                     <div className="ml-2">
                       <h3 className="font-medium">{trajet.ville_arrivee}</h3>
@@ -295,7 +295,7 @@ const ReserverPage = () => {
 
                 {conducteur && (
                   <div className="p-4 mb-4 rounded-lg bg-gray-50">
-                    <h3 className="mb-2 font-medium">Conducteur</h3>
+                    <h3 className="mb-2 font-medium text-primary-100">Conducteur</h3>
                     <div className="flex items-center">
                       <div className="flex items-center justify-center w-12 h-12 mr-4 overflow-hidden bg-gray-200 rounded-full">
                         {conducteur.photo ? (
@@ -349,7 +349,7 @@ const ReserverPage = () => {
                     {!reservationSuccess && (
                       <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                          <label className="block mb-2 font-medium text-gray-700">Nombre de places à réserver</label>
+                          <label className="block mb-2 font-medium text-customGreen-100">Nombre de places à réserver</label>
                           <select
                             name="nombre_places"
                             value={form.nombre_places}
@@ -376,7 +376,7 @@ const ReserverPage = () => {
                           </label>
                         </div>
                         <div className="mb-6">
-                          <label className="block mb-2 font-medium text-gray-700">Message pour le conducteur (facultatif)</label>
+                          <label className="block mb-2 font-medium text-primary-80">Message pour le conducteur (facultatif)</label>
                           <textarea
                             name="commentaire"
                             rows="3"
@@ -396,7 +396,7 @@ const ReserverPage = () => {
                         </div>
                         <button
                           type="submit"
-                          className="w-full px-4 py-3 font-bold text-white transition duration-200 bg-green-600 rounded-lg hover:bg-green-700"
+                          className="w-full px-4 py-3 font-bold text-white transition duration-200 rounded-lg bg-primary-100 hover:bg-customPink-80"
                           disabled={!utilisateur_id}
                         >
                           Réserver maintenant

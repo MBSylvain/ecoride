@@ -16,9 +16,11 @@ import Dashboard from "./pages/Dashboard";
 import Userinfo from "./features/Userinfo"; 
 import Carinfo from "./features/Carinfo"; // Assurez-vous que ce chemin est correct
 import UpdateVehicleForm from "./features/UpdateVehicleForm"; // Assurez-vous que ce chemin est correct
-import Trajetinfo from "./features/Trajetinfo"; // Assurez-vous que ce chemin est correct
-import Reservations from "./features/Reservations"; // Assurez-vous que ce chemin est correct
-import Reservetrajet from "./pages/reservetrajet"; // Assurez-vous que ce chemin est correct
+import Trajetinfo from "./features/Trajetinfo"; 
+import Reservations from "./features/Reservations"; 
+import Reservetrajet from "./pages/reservetrajet"; 
+import ReservationsValidation from "./features/ReservationsValidation";
+import VisualiserTrajet from "./pages/VisualiserTrajets"; // Assurez-vous que ce chemin est correct
 
 
 function App() {
@@ -42,6 +44,9 @@ function App() {
           <Route path="/UpdateVehicleForm/:voitureId" element={<UpdateVehicleForm />} />
           <Route path="/Trajetinfo" element={<Trajetinfo />} />
           <Route path="/Reservations" element={<Reservations />} />
+          <Route path="/ReservationsValidation" element={<ReservationsValidation />} />
+          <Route path="/VisualiserTrajet" element={<VisualiserTrajet />} />
+
           <Route path="/reservetrajet/:trajetId" element={<Reservetrajet />} />                  
           {/* Add more routes as needed */}
         </Routes>
