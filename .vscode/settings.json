@@ -1,3 +1,4 @@
 {
-    "files.defaultLanguage": ""
+    "files.defaultLanguage": "",
+    "CodeGPT.apiKey": "Anthropic"
 }
