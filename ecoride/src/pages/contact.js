@@ -35,76 +35,76 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="flex flex-row gap-40 p-10 font-sans">
-      <div className="items-center content-center w-1/3 text-center mb-30">
-      <h1 className="mb-4 text-3xl font-bold">Contactez-nous</h1>
-      <p className="mb-6">
-        Nous serions ravis de vous entendre! Si vous avez des questions, des
-        suggestions ou des préoccupations, n'hésitez pas à nous contacter.
-      </p>
-
-      <div className="mb-8">
-        <h2 className="mb-2 text-2xl font-semibold">Informations de contact</h2>
-        <p>Email: support@ecoride.com</p>
-        <p>Téléphone: +33 1 23 45 67 89</p>
-        <p>Adresse: 123 Rue de l'Écologie, 75001 Paris, France</p>
+    <div className="flex flex-col gap-10 p-4 font-sans lg:flex-row lg:gap-40 md:p-8 lg:p-10">
+      <div className="flex flex-col items-center w-full mb-8 text-center lg:w-1/3 lg:mb-0">
+        <h1 className="mb-4 text-2xl font-bold md:text-3xl">Contactez-nous</h1>
+        <p className="mb-6 text-base md:text-lg">
+          Nous serions ravis de vous entendre! Si vous avez des questions, des
+          suggestions ou des préoccupations, n'hésitez pas à nous contacter.
+        </p>
+        <div className="mb-8">
+          <h2 className="mb-2 text-xl font-semibold md:text-2xl">Informations de contact</h2>
+          <p className="text-sm md:text-base">Email: support@ecoride.com</p>
+          <p className="text-sm md:text-base">Téléphone: +33 1 23 45 67 89</p>
+          <p className="text-sm md:text-base">Adresse: 123 Rue de l'Écologie, 75001 Paris, France</p>
+        </div>
       </div>
-      </div>
 
-      <div className="content-center w-full mb-8">
-        <h2 className="mb-4 text-2xl font-semibold">Formulaire de contact</h2>
+      <div className="flex flex-col items-center w-full">
+        <h2 className="mb-4 text-xl font-semibold md:text-2xl">Formulaire de contact</h2>
         {success && (
-          <div className="p-4 mb-4 text-green-700 bg-green-100 rounded">{success}</div>
+          <div className="w-full max-w-lg p-4 mb-4 text-green-700 bg-green-100 rounded">{success}</div>
         )}
         {errors.length > 0 && (
-          <div className="p-4 mb-4 text-red-700 bg-red-100 rounded">
+          <div className="w-full max-w-lg p-4 mb-4 text-red-700 bg-red-100 rounded">
             {errors.map((err, idx) => (
               <p key={idx}>{err}</p>
             ))}
           </div>
         )}
         <form
-          className="w-full max-w-lg p-6 mx-auto mb-4 border border-gray-300 rounded-lg shadow-2xl"
+          className="w-full max-w-lg p-4 mb-4 bg-white border border-gray-300 rounded-lg shadow-2xl md:p-6"
           onSubmit={handleSubmit}
         >
           <div className="mb-4">
-            <label className="block mb-2">Nom:</label>
+            <label className="block mb-2 text-sm md:text-base">Nom:</label>
             <input
               type="text"
               name="name"
               required
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-sm border border-gray-300 rounded md:text-base"
               value={formData.name}
               onChange={handleChange}
               disabled={isSubmitting}
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2">Email:</label>
+            <label className="block mb-2 text-sm md:text-base">Email:</label>
             <input
               type="email"
               name="email"
               required
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-sm border border-gray-300 rounded md:text-base"
               value={formData.email}
               onChange={handleChange}
               disabled={isSubmitting}
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2">Message:</label>
+            <label className="block mb-2 text-sm md:text-base">Message:</label>
             <textarea
               name="message"
               required
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-sm border border-gray-300 rounded md:text-base"
               value={formData.message}
               onChange={handleChange}
               disabled={isSubmitting}
+              rows={4}
             />
           </div>
           <button
             type="submit"
-            className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+            className="w-full px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600 md:w-auto"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Envoi..." : "Envoyer"}
