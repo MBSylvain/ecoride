@@ -35,33 +35,38 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="p-8 font-sans">
-      <h1 className="text-3xl font-bold mb-4">Contactez-nous</h1>
+    <div className="flex flex-row gap-40 p-10 font-sans">
+      <div className="items-center content-center w-1/3 text-center mb-30">
+      <h1 className="mb-4 text-3xl font-bold">Contactez-nous</h1>
       <p className="mb-6">
         Nous serions ravis de vous entendre! Si vous avez des questions, des
         suggestions ou des préoccupations, n'hésitez pas à nous contacter.
       </p>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-2">Informations de contact</h2>
+        <h2 className="mb-2 text-2xl font-semibold">Informations de contact</h2>
         <p>Email: support@ecoride.com</p>
         <p>Téléphone: +33 1 23 45 67 89</p>
         <p>Adresse: 123 Rue de l'Écologie, 75001 Paris, France</p>
       </div>
+      </div>
 
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Formulaire de contact</h2>
+      <div className="content-center w-full mb-8">
+        <h2 className="mb-4 text-2xl font-semibold">Formulaire de contact</h2>
         {success && (
-          <div className="p-4 mb-4 bg-green-100 text-green-700 rounded">{success}</div>
+          <div className="p-4 mb-4 text-green-700 bg-green-100 rounded">{success}</div>
         )}
         {errors.length > 0 && (
-          <div className="p-4 mb-4 bg-red-100 text-red-700 rounded">
+          <div className="p-4 mb-4 text-red-700 bg-red-100 rounded">
             {errors.map((err, idx) => (
               <p key={idx}>{err}</p>
             ))}
           </div>
         )}
-        <form onSubmit={handleSubmit}>
+        <form
+          className="w-full max-w-lg p-6 mx-auto mb-4 border border-gray-300 rounded-lg shadow-2xl"
+          onSubmit={handleSubmit}
+        >
           <div className="mb-4">
             <label className="block mb-2">Nom:</label>
             <input
@@ -99,7 +104,7 @@ const ContactPage = () => {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Envoi..." : "Envoyer"}
