@@ -1,4 +1,8 @@
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+
+const VisualiserTrajets = () => {
   // Fonction pour mettre à jour le statut d'une réservation
   const handleUpdateReservationStatus = async (reservationId, newStatus) => {
     try {
@@ -22,10 +26,6 @@ import { useEffect, useState } from 'react';
       alert("Erreur lors de la mise à jour du statut de la réservation");
     }
   };
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-
-const VisualiserTrajets = () => {
   const [trajets, setTrajets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
