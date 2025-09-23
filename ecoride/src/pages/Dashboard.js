@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Assurez-vous d'importer axios
+import checkAuth from "../features/checkAuth";
+import logout from "../features/logout";
 
 // Simule la récupération de l'utilisateur connecté (à remplacer par ton auth context)
 console.log(localStorage);
@@ -16,7 +18,24 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
   const [showTripModal, setShowTripModal] = useState(false);
   const [tripToEdit, setTripToEdit] = useState(null);
 
-  // Charger les données du dashboard
+  // Vérifaction d'authentification
+  const navigate = useNavigate();
+  useEffect(() => {
+    const verifyAuth = async () => {
+      const isAuthenticated = await checkAuth();
+      if (!isAuthenticated) {
+        navigate("/login"); // Redirige si non connecté
+      }
+    };
+
+    verifyAuth();
+  }, []);
+  // Gestion de la déconnexion
+  const handleLogout = async () => {
+  await logout();
+  navigate("/login"); // Redirige vers la page de connexion après déconnexion
+};
+
   //Données utilisateur
   const [user, setUser] = useState(localStorage);
   const [userLoading, setUserLoading] = useState(true);
@@ -171,7 +190,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
             <div><p className="text-customGrey-80">Adresse:</p><p className="font-medium text-primary-100">{user.adresse || "Non renseigné"}</p></div>
             <div><p className="text-customGrey-80">Date inscription:</p><p className="font-medium text-primary-100">{user.date_inscription || "Non renseigné"}</p></div>
             <div className="mt-4">
-              <button onClick={() => setShowUserModal(true)} className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">
+              <button onClick={() => setShowUserModal(true)} className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
                 Modifier mes informations
               </button>
             </div>
@@ -181,7 +200,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
 
       {/* Modal modification utilisateur */}
       {showUserModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-100 bg-opacity-75">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-75 bg-primary-100">
           <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
             <h2 className="mb-4 text-xl font-semibold text-primary-100">Modifier mes informations</h2>
             {/* Ici, place ton formulaire de modification utilisateur */}
@@ -223,14 +242,14 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
               </tbody>
             </table>
             <div className="mt-4">
-              <Link to="/dashboard/voiture/ajouter" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">Ajouter une voiture</Link>
+              <Link to="/dashboard/voiture/ajouter" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">Ajouter une voiture</Link>
             </div>
           </div>
         ) : (
           <>
             <p>Vous n'avez pas encore ajouté de voiture.</p>
             <div className="mt-4">
-              <Link to="/dashboard/voiture/ajouter" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">
+              <Link to="/dashboard/voiture/ajouter" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
                 Ajouter une voiture
               </Link>
             </div>
@@ -239,7 +258,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
       </div>
       {/* Modal modification voiture */}
       {showCarModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-100 bg-opacity-75">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-75 bg-primary-100">
           <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
             <h2 className="mb-4 text-xl font-semibold text-primary-100">Modifier ma voiture</h2>
             {/* Ici, place ton formulaire de modification voiture avec carToEdit */}
@@ -273,7 +292,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
                     <td className="px-4 py-3">{trajet.prix} €</td>
                     <td className="px-4 py-3">{trajet.nombre_places}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => { setTripToEdit(trajet); setShowTripModal(true); }} className="px-3 py-1 text-white bg-primary-100 rounded hover:bg-primary-80">Détails</button>
+                      <button onClick={() => { setTripToEdit(trajet); setShowTripModal(true); }} className="px-3 py-1 text-white rounded bg-primary-100 hover:bg-primary-80">Détails</button>
                       <Link to={`/dashboard/reservations/${trajet.trajet_id}`} className="mr-2 text-customGreen-100 hover:text-customGreen2-100">Réservations</Link>
                       {/* Ajoute ici la suppression si besoin */}
                     </td>
@@ -282,7 +301,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
               </tbody>
             </table>
             <div className="mt-4">
-              <Link to="/dashboard/trajet/ajouter" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">Proposer un trajet</Link>
+              <Link to="/dashboard/trajet/ajouter" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">Proposer un trajet</Link>
             </div>
           </div>
         ) : (
@@ -291,7 +310,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
       </div>
       {/* Modal modification trajet */}
       {showTripModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-100 bg-opacity-75">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-75 bg-primary-100">
           <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
             <h2 className="mb-4 text-xl font-semibold text-primary-100">Modifier mon trajet</h2>
             {/* Ici, place ton formulaire de modification trajet avec tripToEdit */}
@@ -345,7 +364,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
           <>
             <p>Vous n'avez pas encore effectué de réservation.</p>
             <div className="mt-4">
-              <Link to="/trajets" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">
+              <Link to="/trajets" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
                 Rechercher un trajet
               </Link>
             </div>

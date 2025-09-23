@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import checkAuth from "../features/checkAuth";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Vérifie si l'utilisateur est connecté (exemple : via localStorage)
-  const isAuthenticated = !!localStorage.getItem("utilisateur_id");
-
+  useEffect(() => {
+    const verifyAuth = async () => {
+      const authenticated = await checkAuth();
+      setIsAuthenticated(authenticated);
+    };
+    verifyAuth();
+  }, []);
+    
   return (
     <nav className="p-4 bg-primary-100">
       <div className="container flex items-center justify-between mx-auto">
@@ -122,57 +129,7 @@ const Header = () => {
               </>
             )}
 
-            <li>
-              <Link to="/documents" className="block px-4 py-2 text-white">
-                Documents
-              </Link>
-            </li>
-            <li>
-              <Link to="/error404" className="block px-4 py-2 text-white">
-                Erreur 404
-              </Link>
-            </li>
-            <li>
-              <Link to="/error500" className="block px-4 py-2 text-white">
-                Erreur 500
-              </Link>
-            </li>
-            <li>
-              <Link to="/InfoVéhicule" className="block px-4 py-2 text-white">
-                Info Véhicule
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/preferenceProfil"
-                className="block px-4 py-2 text-white"
-              >
-                Préférences Profil
-              </Link>
-            </li>
-            <li>
-              <Link to="/profil" className="block px-4 py-2 text-white">
-                Profil
-              </Link>
-            </li>
-            <li>
-              <Link to="/reservetrajet" className="block px-4 py-2 text-white">
-                Réserver un trajet
-              </Link>
-            </li>
-            <li>
-              <Link to="/testapi" className="block px-4 py-2 text-white">
-                Test API
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/TrajetsDisponibles"
-                className="block px-4 py-2 text-white"
-              >
-                Trajets Disponibles
-              </Link>
-            </li>
+            
           </ul>
         </div>
       </div>
