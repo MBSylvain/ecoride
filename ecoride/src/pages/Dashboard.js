@@ -1,156 +1,137 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"; // Assurez-vous d'importer axios
+import axios from "axios";
+import EditUserModal from "../features/EditUserModal";
+import EditVehicleModal from "../features/EditVehicleModal";
 
-// Simule la récupération de l'utilisateur connecté (à remplacer par ton auth context)
-console.log(localStorage);
-console.log(localStorage.getItem("user"));
-console.log(localStorage.getItem("utilisateur_id"));
+
 const Dashboard = () => {
-const utilisateur_email = localStorage.getItem("user.email") || localStorage.getItem("email");
-const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
-   // Modals
+  const utilisateur_email = localStorage.getItem("user.email") || localStorage.getItem("email");
+  const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
+
+  // Modals
   const [showUserModal, setShowUserModal] = useState(false);
   const [showCarModal, setShowCarModal] = useState(false);
   const [carToEdit, setCarToEdit] = useState(null);
   const [showTripModal, setShowTripModal] = useState(false);
   const [tripToEdit, setTripToEdit] = useState(null);
-
-  // Charger les données du dashboard
-  //Données utilisateur
-  const [user, setUser] = useState(localStorage);
-  const [userLoading, setUserLoading] = useState(true);
+  // Etat modale userEditmodale
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  // Etat modale EditvehiculeModal
+  const [isEditVehicleModalOpen, setIsEditVehicleModalOpen] = useState(false);
+  const [selectedCar, setSelectedCar] = useState(null);
   
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setUserLoading(true);
-      try {
-        const response = await axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`
-, {
-        headers: {
-          "Content-Type": "application/json"
-        },
-        withCredentials: true
-      },
-        );
-        
-        setUser(response.data);
 
-        console.log("Données utilisateur chargées:", response.data);
-      } catch (error) {
-        console.error("Erreur lors du chargement des données utilisateur", error);
-      } finally {
-        setUserLoading(false);
-      }
-    };
-    
-    fetchUserData();
-  }, [utilisateur_id]);
-  //données voitures de l 'utilisateur
+  //Etat modale userEditmodale
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
+  };
+  // Données utilisateur
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+
+  // Données voitures
   const [voitures, setVoitures] = useState([]);
   const [voituresLoading, setVoituresLoading] = useState(true);
-  
-  useEffect(() => {
-    const fetchVoitures = async () => {
-      setVoituresLoading(true);
-      try {
-        const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`);
-        setVoitures(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Erreur lors du chargement des voitures", error);
-      } finally {
-        setVoituresLoading(false);
-      }
-    };
-    
-    fetchVoitures();
-  }, [utilisateur_id]);
-  //données trajets de l'utilisateur
+
+  // Données trajets
   const [trajets, setTrajets] = useState([]);
   const [trajetsLoading, setTrajetsLoading] = useState(true);
-  
-  useEffect(() => {
-    const fetchTrajets = async () => {
-      setTrajetsLoading(true);
-      try {
-        const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`);
-        setTrajets(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Erreur lors du chargement des trajets", error);
-      } finally {
-        setTrajetsLoading(false);
-      }
-    };
-    
-    fetchTrajets();
-  }, [utilisateur_id]);
-  //données réservations de l'utilisateur
+
+  // Données réservations
   const [reservations, setReservations] = useState([]);
   const [reservationsLoading, setReservationsLoading] = useState(true);
-  
-  useEffect(() => {
-    const fetchReservations = async () => {
-      setReservationsLoading(true);
-      try {
-        const response = await axios.get(`http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`);
-        setReservations(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Erreur lors du chargement des réservations", error);
-      } finally {
-        setReservationsLoading(false);
-      }
-    };
-    
-    fetchReservations();
-  }, [utilisateur_id]);
-  //données avis reçus de l'utilisateur
+
+  // Données avis reçus
   const [avisRecus, setAvisRecus] = useState([]);
   const [avisRecusLoading, setAvisRecusLoading] = useState(true);
-  
-  useEffect(() => {
-    const fetchAvisRecus = async () => {
-      setAvisRecusLoading(true);
-      try {
-        const response = await axios.get(`http://localhost/api/Controllers/AvisController.php?destinataire_id=${utilisateur_id}`);
-        setAvisRecus(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Erreur lors du chargement des avis reçus", error);
-      } finally {
-        setAvisRecusLoading(false);
-      }
-    };
-    
-    fetchAvisRecus();
-  }, [utilisateur_id]);
-  //données avis donnés par l'utilisateur
+
+  // Données avis donnés
   const [avisDonnes, setAvisDonnes] = useState([]);
   const [avisDonnesLoading, setAvisDonnesLoading] = useState(true);
-  
+
+  // Fonction générique pour les appels API
+  const fetchData = async (url, setData, setLoading) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(url, { withCredentials: true });
+      setData(Array.isArray(response.data) ? response.data : response.data || []);
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des données depuis ${url}:`, error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Charger les données utilisateur
   useEffect(() => {
-    const fetchAvisDonnes = async () => {
-      setAvisDonnesLoading(true);
-      try {
-        const response = await axios.get(`http://localhost/api/Controllers/AvisController.php?auteur_id=${utilisateur_id}`);
-        setAvisDonnes(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Erreur lors du chargement des avis donnés", error);
-      } finally {
-        setAvisDonnesLoading(false);
-      }
-    };
-    
-    fetchAvisDonnes();
+    fetchData(
+      `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
+      setUser,
+      setUserLoading
+    );
   }, [utilisateur_id]);
 
+  // Charger les voitures de l'utilisateur
+  useEffect(() => {
+    fetchData(
+      `http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`,
+      setVoitures,
+      setVoituresLoading
+    );
+  }, [utilisateur_id]);
+
+  // Charger les trajets de l'utilisateur
+  useEffect(() => {
+    fetchData(
+      `http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+      setTrajets,
+      setTrajetsLoading
+    );
+  }, [utilisateur_id]);
+
+  // Charger les réservations de l'utilisateur
+  useEffect(() => {
+    fetchData(
+      `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`,
+      setReservations,
+      setReservationsLoading
+    );
+  }, [utilisateur_id]);
+
+  // Charger les avis reçus par l'utilisateur
+  useEffect(() => {
+    fetchData(
+      `http://localhost/api/Controllers/AvisController.php?destinataire_id=${utilisateur_id}`,
+      setAvisRecus,
+      setAvisRecusLoading
+    );
+  }, [utilisateur_id]);
+
+  // Charger les avis donnés par l'utilisateur
+  useEffect(() => {
+    fetchData(
+      `http://localhost/api/Controllers/AvisController.php?auteur_id=${utilisateur_id}`,
+      setAvisDonnes,
+      setAvisDonnesLoading
+    );
+  }, [utilisateur_id]);
 
   // Helpers
   const roleClass = (role) => {
     switch (role) {
-      case "Administrateur": return "bg-primary-100 text-white";
-      case "Employer": return "bg-customGreen2-100 text-white";
-      case "Conducteur": return "bg-customGreen-100 text-white";
-      case "Passager": return "bg-customGrey-100 text-primary-100";
-      default: return "bg-customGrey-100 text-primary-100";
+      case "Administrateur":
+        return "bg-primary-100 text-white";
+      case "Employer":
+        return "bg-customGreen2-100 text-white";
+      case "Conducteur":
+        return "bg-customGreen-100 text-white";
+      case "Passager":
+        return "bg-customGrey-100 text-primary-100";
+      default:
+        return "bg-customGrey-100 text-primary-100";
     }
   };
 
@@ -160,37 +141,62 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
       <h1 className="mb-6 text-2xl font-bold text-center text-customGreen-100">Mon Tableau de Bord</h1>
 
       {/* Section 1: Infos utilisateur */}
-      <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-        <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes informations personnelles</h2>
-        {userLoading ? (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div><p className="text-customGrey-80">Nom:</p><p className="font-medium text-primary-100">{user.nom}</p></div>
-            <div><p className="text-customGrey-80">Prénom:</p><p className="font-medium text-primary-100">{user.prenom}</p></div>
-            <div><p className="text-customGrey-80">Email:</p><p className="font-medium text-primary-100">{user.email}</p></div>
-            <div><p className="text-customGrey-80">Téléphone:</p><p className="font-medium text-primary-100">{user.telephone || "Non renseigné"}</p></div>
-            <div><p className="text-customGrey-80">Adresse:</p><p className="font-medium text-primary-100">{user.adresse || "Non renseigné"}</p></div>
-            <div><p className="text-customGrey-80">Date inscription:</p><p className="font-medium text-primary-100">{user.date_inscription || "Non renseigné"}</p></div>
-            <div className="mt-4">
-              <button onClick={() => setShowUserModal(true)} className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">
-                Modifier mes informations
-              </button>
+        <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
+          <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes informations personnelles</h2>
+          {userLoading ? (
+            <p>Chargement des informations...</p>
+          ) : user ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <p className="text-customGrey-100">Nom:</p>
+            <p className="font-medium text-primary-100">{user.nom}</p>
+          </div>
+          <div>
+            <p className="text-customGrey-100">Prénom:</p>
+            <p className="font-medium text-primary-100">{user.prenom}</p>
+          </div>
+          <div>
+            <p className="text-customGrey-100">Email:</p>
+            <p className="font-medium text-primary-100">{user.email}</p>
+          </div>
+          <div>
+            <p className="text-customGrey-100">Téléphone:</p>
+            <p className="font-medium text-primary-100">{user.telephone || "Non renseigné"}</p>
+          </div>
+          <div>
+            <p className="text-customGrey-100">Adresse:</p>
+            <p className="font-medium text-primary-100">{user.adresse || "Non renseigné"}</p>
+          </div>
+          <div>
+            <p className="text-customGrey-100">Date inscription:</p>
+            <p className="font-medium text-primary-100">{user.date_inscription || "Non renseigné"}</p>
+          </div>
+          <div className="mt-4">
+            <button
+              onClick={() => handleEditUser(true)}
+              className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100"
+            >
+              Modifier mes informations
+            </button>
+          </div>
             </div>
-          </div>
-        ) : <p>Aucune information disponible.</p>}
-      </div>
-
-      {/* Modal modification utilisateur */}
-      {showUserModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-100 bg-opacity-75">
-          <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
-            <h2 className="mb-4 text-xl font-semibold text-primary-100">Modifier mes informations</h2>
-            {/* Ici, place ton formulaire de modification utilisateur */}
-            <button onClick={() => setShowUserModal(false)} className="mt-4 text-customPink-100 hover:text-customPink-80">Annuler</button>
-          </div>
+          ) : (
+            <p>Aucune information disponible.</p>
+          )}
         </div>
-      )}
 
-      {/* Section 2: Voitures */}
+        {/* Modal modification utilisateur */}
+         <EditUserModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        user={selectedUser}
+        onUserUpdated={(updatedUser) => {
+          console.log('Utilisateur mis à jour :', updatedUser);
+          setIsEditModalOpen(false);
+        }}
+      />
+
+        {/* Section 2: Voitures */}
       <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
         <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes voitures</h2>
         {voitures.length > 0 ? (
@@ -215,43 +221,47 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
                     <td className="px-4 py-3">{voit.couleur}</td>
                     <td className="px-4 py-3">{voit.nombre_places}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => { setCarToEdit(voit); setShowCarModal(true); }} className="mr-2 text-customGreen2-100 hover:text-customGreen2-80">Modifier</button>
-                      {/* Ajoute ici la suppression si besoin */}
+                      <button onClick={() => { setSelectedCar(voit); setIsEditVehicleModalOpen(true); }} className="mr-2 text-customGreen2-100 hover:text-customGreen2-80">Modifier</button>
+                     <Link to={`../UpdateVehicleForm/${voit.voiture_id}`} className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">Modifier</Link>
+
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <div className="mt-4">
-              <Link to="/dashboard/voiture/ajouter" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">Ajouter une voiture</Link>
+                           <button onClick={() => { setSelectedCar(); setIsEditVehicleModalOpen(true); }} className="mr-2 text-customGreen2-100 hover:text-customGreen2-80">Ajouter bouton</button>
+
+              <Link to="/pages/dashcarupdate" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">Ajouter une voiture</Link>
             </div>
           </div>
         ) : (
           <>
             <p>Vous n'avez pas encore ajouté de voiture.</p>
-            <div className="mt-4">
-              <Link to="/dashboard/voiture/ajouter" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">
-                Ajouter une voiture
-              </Link>
+            <div className="flex flex-row mt-4">
+             <button onClick={() => { setSelectedCar(); setIsEditVehicleModalOpen(true); }} className="mr-2 text-customGreen2-100 hover:text-customGreen2-80">Ajouter bouton</button>
+
+              <Link to="/pages/" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">Ajouter une voiture </Link>
             </div>
           </>
         )}
       </div>
       {/* Modal modification voiture */}
-      {showCarModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-100 bg-opacity-75">
-          <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
-            <h2 className="mb-4 text-xl font-semibold text-primary-100">Modifier ma voiture</h2>
-            {/* Ici, place ton formulaire de modification voiture avec carToEdit */}
-            <button onClick={() => setShowCarModal(false)} className="mt-4 text-customPink-100 hover:text-customPink-80">Annuler</button>
-          </div>
-        </div>
-      )}
+      {/* Utilisation du composant EditVehicleModal */}
+            <EditVehicleModal
+              isOpen={isEditVehicleModalOpen}
+              onClose={() => setIsEditVehicleModalOpen(false)}
+              voiture={carToEdit}
+              onVoitureUpdated={() => {
+                setIsEditVehicleModalOpen(false);
+                // Optionnel: rafraîchir la liste des voitures ici si besoin
+              }}
+            />
 
       {/* Section 3: Trajets */}
       <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
         <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes trajets récents</h2>
-        {trajets.length > 0 ? (
+        {Array.isArray(trajets) && trajets.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
@@ -273,16 +283,33 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
                     <td className="px-4 py-3">{trajet.prix} €</td>
                     <td className="px-4 py-3">{trajet.nombre_places}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => { setTripToEdit(trajet); setShowTripModal(true); }} className="px-3 py-1 text-white bg-primary-100 rounded hover:bg-primary-80">Détails</button>
-                      <Link to={`/dashboard/reservations/${trajet.trajet_id}`} className="mr-2 text-customGreen-100 hover:text-customGreen2-100">Réservations</Link>
-                      {/* Ajoute ici la suppression si besoin */}
+                      <button
+                        onClick={() => {
+                          setTripToEdit(trajet);
+                          setShowTripModal(true);
+                        }}
+                        className="px-3 py-1 text-white rounded bg-primary-100 hover:bg-primary-80"
+                      >
+                        Détails
+                      </button>
+                      <Link
+                        to={`/dashboard/reservations/${trajet.trajet_id}`}
+                        className="mr-2 text-customGreen-100 hover:text-customGreen2-100"
+                      >
+                        Réservations
+                      </Link>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <div className="mt-4">
-              <Link to="/dashboard/trajet/ajouter" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">Proposer un trajet</Link>
+              <Link
+                to="/dashboard/trajet/ajouter"
+                className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100"
+              >
+                Proposer un trajet
+              </Link>
             </div>
           </div>
         ) : (
@@ -291,7 +318,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
       </div>
       {/* Modal modification trajet */}
       {showTripModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-100 bg-opacity-75">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-75 bg-primary-100">
           <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
             <h2 className="mb-4 text-xl font-semibold text-primary-100">Modifier mon trajet</h2>
             {/* Ici, place ton formulaire de modification trajet avec tripToEdit */}
@@ -345,7 +372,7 @@ const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.ge
           <>
             <p>Vous n'avez pas encore effectué de réservation.</p>
             <div className="mt-4">
-              <Link to="/trajets" className="px-4 py-2 text-white bg-customGreen-100 rounded hover:bg-customGreen2-100">
+              <Link to="/trajets" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
                 Rechercher un trajet
               </Link>
             </div>

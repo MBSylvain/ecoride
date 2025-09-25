@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Link} from "react-router-dom";
-import {  useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg"; // Mets à jour le chemin si besoin
 import axios from "axios";
 
@@ -11,6 +11,27 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Vérification de l'authentification lors du montage du composant
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost/api/Controllers/CheckAuth.php",
+          { withCredentials: true }
+        );
+
+        if (response.data.authenticated) {
+          // Si l'utilisateur est déjà authentifié, redirigez-le vers le tableau de bord
+          navigate("/Dashboard");
+        }
+      } catch (err) {
+        console.error("Erreur lors de la vérification de l'authentification:", err);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,21 +60,20 @@ const LoginPage = () => {
         formData,
         {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          withCredentials: true
+          withCredentials: true,
         }
       );
-      
+
       console.log("Réponse complète:", response.data);
       const data = response.data;
-      
+
       if (data.success === true || data.success === "true" || data.success === 1) {
         if (data.user) {
           localStorage.setItem("utilisateur_id", data.user.id);
           localStorage.setItem("user_info", JSON.stringify(data.utilisateur));
           navigate("/Dashboard"); // Utilisation de navigate pour la redirection
-          // Redirection correcte
         } else {
           setApiError("Données utilisateur manquantes dans la réponse");
         }
@@ -88,7 +108,9 @@ const LoginPage = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full p-3 border rounded-lg ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                className={`w-full p-3 border rounded-lg ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email}</p>
@@ -102,7 +124,9 @@ const LoginPage = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full p-3 border rounded-lg ${errors.password ? "border-red-500" : "border-gray-300"}`}
+                className={`w-full p-3 border rounded-lg ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-500">{errors.password}</p>
@@ -119,7 +143,10 @@ const LoginPage = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/register" className="text-customGreen-100 hover:text-customGreen2-80">
+            <Link
+              to="/register"
+              className="text-customGreen-100 hover:text-customGreen2-80"
+            >
               Créer un compte
             </Link>
           </div>

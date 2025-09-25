@@ -181,13 +181,8 @@ return (
 
             
             <div className="flex justify-end pt-4 space-x-3 border-t">
-                <Bouton
-                    type="button"
-                    onClick={onClose}
-                    className="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
-                >
+                
                     
-                </Bouton>
                 <Bouton
                     type="submit"
                     className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700"

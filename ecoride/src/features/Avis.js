@@ -1,8 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import StarRating from './StarRating';
+import checkAuth from '.utils/authUtils';
+
+useEffect(() => {
+  const verifyAuth = async () => {
+    const isAuthenticated = await checkAuth();
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  };
+
+  verifyAuth();
+}, [navigate]);
+
 
 const ReviewsSection = ({ 
+
   avisRecus, avisRecusLoading,
   avisDonnes, avisDonnesLoading 
 }) => {
