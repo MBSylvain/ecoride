@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg"; // Mets à jour le chemin si besoin
 import axios from "axios";
+import checkAuth from "../features/checkAuth";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const LoginPage = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+//connexion de l'utilisateur
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -87,6 +88,9 @@ const LoginPage = () => {
       setIsSubmitting(false);
     }
   };
+
+// récupération des information de session pour la redirection 
+
 
   return (
     <div className="flex flex-col min-h-screen md:flex-row">

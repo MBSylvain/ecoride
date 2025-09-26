@@ -416,6 +416,7 @@ const Dashboard = () => {
             <p>Vous n'avez pas encore effectué de réservation.</p>
             <div className="mt-4">
               <Link to="/trajets" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
+              <Link to="/trajets" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
                 Rechercher un trajet
               </Link>
             </div>
