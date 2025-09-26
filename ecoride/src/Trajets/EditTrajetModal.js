@@ -30,76 +30,91 @@ const EditTrajetModal = ({ isOpen, onClose, onTrajetUpdated, trajet }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Modifier un trajet">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Départ</label>
+      <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium text-gray-700">Départ</label>
           <input
             type="text"
             name="depart"
             value={formData.depart}
             onChange={handleChange}
             required
+            className="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
           />
         </div>
-        <div>
-          <label>Arrivée</label>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium text-gray-700">Arrivée</label>
           <input
             type="text"
             name="arrivee"
             value={formData.arrivee}
             onChange={handleChange}
             required
+            className="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
           />
         </div>
-        <div>
-          <label>Date</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-          />
+        <div className="flex flex-col md:flex-row md:space-x-4">
+          <div className="flex flex-col flex-1">
+            <label className="mb-1 font-medium text-gray-700">Date</label>
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              required
+              className="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+            />
+          </div>
+          <div className="flex flex-col flex-1 mt-4 md:mt-0">
+            <label className="mb-1 font-medium text-gray-700">Heure</label>
+            <input
+              type="time"
+              name="heure"
+              value={formData.heure}
+              onChange={handleChange}
+              required
+              className="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+            />
+          </div>
         </div>
-        <div>
-          <label>Heure</label>
-          <input
-            type="time"
-            name="heure"
-            value={formData.heure}
-            onChange={handleChange}
-            required
-          />
+        <div className="flex flex-col md:flex-row md:space-x-4">
+          <div className="flex flex-col flex-1">
+            <label className="mb-1 font-medium text-gray-700">Prix</label>
+            <input
+              type="number"
+              name="prix"
+              value={formData.prix}
+              onChange={handleChange}
+              required
+              className="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+            />
+          </div>
+          <div className="flex flex-col flex-1 mt-4 md:mt-0">
+            <label className="mb-1 font-medium text-gray-700">Places disponibles</label>
+            <input
+              type="number"
+              name="places_disponibles"
+              value={formData.places_disponibles}
+              onChange={handleChange}
+              required
+              className="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+            />
+          </div>
         </div>
-        <div>
-          <label>Prix</label>
-          <input
-            type="number"
-            name="prix"
-            value={formData.prix}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Places disponibles</label>
-          <input
-            type="number"
-            name="places_disponibles"
-            value={formData.places_disponibles}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Description</label>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium text-gray-700">Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
+            className="px-3 py-2 border rounded resize-none focus:outline-none focus:ring focus:border-blue-400"
           />
         </div>
-        <button type="submit" disabled={isSubmitting}>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full py-2 text-white transition bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
+        >
           {isSubmitting ? 'Enregistrement...' : 'Modifier'}
         </button>
       </form>
