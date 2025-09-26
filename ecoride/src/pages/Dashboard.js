@@ -5,6 +5,7 @@ import EditUserModal from "../features/EditUserModal";
 import EditVehicleModal from "../features/EditVehicleModal";
 import EditTrajetModal from "../features/EditTrajetModal";
 import CreateTrajetModal from "../features/CreateTrajetModal";
+import checkAuth from "../features/checkAuth";
 
 
 const Dashboard = () => {
@@ -66,7 +67,7 @@ const Dashboard = () => {
   const fetchData = async (url, setData, setLoading) => {
     setLoading(true);
     try {
-      const response = await axios.get(url, { withCredentials: true });
+      const response = await axios.get(url, { withCredentials: true }, {responseType: 'json' });
       setData(Array.isArray(response.data) ? response.data : response.data || []);
     } catch (error) {
       console.error(`Erreur lors de la récupération des données depuis ${url}:`, error);
@@ -79,6 +80,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData(
       `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
+      
       setUser,
       setUserLoading
     );
@@ -416,7 +418,6 @@ const Dashboard = () => {
             <p>Vous n'avez pas encore effectué de réservation.</p>
             <div className="mt-4">
               <Link to="/trajets" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
-              <Link to="/trajets" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">
                 Rechercher un trajet
               </Link>
             </div>
@@ -538,6 +539,5 @@ const Dashboard = () => {
       </div>
     </div>
   );
-};
-
+};  
 export default Dashboard;

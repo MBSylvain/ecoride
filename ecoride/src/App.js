@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, useParams } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -13,14 +13,19 @@ import Help from "./pages/Helpcenter";
 import Privaty from "./pages/privaty";
 import TestApi from "./pages/testapi";
 import Dashboard from "./pages/Dashboard";
-import Userinfo from "./features/Userinfo"; 
-import Carinfo from "./features/Carinfo"; // Assurez-vous que ce chemin est correct
-import UpdateVehicleForm from "./features/UpdateVehicleForm"; // Assurez-vous que ce chemin est correct
-import Trajetinfo from "./features/Trajetinfo"; 
-import Reservations from "./features/Reservations"; 
-import Reservetrajet from "./pages/reservetrajet"; 
-import VisualiserTrajet from "./pages/VisualiserTrajets"; // Assurez-vous que ce chemin est correct
+import Userinfo from "./features/Userinfo";
+import Carinfo from "./features/Carinfo";
+import UpdateVehicleForm from "./features/UpdateVehicleForm";
+import Trajetinfo from "./features/Trajetinfo";
+import Reservations from "./features/Reservations";
+import Reservetrajet from "./pages/reservetrajet";
+import VisualiserTrajet from "./pages/VisualiserTrajets";
+import Reservation from "./Reservations/ReservationUser";
 
+// Import des composants pour la gestion des trajets
+import TrajetUser from "./Trajets/TrajetUser";
+import CreateTrajetModal from "./Trajets/CreateTrajetModal";
+import EditTrajetModal from "./Trajets/EditTrajetModal";
 
 function App() {
   return (
@@ -44,9 +49,14 @@ function App() {
           <Route path="/Trajetinfo" element={<Trajetinfo />} />
           <Route path="/Reservations" element={<Reservations />} />
           <Route path="/VisualiserTrajet" element={<VisualiserTrajet />} />
+          <Route path="/reservetrajet/:trajetId" element={<Reservetrajet />} />
+          <Route path="/reservation/:userId" element={<Reservation />} />
+          <Route path="/reservation/:trajetId" element={<Reservation />} />
 
-          <Route path="/reservetrajet/:trajetId" element={<Reservetrajet />} />                  
-          {/* Add more routes as needed */}
+          {/* Routes pour la gestion des trajets */}
+          <Route path="/trajets" element={<TrajetUser />} />
+          <Route path="/trajets/create" element={<CreateTrajetModal isOpen={true} />} />
+          <Route path="/trajets/edit/:trajetId" element={<EditTrajetModal isOpen={true} />} />
         </Routes>
         <Footer />
       </div>

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg"; // Mets à jour le chemin si besoin
 import axios from "axios";
-import checkAuth from "../features/checkAuth";
 
 const LoginPage = () => {
   const navigate = useNavigate();
