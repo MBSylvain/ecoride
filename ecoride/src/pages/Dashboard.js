@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import EditUserModal from "../features/EditUserModal";
 import EditVehicleModal from "../features/EditVehicleModal";
+import EditTrajetModal from "../features/EditTrajetModal";
+import CreateTrajetModal from "../features/CreateTrajetModal";
 
 
 const Dashboard = () => {
@@ -21,7 +23,12 @@ const Dashboard = () => {
   // Etat modale EditvehiculeModal
   const [isEditVehicleModalOpen, setIsEditVehicleModalOpen] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
-  
+  // Etat modale EdittrajetModal
+  const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  // Etat modale createTrajetModal
+  const [isCreateTripModalOpen, setIsCreateTripModalOpen] = useState(false);
+  const [selectedCreateTrip, setSelectedCreateTrip] = useState(null);
 
   //Etat modale userEditmodale
   const handleEditUser = (user) => {
@@ -51,6 +58,9 @@ const Dashboard = () => {
   // Données avis donnés
   const [avisDonnes, setAvisDonnes] = useState([]);
   const [avisDonnesLoading, setAvisDonnesLoading] = useState(true);
+
+  
+
 
   // Fonction générique pour les appels API
   const fetchData = async (url, setData, setLoading) => {
@@ -230,7 +240,7 @@ const Dashboard = () => {
               </tbody>
             </table>
             <div className="mt-4">
-                           <button onClick={() => { setSelectedCar(); setIsEditVehicleModalOpen(true); }} className="mr-2 text-customGreen2-100 hover:text-customGreen2-80">Ajouter bouton</button>
+             <button onClick={() => { setSelectedCar(); setIsEditVehicleModalOpen(true); }} className="mr-2 text-customGreen2-100 hover:text-customGreen2-80">Ajouter bouton</button>
 
               <Link to="/pages/dashcarupdate" className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100">Ajouter une voiture</Link>
             </div>
@@ -255,77 +265,110 @@ const Dashboard = () => {
               onVoitureUpdated={() => {
                 setIsEditVehicleModalOpen(false);
                 // Optionnel: rafraîchir la liste des voitures ici si besoin
-              }}
-            />
+                }}
+              />
 
-      {/* Section 3: Trajets */}
-      <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-        <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes trajets récents</h2>
-        {Array.isArray(trajets) && trajets.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr className="border-b-2 border-customGrey-80">
-                  <th className="px-4 py-3 text-left">Départ</th>
-                  <th className="px-4 py-3 text-left">Arrivée</th>
-                  <th className="px-4 py-3 text-left">Date</th>
-                  <th className="px-4 py-3 text-left">Prix</th>
-                  <th className="px-4 py-3 text-left">Places</th>
-                  <th className="px-4 py-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {trajets.map((trajet) => (
-                  <tr key={trajet.trajet_id} className="border-b hover:bg-customGrey-80">
+            {/* Bouton pour ouvrir la modale d'ajout de trajet */}
+            <div className="mb-4">
+            <button
+              onClick={() => {
+              setTripToEdit(null);
+              setShowTripModal(true);
+              }}
+              className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100"
+            >
+              Ajouter un trajet
+            </button>
+            </div>
+
+            {/* Section 3: Trajets */}
+            <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
+            <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes trajets récents</h2>
+            {Array.isArray(trajets) && trajets.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
+                  <thead>
+                  <tr className="border-b-2 border-customGrey-80">
+                    <th className="px-4 py-3 text-left">Départ</th>
+                    <th className="px-4 py-3 text-left">Arrivée</th>
+                    <th className="px-4 py-3 text-left">Date</th>
+                    <th className="px-4 py-3 text-left">Prix</th>
+                    <th className="px-4 py-3 text-left">Places</th>
+                    <th className="px-4 py-3 text-left">Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {trajets.map((trajet) => (
+                    <tr key={trajet.trajet_id} className="border-b hover:bg-customGrey-80">
                     <td className="px-4 py-3">{trajet.ville_depart}</td>
                     <td className="px-4 py-3">{trajet.ville_arrivee}</td>
                     <td className="px-4 py-3">{trajet.date_depart}</td>
                     <td className="px-4 py-3">{trajet.prix} €</td>
                     <td className="px-4 py-3">{trajet.nombre_places}</td>
-                    <td className="px-4 py-3">
+                    <td className="flex gap-2 px-4 py-3">
                       <button
-                        onClick={() => {
-                          setTripToEdit(trajet);
-                          setShowTripModal(true);
+                      onClick={() => {
+                        setTripToEdit(trajet);
+                        setShowTripModal(true);
                         }}
                         className="px-3 py-1 text-white rounded bg-primary-100 hover:bg-primary-80"
                       >
                         Détails
                       </button>
-                      <Link
-                        to={`/dashboard/reservations/${trajet.trajet_id}`}
-                        className="mr-2 text-customGreen-100 hover:text-customGreen2-100"
+                                         <Link
+                      to={`/VisualiserTrajet/${trajet.trajet_id}`}
+                      className="mr-2 text-customGreen-100 hover:text-customGreen2-100"
+                    >
+                      Réservations
+                    </Link>
+                      <button
+                        onClick={async () => {
+                        if (window.confirm("Voulez-vous vraiment annuler ce trajet ?")) {
+                        try {
+                          await axios.delete(
+                          `http://localhost/api/Controllers/TrajetController.php`,
+                          {
+                            data: { trajet_id: trajet.trajet_id },
+                            action: "delete",
+                            withCredentials: true,
+                            headers: { "Content-Type": "application/json" }
+                          }
+                          );
+                          // Rafraîchir la liste des trajets après suppression
+                          fetchData(
+                          `http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+                          setTrajets,
+                          setTrajetsLoading
+                          );
+                        } catch (error) {
+                          alert("Erreur lors de l'annulation du trajet.");
+                        }
+                        }
+                      }}
+                      className="px-3 py-1 text-white rounded bg-customPink-100 hover:bg-customPink-80"
                       >
-                        Réservations
-                      </Link>
+                      Annuler
+                      </button>
                     </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="mt-4">
-              <Link
-                to="/dashboard/trajet/ajouter"
-                className="px-4 py-2 text-white rounded bg-customGreen-100 hover:bg-customGreen2-100"
-              >
-                Proposer un trajet
-              </Link>
+                    </tr>
+                  ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p>Vous n'avez pas encore proposé de trajet.</p>
+            )}
             </div>
-          </div>
-        ) : (
-          <p>Vous n'avez pas encore proposé de trajet.</p>
-        )}
-      </div>
-      {/* Modal modification trajet */}
-      {showTripModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-75 bg-primary-100">
-          <div className="w-3/4 p-6 overflow-y-auto bg-white rounded-lg shadow-lg h-3/4">
-            <h2 className="mb-4 text-xl font-semibold text-primary-100">Modifier mon trajet</h2>
-            {/* Ici, place ton formulaire de modification trajet avec tripToEdit */}
-            <button onClick={() => setShowTripModal(false)} className="mt-4 text-customPink-100 hover:text-customPink-80">Annuler</button>
-          </div>
-        </div>
-      )}
+            {/* Modal modification trajet */}
+      <EditTrajetModal
+        isOpen={showTripModal}
+        onClose={() => setShowTripModal(false)}
+        trajet={tripToEdit}
+        onTrajetUpdated={() => {
+          setShowTripModal(false);
+          // Optionnel: rafraîchir la liste des trajets ici si besoin
+        }}
+      />
 
       {/* Section 4: Réservations */}
       <div className="p-6 mb-6 bg-white rounded-lg shadow-md">

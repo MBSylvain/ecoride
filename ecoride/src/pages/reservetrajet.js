@@ -3,12 +3,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ReserverPage = () => {
-  // Correction de la faute de frappe dans le nom du paramètre
   const { trajetId } = useParams();
   const navigate = useNavigate();
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
 
-  // States pour les données et l'UI
   const [trajet, setTrajet] = useState(null);
   const [conducteur, setConducteur] = useState(null);
   const [placesRestantes, setPlacesRestantes] = useState(0);
@@ -22,69 +20,51 @@ const ReserverPage = () => {
     commentaire: "",
   });
 
-  // Récupération des données du trajet et du conducteur
   useEffect(() => {
     const fetchTrajetDetails = async () => {
       setIsLoading(true);
-      console.log("Tentative de chargement du trajet ID:", trajetId);
-      
-      // 1. Récupération des détails du trajet
       try {
-        
-        const trajetResponse  = await axios.get(`http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`);
-        
-        console.log("Réponse trajet:", trajetResponse.data);
-        
-        if (!trajetResponse.data) {
-          throw new Error("Aucune donnée reçue pour ce trajet");
-        }
-        
-        // Récupérer les données du trajet, quelle que soit la structure
+        const trajetResponse = await axios.get(
+          `http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`,
+          {
+            withCredentials: true,
+            responseType: "json",
+          }
+        );
+
         const trajetData = trajetResponse.data.trajet || trajetResponse.data.data || trajetResponse.data;
-        console.log("Données du trajet:", trajetData);
         setTrajet(trajetData);
-        
-        // 2. Récupération des détails du conducteur - CORRIGÉ
+
         const conducteur_Id = trajetData.utilisateur_id;
-        console.log("ID du conducteur:", conducteur_Id);
         if (conducteur_Id) {
-          const conducteurResponse = await axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${conducteur_Id}`);
-          
-          console.log("Réponse conducteur:", conducteurResponse.data);
+          const conducteurResponse = await axios.get(
+            `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${conducteur_Id}`,
+            {
+              withCredentials: true,
+              responseType: "json",
+            }
+          );
           const conducteurData = conducteurResponse.data.utilisateur || conducteurResponse.data;
           setConducteur(conducteurData);
         }
-        
-        // 3. Calcul des places restantes - CORRIGÉ
-                
+
         let placesOccupees = 0;
         if (trajetResponse.data) {
-          const reservations = Array.isArray(trajetResponse.data) 
+          const reservations = Array.isArray(trajetResponse.data)
             ? trajetResponse.data
-            : (trajetResponse.data.reservations || []);
-          
-          // Calcul des places réservées avec validation
+            : trajetResponse.data.reservations || [];
+
           placesOccupees = reservations
-            .filter(r => r.statut && r.statut.toLowerCase() !== "annulé" && r.statut.toLowerCase() !== "refusé")
+            .filter((r) => r.statut && r.statut.toLowerCase() !== "annulé" && r.statut.toLowerCase() !== "refusé")
             .reduce((sum, r) => sum + parseInt(r.nombre_places_reservees || 1), 0);
-          
-          // Vérifie si l'utilisateur connecté a déjà une réservation
-          const userReservation = reservations.find(r => r.utilisateur_id == utilisateur_id);
+
+          const userReservation = reservations.find((r) => r.utilisateur_id == utilisateur_id);
           setHasReservation(!!userReservation);
-        } else {
-          // Default if no reservation data
-          placesOccupees = 0;
         }
-        
-        // Calcul sécurisé des places restantes
+
         const totalPlaces = parseInt(trajetData.nombre_places || 0);
         setPlacesRestantes(Math.max(0, totalPlaces - placesOccupees));
       } catch (error) {
-        console.error("Erreur détaillée:", error);
-        if (error.response) {
-          console.error("Statut:", error.response.status);
-          console.error("Données:", error.response.data);
-        }
         setErrorMessage(`Erreur lors du chargement: ${error.message}`);
       } finally {
         setIsLoading(false);
@@ -94,7 +74,6 @@ const ReserverPage = () => {
     if (trajetId) {
       fetchTrajetDetails();
     } else {
-      console.error("Aucun ID de trajet fourni");
       setErrorMessage("Identifiant de trajet manquant");
       setIsLoading(false);
     }
@@ -119,32 +98,26 @@ const ReserverPage = () => {
       setErrorMessage(`Il n'y a pas assez de places disponibles. Places restantes: ${placesRestantes}`);
       return;
     }
-    
+
     try {
-      console.log("Tentative de création de réservation pour le trajet:", trajetId);
-      
-      
-      // Ajout de l'utilisateur_id dans la requête POST
-      const response = await axios.post(`http://localhost/api/Controllers/ReservationController.php`, {
-          
+      const response = await axios.post(
+        `http://localhost/api/Controllers/ReservationController.php`,
+        {
           utilisateur_id: utilisateur_id,
           trajet_id: trajetId,
           nombre_places_reservees: form.nombre_places,
           commentaire: form.commentaire,
           bagages: form.bagages ? 1 : 0,
-          
         },
         {
-          responseType: 'json',
-                  headers: {
-            "Content-Type": "application/json"
+          withCredentials: true,
+          responseType: "json",
+          headers: {
+            "Content-Type": "application/json",
           },
-          withCredentials: true
         }
       );
-      
-      console.log("Réponse de création de réservation:", response.data);
-      
+
       if (response.data && response.data.success) {
         setReservationSuccess(true);
         setHasReservation(true);
@@ -152,11 +125,6 @@ const ReserverPage = () => {
         setErrorMessage(response.data?.message || "Erreur lors de la création de la réservation");
       }
     } catch (error) {
-      console.error("Erreur détaillée lors de la réservation:", error);
-      if (error.response) {
-        console.error("Statut:", error.response.status);
-        console.error("Données:", error.response.data);
-      }
       setErrorMessage(`Erreur: ${error.message}`);
     }
   };

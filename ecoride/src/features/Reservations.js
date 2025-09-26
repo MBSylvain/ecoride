@@ -21,7 +21,8 @@ const ReservationsSection = () => {
       const response = await axios.get(
         `http://localhost/api/Controllers/ReservationController.php?&utilisateur_id=${utilisateur_id}`,
         {
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
         }
       );
       
@@ -74,8 +75,8 @@ const ReservationsSection = () => {
           utilisateur_id: utilisateur_id
         },
         {
-          headers: { 'Content-Type': 'application/json' }
-          // Retrait de withCredentials pour éviter les problèmes CORS
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
         }
       );
       

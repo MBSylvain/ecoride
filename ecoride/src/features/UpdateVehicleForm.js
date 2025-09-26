@@ -19,23 +19,23 @@ const EditVehicleForm = () => {
     image: '',
     description: ''
   });
-
-  console.log("ID de la voiture:", voitureId);
+  const [reponse, setReponse] = useState({});
+ 
 
   // Charger les données de la voiture uniquement au montage du composant
   useEffect(() => {
     const fetchVehicleData = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?${voitureId}`);
-        
-        if (response.data && response.data.length > 0) {
-          setFormData(response.data[0]);
-        } else if (response.data && response.data.data) {
-          setFormData(response.data.data);
-        } else {
-          setError('Véhicule non trouvé');
-        }
+        const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?voiture_id=${voitureId}`,
+          { withCredentials: true },
+          
+        );
+      // Vérifiaction de reponse
+        console.log('Données récupérées :', response);
+        console.log('Données récupérées :', response.data);
+        console.log('voiture id récupérées :', response.data.voiture_id);
+        setReponse(response);
       } catch (err) {
         console.error('Erreur lors du chargement des données:', err);
         setError('Erreur lors du chargement des données du véhicule');
@@ -53,22 +53,35 @@ const EditVehicleForm = () => {
       ...formData,
       [name]: value
     });
+    setReponse(prev => ({
+      ...prev,
+      data: {
+        ...prev.data,
+        [name]: value
+      }
+    }));
+  
   };
-
+  // Soumettre les données modifiées
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost/api/Controllers/VoitureController.php?${voitureId}`,
+        `http://localhost/api/Controllers/VoitureController.php?voiture_id=${voitureId}`,
         {
           ...formData,
           utilisateur_id: localStorage.getItem("utilisateur_id")
+        },
+        {
+          withCredentials: true,
+          headers: { 'Content-Type': 'application/json' }
         }
       );
 
       if (response.data.success) {
         alert('Véhicule mis à jour avec succès!');
-        navigate('/Carinfo'); // Redirection après succès
+        console.log('Réponse du serveur:', response.data);
+        navigate('/Dashboard'); // Redirection après succès
       } else {
         setError(response.data.message || 'Erreur lors de la mise à jour');
       }
@@ -86,17 +99,18 @@ const EditVehicleForm = () => {
       <h2 className="mb-4 text-xl font-semibold">Modifier ma voiture</h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="hidden" name="voiture_id" value={localStorage.getItem("voiture_id")} />
         <div>
           <label htmlFor="modele" className="block mb-1 font-medium">Modèle</label>
           <input
             type="text"
             id="modele"
             name="modele"
-            value={formData.modele}
+            value={reponse.data.modele }
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             required
-            placeholder="Ex: Renault Clio"
+            placeholder={formData.modele}
           />
         </div>
         
@@ -106,7 +120,7 @@ const EditVehicleForm = () => {
             type="text"
             id="immatriculation"
             name="immatriculation"
-            value={formData.immatriculation}
+            value={reponse.data.immatriculation}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             required
@@ -118,7 +132,7 @@ const EditVehicleForm = () => {
           <select
             id="energie"
             name="energie"
-            value={formData.energie}
+            value={reponse.data.energie}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             required
@@ -137,7 +151,7 @@ const EditVehicleForm = () => {
             type="text"
             id="couleur"
             name="couleur"
-            value={formData.couleur}
+            value={reponse.data.couleur}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             required
@@ -150,7 +164,7 @@ const EditVehicleForm = () => {
             type="number"
             id="nombre_places"
             name="nombre_places"
-            value={formData.nombre_places}
+            value={reponse.data.nombre_places}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             min="1"
@@ -165,7 +179,7 @@ const EditVehicleForm = () => {
             type="date"
             id="date_premiere_immatriculation"
             name="date_premiere_immatriculation"
-            value={formData.date_premiere_immatriculation}
+            value={reponse.data.date_premiere_immatriculation}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
           />
@@ -187,7 +201,7 @@ const EditVehicleForm = () => {
           <textarea
             id="description"
             name="description"
-            value={formData.description || ''}
+            value={reponse.data.description || ''}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             rows="4"
