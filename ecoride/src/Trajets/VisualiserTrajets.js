@@ -44,7 +44,10 @@ const VisualiserTrajets = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`);
+            const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+                { withCredentials: true },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
             // Si la réponse est un tableau directement
             if (Array.isArray(response.data)) {
                 setTrajets(response.data);
@@ -78,7 +81,10 @@ const VisualiserTrajets = () => {
       setReservationsLoading(true);
       setReservationsError(null);
       // 1. Charger infos conducteur
-      axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`)
+      axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`,
+        { withCredentials: true },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
         .then(res => {
           console.log('Réponse API conducteur:', res.data);
           // Vérifier si la réponse contient un objet utilisateur ou un tableau
@@ -101,7 +107,10 @@ const VisualiserTrajets = () => {
         .finally(() => setUserLoading(false));
 
       // 2. Charger les réservations du trajet
-      axios.get(`http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`)
+      axios.get(`http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`,
+        { withCredentials: true },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
         .then(res => {
           let reservationsList = [];
           if (res.data && Array.isArray(res.data)) {
@@ -113,7 +122,10 @@ const VisualiserTrajets = () => {
           // 3. Charger les infos utilisateurs pour chaque réservation
           if (reservationsList.length > 0) {
             Promise.all(reservationsList.map(r =>
-              axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`)
+              axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`,
+                { withCredentials: true },
+                { headers: { 'Content-Type': 'application/json' } }
+              )
                 .then(uRes => {
                   console.log('Réponse API passager:', uRes.data);
                   if (Array.isArray(uRes.data) && uRes.data.length > 0) {

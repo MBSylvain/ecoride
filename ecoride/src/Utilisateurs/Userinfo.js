@@ -14,11 +14,11 @@ const UserInfoSection = () => {
     setUserLoading(true);
     try {
       const response = await axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
-      {
+      {withCredentials: true,
         headers: {
           "Content-Type": "application/json"
         },
-        withCredentials: true
+        
       });
       
       setUser(response.data);

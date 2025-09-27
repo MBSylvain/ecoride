@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const ReservationsSection = () => {
   const navigate = useNavigate();
@@ -164,6 +165,7 @@ const ReservationsSection = () => {
                     >
                       Détails
                     </button>
+                    <Link to={`../VisualiserTrajet/${res.trajet_id}`}>Voir le trajet</Link> 
                     {res.statut.toLowerCase() !== "annulé" && res.statut.toLowerCase() !== "refusé" && (
                       <button 
                         onClick={() => handleCancelReservation(res.reservation_id)}
