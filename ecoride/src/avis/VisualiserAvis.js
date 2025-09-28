@@ -11,95 +11,80 @@ const VisualiserAvis = ({ utilisateurId }) => {
   const [submitting, setSubmitting] = useState(false);
   const [creator, setCreator] = useState(null);
 
-  // Charger les réservations passées de l'utilisateur
- useEffect(() => {
-  const fetchReservations = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(
-        `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateurId}`,
-        { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
-      );
+  // Charger les trajets passés
+  useEffect(() => {
+    const fetchReservations = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(
+          `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateurId}`,
+          { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+        );
 
-      if (Array.isArray(response.data)) {
-        // Filtrer les trajets passés
-        const now = new Date();
-        const pastReservations = response.data.filter((reservation) => {
-          const dateDepart = new Date(reservation.date_depart);
-          return dateDepart < now;
-        });
+        if (Array.isArray(response.data)) {
+          const now = new Date();
+          const pastReservations = response.data.filter((reservation) => {
+            const dateDepart = new Date(reservation.date_depart);
+            return dateDepart < now;
+          });
 
-        setTrajetsPasses(pastReservations);
-        console.log('Réservations passées récupérées :', pastReservations);
-      } else {
-        setTrajetsPasses([]);
+          setTrajetsPasses(pastReservations);
+          console.log('Réservations passées récupérées :', pastReservations);
+        } else {
+          setTrajetsPasses([]);
+        }
+      } catch (err) {
+        setError("Erreur lors du chargement des réservations");
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError("Erreur lors du chargement des réservations");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchReservations();
-}, [utilisateurId]);
+    fetchReservations();
+  }, [utilisateurId]);
 
- 
-
-  // Charger les avis pour un trajet sélectionné
+  // Charger les données du créateur et les avis pour un trajet sélectionné
   useEffect(() => {
     if (selectedTrajet) {
-      const fetchAvis = async () => {
+      const fetchData = async () => {
         setLoading(true);
         setError(null);
         try {
-          const response = await axios.get(
+          // Charger les données du créateur
+          const creatorResponse = await axios.get(
+            `http://localhost/api/Controllers/TrajetController.php?trajet_id=${selectedTrajet.trajet_id}`,
+            { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+          );
+
+          if (creatorResponse.data) {
+            setCreator(creatorResponse.data);
+            console.log('Données du créateur récupérées :', creatorResponse.data);
+          } else {
+            setCreator(null);
+          }
+
+          // Charger les avis
+          const avisResponse = await axios.get(
             `http://localhost/api/Controllers/AvisController.php?trajet_id=${selectedTrajet.trajet_id}`,
             { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
           );
-          if (Array.isArray(response.data)) {
-            setAvis(response.data);
+
+          if (Array.isArray(avisResponse.data)) {
+            setAvis(avisResponse.data);
           } else {
             setAvis([]);
           }
         } catch (err) {
-          setError("Erreur lors du chargement des avis");
+          setError("Erreur lors du chargement des données");
           console.error(err);
         } finally {
           setLoading(false);
         }
       };
-      fetchAvis();
-    }
-  }, [selectedTrajet]);
 
-   // Charger les données du créateur du trajet
-  useEffect(() => {
-    if (selectedTrajet) {
-      const fetchCreator = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const response = await axios.get(
-            `http://localhost/api/Controllers/TrajetController.php?trajet_id=${selectedTrajet.trajet_id}`,
-            { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
-          );
-          if (response.data) {
-            setCreator(response.data);
-            console.log('Données du créateur récupérées :', response.data);
-          } else {
-            setCreator(null);
-          }
-        } catch (err) {
-          setError("Erreur lors du chargement des données du créateur");
-          console.error(err);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchCreator();
+      fetchData();
     }
   }, [selectedTrajet]);
 
@@ -203,26 +188,6 @@ const VisualiserAvis = ({ utilisateurId }) => {
                 name="commentaire"
               ></textarea>
             </div>
-            <input
-              type="hidden"
-              name="auteur_id"
-              value={localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id")}
-            />
-            <input
-              type="hidden"
-              name="destinataire_id"
-              value={creator.utilisateur_id || selectedTrajet.conducteur_id || ""}
-            />
-            <input
-              type="hidden"
-              name="trajet_id"
-              value={selectedTrajet.trajet_id}
-            />
-            <input
-              type="hidden"
-              name="statut"
-              value={newAvis.statut || 'publié'}
-            />
             <button
               type="submit"
               disabled={submitting}

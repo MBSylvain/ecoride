@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import checkAuth from "../features/checkAuth";
+import axios from "axios";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -24,29 +26,92 @@ const Header = () => {
     verifyAuth();
   }, []);
 
+  useEffect(() => {
+    // Met à jour la barre de navigation lorsque l'état d'authentification change
+    console.log("État d'authentification mis à jour :", isAuthenticated);
+  }, [isAuthenticated]);
+
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost/api/Controllers/checkAuth.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ action: "logout" }),
-      });
+        console.log('Tentative de déconnexion avec Axios...');
+        
+        const response = await axios.post('http://localhost/api/Controllers/checkAuth.php', {
+            action: 'logout'
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            timeout: 5000 // Timeout de 5 secondes
+        });
 
-      const result = await response.json();
-      if (result.success) {
-        localStorage.removeItem("utilisateur_id");
-        sessionStorage.clear();
-        setIsAuthenticated(false);
-        navigate("/");
-      } else {
-        console.error("Erreur lors de la déconnexion :", result.message);
-      }
+        console.log('Réponse Axios reçue:', response);
+
+        // Avec Axios, les données sont directement dans response.data
+        if (response.data.success) {
+            // Déconnexion réussie
+            setUser(null);
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+            setIsAuthenticated(false); // Met à jour l'état d'authentification
+            
+            // Utilisation de navigate pour rediriger sans recharger la page
+            navigate('/login');
+        } else {
+            throw new Error(response.data.message || 'Déconnexion échouée');
+        }
+
     } catch (error) {
-      console.error("Erreur réseau lors de la déconnexion :", error);
+        console.error('Erreur détaillée lors de la déconnexion:', error);
+        
+        // Gestion spécifique des erreurs Axios
+        if (axios.isAxiosError(error)) {
+            if (error.code === 'ECONNABORTED') {
+                alert('La déconnexion a pris trop de temps. Veuillez réessayer.');
+            } else if (error.response) {
+                // Erreur HTTP avec réponse
+                console.error('Status:', error.response.status);
+                console.error('Data:', error.response.data);
+                alert(`Erreur serveur: ${error.response.data.message || error.response.status}`);
+            } else if (error.request) {
+                // Pas de réponse reçue
+                alert('Impossible de contacter le serveur. Vérifiez votre connexion.');
+            } else {
+                // Erreur de configuration
+                alert('Erreur de configuration: ' + error.message);
+            }
+        } else {
+            // Erreur non-Axios
+            alert('Erreur lors de la déconnexion: ' + error.message);
+        }
+        
+        // Fallback: nettoyage côté client
+        setUser(null);
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
     }
-  };
+};
+
+const handleLogin = async (credentials) => {
+  try {
+    const response = await axios.post("http://localhost/api/Controllers/login.php", credentials, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+
+    if (response.data.success) {
+      const userData = response.data.user; // Supposons que l'API renvoie les données utilisateur
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      setIsAuthenticated(true); // Met à jour l'état d'authentification
+      navigate("/dashboard"); // Redirige vers le tableau de bord
+    } else {
+      alert("Connexion échouée : " + response.data.message);
+    }
+  } catch (error) {
+    console.error("Erreur lors de la connexion :", error);
+    alert("Une erreur est survenue lors de la connexion.");
+  }
+};
 
   const closeMenu = () => setIsOpen(false);
 
