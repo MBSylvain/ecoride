@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+ // Import des composants pour les pages
 import Accueil from "./pages/accueil";
 import Aboutus from "./pages/Aboutus";
 import Login from "./pages/login";
@@ -11,17 +12,27 @@ import SearchPages from "./pages/SearchPage";
 import Contact from "./pages/contact";
 import Help from "./pages/Helpcenter";
 import Privaty from "./pages/privaty";
+
 import TestApi from "./pages/testapi";
 import Dashboard from "./pages/Dashboard";
 import Userinfo from "./Utilisateurs/Userinfo";
-import Carinfo from "./features/Carinfo";
-import UpdateVehicleForm from "./features/UpdateVehicleForm";
+
 import Trajetinfo from "./features/Trajetinfo";
 import Reservations from "./Reservations/Reservations";
 import Reservetrajet from "./pages/reservetrajet";
 import VisualiserTrajet from "./Trajets/VisualiserTrajets";
 import Reservation from "./Reservations/ReservationUser";
 import VisualiserReservations from "./Reservations/VisualiserReservations";
+
+// Import des composants pour la gestion des avis
+import AjouterAvisModal from "./avis/AjouterAvisModal";
+import VisualiserAvis from "./avis/VisualiserAvis";
+
+// Import des composants pour la gestion des voitures
+import Carinfo from "./features/Carinfo";
+import UpdateVehicleForm from "./features/UpdateVehicleForm";
+import VoitureUser from "./Voitures/VoitureUser";
+// Import des composants pour la gestion des réservations
 
 // Import des composants pour la gestion des trajets
 import TrajetUser from "./Trajets/TrajetUser";
@@ -46,10 +57,10 @@ function App() {
           {/* Routes pour la gestion des utilisateurs */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/testapi" element={<TestApi />} />
           <Route path="/Userinfo" element={<Userinfo />} />
           
+          <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/Trajetinfo" element={<Trajetinfo />} />
           <Route path="/reservetrajet/:trajetId" element={<Reservetrajet />} />
@@ -57,11 +68,14 @@ function App() {
           <Route path="/reservation/:trajetId" element={<Reservation />} />
 
           {/* Routes pour la gestion des Voiture */}
+          <Route path="/VoitureUser" element={<VoitureUser />} />
           <Route path="/Carinfo" element={<Carinfo />} />
           <Route path="/UpdateVehicleForm/:voitureId" element={<UpdateVehicleForm />} />
 
 
           {/* Routes pour la gestion des Avis */}
+          <Route path="/VisualiserAvis" element={<VisualiserAvis />} />
+          <Route path="/AjouterAvisModal" element={<AjouterAvisModal />} />
 
           {/* Routes pour la gestion des Réservations */}
           <Route path="/Reservations" element={<Reservations />} />

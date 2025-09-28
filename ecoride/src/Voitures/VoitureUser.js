@@ -18,7 +18,9 @@ const VoitureUser = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`
+          `http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`,
+          { withCredentials: true },
+          { headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(response.data || []);
       } catch (error) {
@@ -38,7 +40,9 @@ const VoitureUser = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')) {
       try {
         await axios.delete(
-          `http://localhost/api/Controllers/VoitureController.php?voiture_id=${vehicleId}`
+          `http://localhost/api/Controllers/VoitureController.php?voiture_id=${vehicleId}`,
+          { withCredentials: true },
+          { headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(vehicles.filter((vehicle) => vehicle.voiture_id !== vehicleId));
       } catch (error) {
@@ -76,7 +80,7 @@ const VoitureUser = () => {
                 <td>{vehicle.energie}</td>
                 <td>
                   <button
-                    onClick={() => handleEdit(vehicle)}
+                    onClick={() => handleEdit(vehicle.voiture_id)}
                     className="px-2 py-1 text-white bg-blue-500 rounded"
                   >
                     Modifier

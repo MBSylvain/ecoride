@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Modal from './Modal'; // Assurez-vous que ce chemin est correct
+import Modal from '../features/Modal'; // Assurez-vous que ce chemin est correct
 
 const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
   const { voitureId } = useParams();

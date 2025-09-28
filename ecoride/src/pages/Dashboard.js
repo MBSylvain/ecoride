@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import EditUserModal from "../features/EditUserModal";
-import EditVehicleModal from "../features/EditVehicleModal";
+import EditVehicleModal from "../Voitures/EditVehicleModal";
 import EditTrajetModal from "../features/EditTrajetModal";
 import CreateTrajetModal from "../features/CreateTrajetModal";
 import checkAuth from "../features/checkAuth";
