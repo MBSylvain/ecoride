@@ -185,9 +185,9 @@ const SearchPage = () => {
 
                 <div className="flex mb-4">
                   <div className="mr-4">
-                    <div className="w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+                    <div className="w-2 h-2 mt-2 bg-green-500 rounded-full"> <p className="m-2">Départ</p></div>
                     <div className="w-0.5 h-10 mx-auto bg-gray-300"></div>
-                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-red-500 rounded-full"> <p className="m-2">Arrivée</p></div>
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">{trajet.ville_depart}</p>
@@ -198,7 +198,7 @@ const SearchPage = () => {
                 <div className="pt-4 mt-4 border-t border-gray-200">
                   <button
   onClick={() => handleReservation(trajet.trajet_id)}
-  className="inline-block w-full py-2 text-center text-white rounded bg-primary-100 hover:bg-pink-100"
+              className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 md:w-auto"
 >
   Réserver
 </button>
