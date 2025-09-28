@@ -19,8 +19,7 @@ import Userinfo from "./Utilisateurs/Userinfo";
 
 import Trajetinfo from "./features/Trajetinfo";
 import Reservations from "./Reservations/Reservations";
-import Reservetrajet from "./pages/reservetrajet";
-import VisualiserTrajet from "./Trajets/VisualiserTrajets";
+
 import Reservation from "./Reservations/ReservationUser";
 import VisualiserReservations from "./Reservations/VisualiserReservations";
 
@@ -30,7 +29,7 @@ import VisualiserAvis from "./avis/VisualiserAvis";
 
 // Import des composants pour la gestion des voitures
 import Carinfo from "./features/Carinfo";
-import UpdateVehicleForm from "./features/UpdateVehicleForm";
+import UpdateVehicleForm from "./Voitures/UpdateVehicleForm";
 import VoitureUser from "./Voitures/VoitureUser";
 // Import des composants pour la gestion des réservations
 
@@ -38,6 +37,9 @@ import VoitureUser from "./Voitures/VoitureUser";
 import TrajetUser from "./Trajets/TrajetUser";
 import CreateTrajetModal from "./Trajets/CreateTrajetModal";
 import EditTrajetModal from "./Trajets/EditTrajetModal";
+
+import Reservetrajet from "./Trajets/reservetrajet";
+import VisualiserTrajet from "./Trajets/VisualiserTrajets";
 
 
 function App() {

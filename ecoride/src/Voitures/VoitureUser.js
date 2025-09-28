@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import CreateVehicleModal from './CreateVehicleModal';
 import EditVehicleModal from './EditVehicleModal';
+import { Link } from 'react-router-dom';
 
 const VoitureUser = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -11,6 +13,7 @@ const VoitureUser = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   const utilisateur_id = localStorage.getItem('utilisateur_id');
+  const navigate = useNavigate();
 
   // Fetch vehicles
   useEffect(() => {
@@ -55,6 +58,9 @@ const VoitureUser = () => {
   const handleEdit = (vehicle) => {
     setSelectedVehicle(vehicle);
     setShowEditModal(true);
+
+    // Ajouter voiture_id dans l'URL
+    navigate(`/vehicles/edit/${vehicle.voiture_id}`);
   };
 
   return (
@@ -80,10 +86,10 @@ const VoitureUser = () => {
                 <td>{vehicle.energie}</td>
                 <td>
                   <button
-                    onClick={() => handleEdit(vehicle.voiture_id)}
+                  
                     className="px-2 py-1 text-white bg-blue-500 rounded"
                   >
-                    Modifier
+                   <Link to={`/UpdateVehicleForm/${vehicle.voiture_id}`}>Modifier</Link>
                   </button>
                   <button
                     onClick={() => handleDelete(vehicle.voiture_id)}
@@ -117,7 +123,10 @@ const VoitureUser = () => {
       {showEditModal && selectedVehicle && (
         <EditVehicleModal
           isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
+          onClose={() => {
+            setShowEditModal(false);
+            navigate('/vehicles'); // Retirer voiture_id de l'URL
+          }}
           onVehicleUpdated={(updatedVehicle) => {
             setVehicles(
               vehicles.map((vehicle) =>
@@ -125,7 +134,7 @@ const VoitureUser = () => {
               )
             );
           }}
-          vehicle={selectedVehicle}
+          vehicle={selectedVehicle} // Passez l'objet complet
         />
       )}
     </div>

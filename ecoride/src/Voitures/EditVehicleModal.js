@@ -128,6 +128,8 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
           type="hidden"
           name="utilisateur_id"
           value={formData.utilisateur_id}
+          onChange={handleChange}
+
         />
         <input
           type="hidden"

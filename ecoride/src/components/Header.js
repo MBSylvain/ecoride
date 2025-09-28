@@ -94,7 +94,7 @@ const Header = () => {
               { to: "/search", label: "Recherche un trajet" },
               { to: "/contact", label: "Contact" },
               { to: "/helpcenter", label: "Aide" },
-              { to: "/privacy", label: "Confidentialité" },
+              { to: "/privaty", label: "Confidentialité" },
             ].map((link) => (
               <li key={link.to}>
                 <Link 

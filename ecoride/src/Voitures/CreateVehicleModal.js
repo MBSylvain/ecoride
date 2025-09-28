@@ -25,15 +25,15 @@ const CreateVehicleModal = ({ isOpen, onClose, onVehicleCreated }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        'http://localhost/api/Controllers/VoitureController.php',
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        },
-        {
-          ...formData,
-          utilisateur_id: localStorage.getItem('utilisateur_id'),
-        }
+      'http://localhost/api/Controllers/VoitureController.php',
+      {
+        ...formData,
+        utilisateur_id: localStorage.getItem('utilisateur_id'),
+      },
+      {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json' },
+      }
       );
       onVehicleCreated(response.data);
       onClose();
