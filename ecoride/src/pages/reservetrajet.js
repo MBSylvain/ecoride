@@ -24,6 +24,7 @@ const ReserverPage = () => {
     const fetchTrajetDetails = async () => {
       setIsLoading(true);
       try {
+        // Récupérer les détails du trajet
         const trajetResponse = await axios.get(
           `http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`,
           {
@@ -31,10 +32,10 @@ const ReserverPage = () => {
             responseType: "json",
           }
         );
-
+        console.log("Données du trajet :", trajetResponse.data);
         const trajetData = trajetResponse.data.trajet || trajetResponse.data.data || trajetResponse.data;
         setTrajet(trajetData);
-
+        // Récupérer les informations du conducteur
         const conducteur_Id = trajetData.utilisateur_id;
         if (conducteur_Id) {
           const conducteurResponse = await axios.get(
@@ -47,7 +48,7 @@ const ReserverPage = () => {
           const conducteurData = conducteurResponse.data.utilisateur || conducteurResponse.data;
           setConducteur(conducteurData);
         }
-
+        // Calculer les places restantes
         let placesOccupees = 0;
         if (trajetResponse.data) {
           const reservations = Array.isArray(trajetResponse.data)
@@ -87,7 +88,7 @@ const ReserverPage = () => {
     }));
     setErrorMessage("");
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.nombre_places < 1) {
