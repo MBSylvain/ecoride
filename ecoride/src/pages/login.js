@@ -11,6 +11,7 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userRoleLocal, setUserRoleLocal] = useState(localStorage.getItem("user.role"));
 
   // Vérification de l'authentification lors du montage du composant
   useEffect(() => {
@@ -22,11 +23,15 @@ const LoginPage = () => {
         );
 
         if (response.data.authenticated) {
-          // Si l'utilisateur est déjà authentifié, redirigez-le vers le tableau de bord
-          navigate("/Dashboard");
+          const user = response.data.user;
+          if (user.role === "Administrateur" || user.role === "Modérateur") {
+            navigate("/AdmEmp/dashboardAdmin");
+          } else if (user.role === "Passager" || user.role === "Conducteur") {
+            navigate("/Dashboard");
+          }
         }
       } catch (err) {
-        console.error("Erreur lors de la vérification de l'authentification:", err);
+        console.error("Erreur lors de la vérification de l'authentification :", err);
       }
     };
 
@@ -69,16 +74,28 @@ const LoginPage = () => {
       console.log("Réponse complète:", response.data);
       const data = response.data;
 
-      if (data.success === true || data.success === "true" || data.success === 1) {
-        if (data.user) {
-          localStorage.setItem("utilisateur_id", data.user.id);
-          localStorage.setItem("user_info", JSON.stringify(data.utilisateur));
-          navigate("/Dashboard"); // Utilisation de navigate pour la redirection
+      if (data.success) {
+        const { utilisateur } = data;
+
+        if (utilisateur) {
+          setUserRoleLocal(utilisateur.role);
+          localStorage.setItem("utilisateur_id", utilisateur.id);
+          localStorage.setItem("user_info", JSON.stringify(utilisateur));
+          localStorage.setItem("user.role", utilisateur.role);
+
+          // Redirection basée sur le rôle
+          if (utilisateur.role === "Administrateur" || utilisateur.role === "Modérateur") {
+            navigate("/AdmEmp/dashboardAdmin");
+          } else if (utilisateur.role === "Passager" || utilisateur.role === "Conducteur") {
+            navigate("/Dashboard");
+          } else {
+            setApiError("Rôle utilisateur inconnu. Veuillez contacter l'administrateur.");
+          }
         } else {
-          setApiError("Données utilisateur manquantes dans la réponse");
+          setApiError("Données utilisateur manquantes dans la réponse.");
         }
       } else {
-        setApiError(data.error || "Erreur non spécifiée");
+        setApiError(data.error || "Erreur non spécifiée.");
       }
     } catch (err) {
       console.error("Erreur complète:", err);
@@ -88,20 +105,7 @@ const LoginPage = () => {
     }
   };
 
-// récupération des informations de session pour la redirection
-  useEffect(() => {
-    const utilisateurId = localStorage.getItem("utilisateur_id");
-    const userRoleLocal = localStorage.getItem("user.role");
-    const userRoleSession = sessionStorage.getItem("user.role");
 
-    if (
-      utilisateurId &&
-      (userRoleLocal === "administrateur" || userRoleSession === "employer")
-    ) {
-      navigate("/AdmEmp/dashboardAdmin");
-    }
-  }, [navigate]);
-  
 
   return (
     <div className="flex flex-col min-h-screen md:flex-row">
