@@ -88,8 +88,10 @@ const LoginPage = () => {
     }
   };
 
-// récupération des information de session pour la redirection 
-
+// récupération des information de session pour la redirection
+  if (localStorage.getItem("utilisateur_id") && localStorage.getItem("user.role") === "administrateur" || sessionStorage.getItem("user.role") === "employer") {
+    navigate("/AdmEmp/dashboardAdmin");
+  }
 
   return (
     <div className="flex flex-col min-h-screen md:flex-row">

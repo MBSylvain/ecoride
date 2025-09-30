@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+
  // Import des composants pour les pages
 import Accueil from "./pages/accueil";
 import Aboutus from "./pages/Aboutus";
@@ -18,10 +19,9 @@ import Dashboard from "./pages/Dashboard";
 import Userinfo from "./Utilisateurs/Userinfo";
 
 import Trajetinfo from "./features/Trajetinfo";
-import Reservations from "./Reservations/Reservations";
-
-import Reservation from "./Reservations/ReservationUser";
-import VisualiserReservations from "./Reservations/VisualiserReservations";
+// Import des composants pour la gestion des administrateurs
+import AdminDashboard from "./AdmEmp/dashboardAdmin";
+import Statistiques from "./AdmEmp/Statistiques";
 
 // Import des composants pour la gestion des avis
 import AjouterAvisModal from "./avis/AjouterAvisModal";
@@ -31,16 +31,18 @@ import VisualiserAvis from "./avis/VisualiserAvis";
 import Carinfo from "./features/Carinfo";
 import UpdateVehicleForm from "./Voitures/UpdateVehicleForm";
 import VoitureUser from "./Voitures/VoitureUser";
-// Import des composants pour la gestion des réservations
 
 // Import des composants pour la gestion des trajets
 import TrajetUser from "./Trajets/TrajetUser";
 import CreateTrajetModal from "./Trajets/CreateTrajetModal";
 import EditTrajetModal from "./Trajets/EditTrajetModal";
-
-import Reservetrajet from "./Trajets/reservetrajet";
 import VisualiserTrajet from "./Trajets/VisualiserTrajets";
 
+// Import des composants pour la gestion des réservations
+import Reservetrajet from "./Trajets/reservetrajet";
+import Reservation from "./Reservations/ReservationUser";
+import Reservations from "./Reservations/Reservations";
+import VisualiserReservations from "./Reservations/VisualiserReservations";
 
 function App() {
   return (
@@ -55,6 +57,9 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/helpcenter" element={<Help />} />
           <Route path="/privaty" element={<Privaty />} />
+          {/* Routes pour la gestion des administrateurs */}
+          <Route path="/AdmEmp/dashboardAdmin" element={<AdminDashboard />} />
+          <Route path="/AdmEmp/statistiques" element={<Statistiques />} />
 
           {/* Routes pour la gestion des utilisateurs */}
           <Route path="/login" element={<Login />} />
