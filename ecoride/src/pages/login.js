@@ -88,10 +88,20 @@ const LoginPage = () => {
     }
   };
 
-// récupération des information de session pour la redirection
-  if (localStorage.getItem("utilisateur_id") && localStorage.getItem("user.role") === "administrateur" || sessionStorage.getItem("user.role") === "employer") {
-    navigate("/AdmEmp/dashboardAdmin");
-  }
+// récupération des informations de session pour la redirection
+  useEffect(() => {
+    const utilisateurId = localStorage.getItem("utilisateur_id");
+    const userRoleLocal = localStorage.getItem("user.role");
+    const userRoleSession = sessionStorage.getItem("user.role");
+
+    if (
+      utilisateurId &&
+      (userRoleLocal === "administrateur" || userRoleSession === "employer")
+    ) {
+      navigate("/AdmEmp/dashboardAdmin");
+    }
+  }, [navigate]);
+  
 
   return (
     <div className="flex flex-col min-h-screen md:flex-row">
