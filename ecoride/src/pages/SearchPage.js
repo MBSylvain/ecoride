@@ -9,6 +9,7 @@ const SearchPage = () => {
     ville_depart: "",
     ville_arrivee: "",
     date_depart: "",
+    motorisation: "",
   });
   const [trajets, setTrajets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +43,14 @@ const SearchPage = () => {
         queryParams.append("ville_arrivee", searchParams.ville_arrivee);
       if (searchParams.date_depart)
         queryParams.append("date_depart", searchParams.date_depart);
+      if (searchParams.prix_max)
+        queryParams.append("prix_max", searchParams.prix_max);
+      if (searchParams.duree_max)
+        queryParams.append("duree_max", searchParams.duree_max);
+      if (searchParams.note_min)
+        queryParams.append("note_min", searchParams.note_min);
+      if (searchParams.ecologique)
+        queryParams.append("ecologique", "1");
 
       const response = await axios.get(
         `http://localhost/api/Controllers/TrajetController.php?${queryParams.toString()}`,
@@ -49,12 +58,13 @@ const SearchPage = () => {
       );
 
       if (response.data && typeof response.data === "object") {
-        if (response.data.trajets) {
+        if (response.data.data.trajets) {
           setTrajets(
-            Array.isArray(response.data.trajets) ? response.data.trajets : []
+            Array.isArray(response.data.data.trajets) ? response.data.data.trajets : []
           );
+          console.log("Trajets récupérés:", response.data.data.trajets);
         } else {
-          setTrajets(Array.isArray(response.data) ? response.data : []);
+          setTrajets(Array.isArray(response.data.data) ? response.data.data : []);
         }
       } else {
         setTrajets([]);
@@ -120,6 +130,42 @@ const SearchPage = () => {
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg"
             />
+            <input
+              type="number"
+              name="prix_max"
+              value={searchParams.prix_max || ""}
+              onChange={handleChange}
+              placeholder="Prix max (€)"
+              className="w-full p-3 border border-gray-300 rounded-lg"
+            />
+            <input
+              type="number"
+              name="duree_max"
+              value={searchParams.duree_max || ""}
+              onChange={handleChange}
+              placeholder="Durée max (h)"
+              className="w-full p-3 border border-gray-300 rounded-lg"
+            />
+            <input
+              type="number"
+              name="note_min"
+              value={searchParams.note_min || ""}
+              onChange={handleChange}
+              placeholder="Note min conducteur"
+              min={1}
+              max={5}
+              className="w-full p-3 border border-gray-300 rounded-lg"
+            />
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="ecologique"
+                checked={searchParams.ecologique || false}
+                onChange={e => setSearchParams({ ...searchParams, ecologique: e.target.checked })}
+                className="mr-2"
+              />
+              Véhicule écologique (électrique)
+            </label>
             <button
               type="submit"
               className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 md:w-auto"
