@@ -93,6 +93,18 @@ const SearchPage = () => {
     const parts = dateString.split(" ");
     return parts.length > 1 ? parts[1].substring(0, 5) : "";
   };
+  // Calculer la durée du trajet
+  const getTrajetDuration = (heure_depart, heure_arrivee) => {
+  if (!heure_depart || !heure_arrivee) return null;
+  const [h1, m1] = heure_depart.split(':').map(Number);
+  const [h2, m2] = heure_arrivee.split(':').map(Number);
+  let minutes = (h2 * 60 + m2) - (h1 * 60 + m1);
+  if (minutes < 0) minutes += 24 * 60; // gestion des trajets de nuit
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours}h${mins > 0 ? ` ${mins}min` : ''}`;
+};
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -229,11 +241,65 @@ const SearchPage = () => {
                   </div>
                 </div>
 
+                {/* Infos conducteur */}
+                <div className="flex items-center mb-2">
+                  {trajet.photo && (
+                    <img
+                      src={trajet.photo}
+                      alt="Conducteur"
+                      className="w-8 h-8 mr-2 rounded-full"
+                    />
+                  )}
+                  <span className="ml-2 text-gray-500">Conducteur : </span>
+                  <span className="m-10 font-semibold">{trajet.conducteur_pseudo}</span>
+                  {trajet.note_conducteur && (
+                    <span className="ml-2 text-yellow-500">
+                      ★ {Number(trajet.note_conducteur).toFixed(1)}
+                    </span>
+                  )}
+                </div>
+                <div className="mb-2 text-sm text-gray-600">
+                  {trajet.marque && (
+                    <span>
+                      <strong>Véhicule :</strong> {trajet.marque}
+                    </span>
+                  )}
+                </div>
+                {(trajet.energie === "electrique" || trajet.energie === "hybride") && (
+                  <div className="flex items-center mb-2">
+                    <span
+                      title="Véhicule écologique"
+                      className="inline-flex items-center px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-1 text-green-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M10 2a1 1 0 01.993.883L11 3v2h2a1 1 0 01.117 1.993L13 7h-2v2a1 1 0 01-1.993.117L9 9V7H7a1 1 0 01-.117-1.993L7 5h2V3a1 1 0 01.883-.993L10 2z"/>
+                      </svg>
+                      Écologique
+                    </span>
+                  </div>
+                )}
+                {/* Itinéraire */}               
+
                 <div className="flex mb-4">
+                  <div className="m-5 text-sm text-gray-600">
+                    {trajet.heure_depart && trajet.heure_arrivee && (
+                   <span>
+                    <strong>Durée :</strong> {getTrajetDuration(trajet.heure_depart, trajet.heure_arrivee)}
+                  </span>
+                  )}
+                  </div>
                   <div className="mr-4">
-                    <div className="w-2 h-2 mt-2 bg-green-500 rounded-full"> <p className="m-2">Départ</p></div>
+                    <div className="w-2 h-2 mt-2 bg-green-500 rounded-full">
+                      <p className="m-2">Départ</p>
+                    </div>
                     <div className="w-0.5 h-10 mx-auto bg-gray-300"></div>
-                    <div className="w-2 h-2 bg-red-500 rounded-full"> <p className="m-2">Arrivée</p></div>
+                    <div className="w-2 h-2 bg-red-500 rounded-full">
+                      <p className="m-2">Arrivée</p>
+                    </div>
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">{trajet.ville_depart}</p>
@@ -243,11 +309,11 @@ const SearchPage = () => {
 
                 <div className="pt-4 mt-4 border-t border-gray-200">
                   <button
-  onClick={() => handleReservation(trajet.trajet_id)}
-              className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 md:w-auto"
->
-  Réserver
-</button>
+                    onClick={() => handleReservation(trajet.trajet_id)}
+                    className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 md:w-auto"
+                  >
+                    Réserver
+                  </button>
                 </div>
               </div>
             ))}
