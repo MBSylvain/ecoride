@@ -12,7 +12,11 @@ const LoginPage = () => {
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userRoleLocal, setUserRoleLocal] = useState(localStorage.getItem("user.role"));
+  const [userRole, setUserRole] = useState(null);
+  const [data, setData] = useState({});
 
+
+  
   // Vérification de l'authentification lors du montage du composant
   useEffect(() => {
     const checkAuth = async () => {
@@ -21,14 +25,25 @@ const LoginPage = () => {
           "http://localhost/api/Controllers/CheckAuth.php",
           { withCredentials: true }
         );
-
+        
         if (response.data.authenticated) {
+          // nettoyage du localStorage avant de stocker les informations de session
+          localStorage.clear();
+          console.log('localStorage après clear:', { ...localStorage });
           const user = response.data.user;
-          if (user.role === "Administrateur" || user.role === "Modérateur") {
-            navigate("/AdmEmp/dashboardAdmin");
-          } else if (user.role === "Passager" || user.role === "Conducteur") {
-            navigate("/Dashboard");
-          }
+          
+          // Requette de destruction de session cote serveur
+          await axios.post(
+            "http://localhost/api/Controllers/logout.php",
+            {},
+            { withCredentials: true }
+          );
+          // stocker les informations de session dans le localStorage
+          localStorage.setItem("utilisateur_id", user.id);
+          localStorage.setItem("user.email", user.email);
+          localStorage.setItem("user.role", user.role);
+
+          setUserRole(user.role);
         }
       } catch (err) {
         console.error("Erreur lors de la vérification de l'authentification :", err);
@@ -37,13 +52,13 @@ const LoginPage = () => {
 
     checkAuth();
   }, [navigate]);
-
+  // Ecoute changement du formulaire
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
     setApiError("");
   };
-
+  // Validation du formulaire
   const validate = () => {
     const newErrors = {};
     if (!formData.email) newErrors.email = "L'email est requis";
@@ -60,50 +75,44 @@ const LoginPage = () => {
     setApiError("");
 
     try {
-      const response = await axios.post(
-        "http://localhost/api/Controllers/UtilisateurController.php",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-
-      console.log("Réponse complète:", response.data);
-      const data = response.data;
-
-      if (data.success) {
-        const { utilisateur } = data;
-
-        if (utilisateur) {
-          setUserRoleLocal(utilisateur.role);
-          localStorage.setItem("utilisateur_id", utilisateur.id);
-          localStorage.setItem("user_info", JSON.stringify(utilisateur));
-          localStorage.setItem("user.role", utilisateur.role);
-
-          // Redirection basée sur le rôle
-          if (utilisateur.role === "Administrateur" || utilisateur.role === "Modérateur") {
-            navigate("/AdmEmp/dashboardAdmin");
-          } else if (utilisateur.role === "Passager" || utilisateur.role === "Conducteur") {
-            navigate("/Dashboard");
-          } else {
-            setApiError("Rôle utilisateur inconnu. Veuillez contacter l'administrateur.");
-          }
-        } else {
-          setApiError("Données utilisateur manquantes dans la réponse.");
-        }
-      } else {
-        setApiError(data.error || "Erreur non spécifiée.");
-      }
-    } catch (err) {
-      console.error("Erreur complète:", err);
-      setApiError(err.response?.data?.error || "Erreur de connexion au serveur");
-    } finally {
-      setIsSubmitting(false);
+  const response = await axios.post(
+    "http://localhost/api/Controllers/UtilisateurController.php",
+    formData,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
     }
-  };
+  );
+
+  console.log("Réponse complète:", response.data);
+  
+  const userData = response.data;
+  const userRole = userData.user?.role;
+
+  if (userRole) {
+    setData(userData);
+    setUserRole(userRole);
+    console.log("Rôle utilisateur:", userRole);
+    
+    // Redirection basée sur le rôle
+    if (userRole === "Administrateur" || userRole === "Modérateur") {
+      navigate("/AdmEmp/dashboardAdmin");
+    } else if (userRole === "Passager" || userRole === "Conducteur") {
+      navigate("/Dashboard");
+    } else {
+      setApiError("Rôle utilisateur inconnu. Veuillez contacter l'administrateur.");
+    }
+  } else {
+    setApiError("Rôle utilisateur manquant dans la réponse.");
+  }
+} catch (err) {
+  console.error("Erreur complète:", err);
+  setApiError(err.response?.data?.error || "Erreur de connexion au serveur");
+} finally {
+  setIsSubmitting(false);
+}}
 
 
 
