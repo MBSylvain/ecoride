@@ -4,82 +4,106 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } fro
 
 const Statistiques = () => {
   const [stats, setStats] = useState(null);
+  const [error, setError] = useState(null);
+  const [trajetsParJour, setTrajetsParJour] = useState([]);
 
-  // Couleurs pour les graphiques
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-  // Récupérer les statistiques depuis l'API
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get("http://localhost/api/Controllers/getStats.php");
-        setStats(response.data); // Les données doivent être formatées côté serveur
+        const response = await axios.get("http://localhost/api/Controllers/StatistiqueController.php?action=vue_admin", {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        });
+        setStats(response.data.data);
+        const responsestat = await axios.get("http://localhost/api/Controllers/StatistiqueController.php?action=covoiturages_par_jour");
+      setTrajetsParJour(responsestat.data.data); // data est un tableau [{jour: '2025-10-03', total: 5}, ...]
+    
       } catch (error) {
-        console.error("Erreur lors de la récupération des statistiques :", error);
+        setError("Erreur lors de la récupération des statistiques.");
+        console.error(error);
       }
     };
-
     fetchStats();
   }, []);
 
-  if (!stats) {
-    return <p>Chargement des statistiques...</p>;
-  }
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (!stats) return <p>Chargement des statistiques...</p>;
 
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold text-customGreen-100">Statistiques</h2>
 
-      {/* Graphique : Nombre d'utilisateurs par rôle */}
       <div className="my-8">
-        <h3 className="text-lg font-bold">Répartition des utilisateurs par rôle</h3>
-        <PieChart width={400} height={300}>
-          <Pie
-            data={stats.usersByRole}
-            dataKey="count"
-            nameKey="role"
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            fill="#8884d8"
-            label
-          >
-            {stats.usersByRole.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
+        <h3 className="text-lg font-bold">Utilisateurs actifs</h3>
+        <p>{stats.total_utilisateurs} utilisateurs actifs</p>
       </div>
 
-      {/* Graphique : Nombre de trajets par statut */}
       <div className="my-8">
-        <h3 className="text-lg font-bold">Nombre de trajets par statut</h3>
-        <BarChart width={500} height={300} data={stats.tripsByStatus}>
-          <XAxis dataKey="status" />
+        <h3 className="text-lg font-bold">Nombre total de trajets</h3>
+        <p>{stats.total_trajets} trajets</p>
+        <BarChart width={500} height={300} data={trajetsParJour}>
+          <XAxis dataKey="jour" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="count" fill="#82ca9d" />
+          <Bar dataKey="total" fill="#82ca9d" />
         </BarChart>
       </div>
 
-      {/* Graphique : Nombre de réservations par statut */}
+
       <div className="my-8">
-        <h3 className="text-lg font-bold">Nombre de réservations par statut</h3>
-        <BarChart width={500} height={300} data={stats.reservationsByStatus}>
-          <XAxis dataKey="status" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="count" fill="#8884d8" />
-        </BarChart>
+        <h3 className="text-lg font-bold">Trajets annulés</h3>
+        <p>{stats.trajets_annules} trajets annulés</p>
       </div>
 
-      {/* Moyenne des notes des avis */}
       <div className="my-8">
-        <h3 className="text-lg font-bold">Moyenne des notes des avis</h3>
-        <p className="text-2xl font-bold">{stats.averageRating.toFixed(2)} / 5</p>
+        <h3 className="text-lg font-bold">Trajets problématiques</h3>
+        <p>{stats.trajets_problemes} trajets problématiques</p>
+      </div>
+
+      <div className="my-8">
+        <h3 className="text-lg font-bold">Répartition des véhicules par énergie</h3>
+        {stats.vehicules_repartition && stats.vehicules_repartition.length > 0 ? (
+          <PieChart width={400} height={300}>
+            <Pie
+              data={stats.vehicules_repartition.map(item => ({
+                ...item,
+                total: Number(item.total)
+              }))}
+              dataKey="total"
+              nameKey="energie"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              fill="#8884d8"
+              label
+            >
+              {stats.vehicules_repartition.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        ) : (
+          <p>Aucune donnée disponible.</p>
+        )}
+      </div>
+
+      <div className="my-8">
+        <h3 className="text-lg font-bold">Avis (statut)</h3>
+        {stats.avis_statut && stats.avis_statut.length > 0 ? (
+          <BarChart width={500} height={300} data={stats.avis_statut}>
+            <XAxis dataKey="statut" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="total" fill="#8884d8" />
+          </BarChart>
+        ) : (
+          <p>Aucune donnée disponible.</p>
+        )}
       </div>
     </div>
   );
