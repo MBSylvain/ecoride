@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import checkAuth from "../features/checkAuth";
 
 const ReserverPage = () => {
   const { trajetId } = useParams();
   const navigate = useNavigate();
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [trajet, setTrajet] = useState(null);
   const [conducteur, setConducteur] = useState(null);
@@ -20,6 +22,22 @@ const ReserverPage = () => {
     commentaire: "",
   });
 
+  useEffect(() => {
+      const verifyAuth = async () => {
+        try {
+          setIsLoading(true);
+          const authenticated = await checkAuth();
+          setIsAuthenticated(authenticated);
+        } catch (error) {
+          console.error("Erreur lors de la vérification d'authentification :", error);
+          setIsAuthenticated(false);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      verifyAuth();
+    }, []);
+  
   useEffect(() => {
     const fetchTrajetDetails = async () => {
       setIsLoading(true);
@@ -49,27 +67,28 @@ const ReserverPage = () => {
           setConducteur(conducteurData);
         }
         // Calculer les places restantes
-        let placesOccupees = 0;
-        if (trajetResponse.data) {
-          const reservations = Array.isArray(trajetResponse.data)
-            ? trajetResponse.data
-            : trajetResponse.data.reservations || [];
+        const placesOccupeesResponse = await axios.get(
+          `http://localhost/api/Controllers/ReservationController.php?trajet_id=${trajetId}`,
+          {
+            withCredentials: true,
+            responseType: "json",
+          }
 
-          placesOccupees = reservations
-            .filter((r) => r.statut && r.statut.toLowerCase() !== "annulé" && r.statut.toLowerCase() !== "refusé")
-            .reduce((sum, r) => sum + parseInt(r.nombre_places_reservees || 1), 0);
+        );
+        const placesOccupees = placesOccupeesResponse.data.placesoccupees || 0;
+        const totalPlaces = trajetData.nombre_places || 0;
+        const restantes = Math.max(0, totalPlaces - placesOccupees);
+        setPlacesRestantes(restantes);
+        console.log(`Places totales: ${totalPlaces}, Occupées: ${placesOccupees}, Restantes: ${restantes}`);
 
-          const userReservation = reservations.find((r) => r.utilisateur_id == utilisateur_id);
-          setHasReservation(!!userReservation);
-        }
-
-        const totalPlaces = parseInt(trajetData.nombre_places || 0);
-        setPlacesRestantes(Math.max(0, totalPlaces - placesOccupees));
       } catch (error) {
-        setErrorMessage(`Erreur lors du chargement: ${error.message}`);
-      } finally {
-        setIsLoading(false);
-      }
+        if (error.response && error.response.data && error.response.data.message) {
+            setErrorMessage(error.response.data);
+            console.log("Détails de l'erreur:", error);
+        } else {
+          setErrorMessage("Erreur inconnue");
+        }
+  }
     };
 
     if (trajetId) {
@@ -106,13 +125,12 @@ const ReserverPage = () => {
         {
           utilisateur_id: utilisateur_id,
           trajet_id: trajetId,
-          nombre_places_reservees: form.nombre_places,
+          nombre_places_reservees: (form.nombre_places * trajet.prix).toFixed(2),// total à payer
           commentaire: form.commentaire,
           bagages: form.bagages ? 1 : 0,
         },
         {
           withCredentials: true,
-          responseType: "json",
           headers: {
             "Content-Type": "application/json",
           },
@@ -126,7 +144,11 @@ const ReserverPage = () => {
         setErrorMessage(response.data?.message || "Erreur lors de la création de la réservation");
       }
     } catch (error) {
-      setErrorMessage(`Erreur: ${error.message}`);
+    if (error.response && error.response.data && error.response.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage(`Erreur: ${error.message}`);
+      }
     }
   };
 
@@ -175,8 +197,8 @@ const ReserverPage = () => {
             <div className="flex items-center">
               <span className="mr-2">✔️</span>
               <div>
-                <p className="font-bold">Réservation effectuée avec succès!</p>
-                <p>Votre demande de réservation a été envoyée au conducteur. Vous recevrez une confirmation prochainement.</p>
+                <p className="font-bold text-center">Réservation effectuée avec succès!</p>
+                <p className="text-center">Votre demande de réservation a été envoyée au conducteur. Vous recevrez une confirmation prochainement.</p>
               </div>
             </div>
             <div className="mt-4">
@@ -189,11 +211,12 @@ const ReserverPage = () => {
 
         {errorMessage && (
           <div className="p-4 mb-6 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
-            <div className="flex">
-              <span className="mr-2">❗</span>
-              <div>
-                <p className="font-bold">Erreur</p>
-                <p>{errorMessage}</p>
+            <div className="flex center">
+              <div className="flex items-center m-10">
+                <p className="font-bold">Attention</p>
+                <span className="mr-2">❗</span>
+                <p>{errorMessage}</p>              
+
               </div>
             </div>
           </div>
@@ -295,6 +318,7 @@ const ReserverPage = () => {
               </div>
 
               {/* Formulaire de réservation */}
+              
               <div>
                 <h2 className="mb-4 text-lg font-semibold text-primarr=y-100">Votre réservation</h2>
                 {placesRestantes <= 0 && !reservationSuccess ? (
