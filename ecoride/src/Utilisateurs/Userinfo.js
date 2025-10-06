@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EditUserModal from './EditUserModal'; // Chemin relatif correct
 const UserInfoSection = () => {
-  // Récupération de l'ID utilisateur depuis le localStorage
-  const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
-  
+
+
   // Définition des states au niveau supérieur du composant
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [utilisateur_id] = useState(localStorage.getItem('utilisateur_id'));
   
   const fetchUserData = async () => {
     setUserLoading(true);
