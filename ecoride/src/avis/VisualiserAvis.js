@@ -131,18 +131,18 @@ const VisualiserAvis = ({ utilisateurId }) => {
       ) : trajetsPasses.length === 0 ? (
         <div className="py-4 text-center text-gray-500">Aucun trajet passé trouvé.</div>
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-row justify-center mx-auto space-y-10 overflow-x-auto w-fit md:space-y-0 md:space-x-4">
           {trajetsPasses.map((trajet) => (
             <div
               key={trajet.trajet_id}
               className="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50"
             >
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-800">
                   {trajet.ville_depart} → {trajet.ville_arrivee}
                 </h3>
                 <button
-                  className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+                  className="px-4 py-2 m-5 text-white bg-blue-600 rounded hover:bg-blue-700"
                   onClick={() => setSelectedTrajet(trajet)}
                 >
                   Voir les avis
