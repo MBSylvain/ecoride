@@ -44,6 +44,9 @@ import Reservation from "./Reservations/ReservationUser";
 import Reservations from "./Reservations/Reservations";
 import VisualiserReservations from "./Reservations/VisualiserReservations";
 
+
+
+
 function App() {
   return (
     <Router>
@@ -57,6 +60,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/helpcenter" element={<Help />} />
           <Route path="/privaty" element={<Privaty />} />
+          
           {/* Routes pour la gestion des administrateurs */}
           <Route path="/AdmEmp/dashboardAdmin" element={<AdminDashboard />} />
           <Route path="/AdmEmp/statistiques" element={<Statistiques />} />
