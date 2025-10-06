@@ -52,6 +52,8 @@ const Header = () => {
             setUser(null);
             localStorage.removeItem('user');
             sessionStorage.removeItem('user');
+            localStorage.clear();
+            console.log('localStorage après clear:', { ...localStorage });
             setIsAuthenticated(false); // Met à jour l'état d'authentification
             
             // Utilisation de navigate pour rediriger sans recharger la page
