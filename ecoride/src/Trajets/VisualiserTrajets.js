@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const VisualiserTrajets = () => {
   // Fonction pour mettre à jour le statut d'une réservation
@@ -26,6 +27,7 @@ const VisualiserTrajets = () => {
       alert("Erreur lors de la mise à jour du statut de la réservation");
     }
   };
+  const navigate = useNavigate();
   const [trajets, setTrajets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -165,14 +167,20 @@ const VisualiserTrajets = () => {
   }, [selectedTrajet]);
 
 return (
-    <div className="p-6 mb-6 bg-white border border-gray-100 shadow-lg rounded-xl">
+    <div className="p-6 m-6 bg-white border border-gray-100 shadow-lg rounded-xl">
         <h2 className="mb-6 text-2xl font-semibold text-center">Tous les trajets</h2>
         {loading ? (
             <div className="py-4 text-center text-gray-500">Chargement des trajets...</div>
         ) : error ? (
             <div className="py-4 text-center text-red-500">{error}</div>
         ) : trajets.length === 0 ? (
-            <div className="py-4 text-center text-gray-500">Aucun trajet trouvé.</div>
+            <div className="flex flex-col items-center py-4 text-center text-gray-500">
+              <p className="m-10 text-center">Aucun trajet trouvé.</p>
+              <button onClick={() => navigate("/search")} className="block p-4 text-center text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200">
+              Rechercher des trajets
+            </button>
+            </div>
+             
         ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {trajets.map((trajet) => (
