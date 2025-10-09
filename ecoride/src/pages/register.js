@@ -54,18 +54,22 @@ const RegisterPage = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost/api/Controllers/UtilisateurController.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, action: "register" }),
-      });
-      const data = await response.json();
-      if (!response.ok || data.error) {
-        setError(data.error || "Erreur lors de l'inscription.");
+      const response = await axios.post(
+        "http://localhost/api/Controllers/UtilisateurController.php",
+        { ...formData, action: "register" },
+        {
+          headers: {
+        "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      const data = await response.data;
+      if (response.status >= 400 || data.success === false) {
+      setError(data.message || "Erreur lors de l'inscription.");
       } else {
         // Redirige ou affiche un message de succès
         navigate("/dashboard"); // Redirige vers la page de connexion
-        ;
       }
     } catch (err) {
       setError("Erreur de connexion au serveur.");

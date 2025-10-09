@@ -83,7 +83,7 @@ const ReserverPage = () => {
 
       } catch (error) {
         if (error.response && error.response.data && error.response.data.message) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error.response.data.message); // <-- Correction ici
             console.log("Détails de l'erreur:", error);
         } else {
           setErrorMessage("Erreur inconnue");

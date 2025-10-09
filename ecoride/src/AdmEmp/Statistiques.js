@@ -32,13 +32,14 @@ const Statistiques = () => {
   if (!stats) return <p>Chargement des statistiques...</p>;
 
   return (
-    <div className="mt-8">
+    <div className="flex flex-row items-center mt-8">
       <h2 className="text-xl font-bold text-customGreen-100">Statistiques</h2>
 
       <div className="my-8">
         <h3 className="text-lg font-bold">Utilisateurs actifs</h3>
         <p>{stats.total_utilisateurs} utilisateurs actifs</p>
       </div>
+      
 
       <div className="my-8">
         <h3 className="text-lg font-bold">Nombre total de trajets</h3>

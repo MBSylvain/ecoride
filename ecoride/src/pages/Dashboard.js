@@ -11,6 +11,8 @@ import VoitureUser from "../Voitures/VoitureUser";
 import VisualiserTrajets from "../Trajets/VisualiserTrajets";
 import VisualiserReservations from "../Reservations/VisualiserReservations";
 import VisualiserAvis from "../avis/VisualiserAvis";
+import PreferencesConducteur from "../Utilisateurs/PreferencesConducteur";
+
 
 
 
@@ -23,6 +25,7 @@ const Dashboard = () => {
     <div className="container px-4 py-8 mx-auto">
       <h1 className="mb-6 text-2xl font-bold text-center text-customGreen-100">Mon Tableau de Bord</h1>
       <Userinfo />
+      <PreferencesConducteur />
       <VoitureUser />
       <VisualiserTrajets />
       <VisualiserReservations />

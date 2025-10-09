@@ -11,6 +11,7 @@ const VisualiserReservations = () => {
   const [userError, setUserError] = useState(null);
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("utilisateur.id");
 
+  // Charger les réservations de l'utilisateur
   useEffect(() => {
     const fetchReservations = async () => {
       setLoading(true);
