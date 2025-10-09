@@ -15,13 +15,23 @@ import Help from "./pages/Helpcenter";
 import Privaty from "./pages/privaty";
 
 import TestApi from "./pages/testapi";
+// Import des composants pour la gestion des utilisateurs
 import Dashboard from "./pages/Dashboard";
 import Userinfo from "./Utilisateurs/Userinfo";
+import PreferencesConducteur from "./Utilisateurs/PreferencesConducteur";
+import HistoriqueOperations from "./Utilisateurs/HistoriqueOperations";
 
 import Trajetinfo from "./features/Trajetinfo";
 // Import des composants pour la gestion des administrateurs
 import AdminDashboard from "./AdmEmp/dashboardAdmin";
 import Statistiques from "./AdmEmp/Statistiques";
+import StatistiquesUtilisateurs from "./AdmEmp/Statistiques/StatistiquesUtilisateurs";
+import StatistiquesTrajets from "./AdmEmp/Statistiques/StatistiquesTrajets";
+import StatistiquesCredits from "./AdmEmp/Statistiques/StatistiquesCredits";
+import StatistiquesAvis from "./AdmEmp/Statistiques/StatistiquesAvis";
+import StatistiquesEmployes from "./AdmEmp/Statistiques/StatistiquesEmployes";
+import StatistiquesReservations from "./AdmEmp/Statistiques/StatistiquesReservations";
+import StatistiquesVoitures from "./AdmEmp/Statistiques/StatistiquesVoitures";
 
 // Import des composants pour la gestion des avis
 import AjouterAvisModal from "./avis/AjouterAvisModal";
@@ -65,11 +75,24 @@ function App() {
           <Route path="/AdmEmp/dashboardAdmin" element={<AdminDashboard />} />
           <Route path="/AdmEmp/statistiques" element={<Statistiques />} />
 
+          <Route path="/AdmEmp/statistiques/statistiquesutilisateurs" element={<StatistiquesUtilisateurs />} />
+          <Route path="/AdmEmp/statistiques/statistiquestrajets" element={<StatistiquesTrajets />} />
+          <Route path="/AdmEmp/statistiques/statistiquescredits" element={<StatistiquesCredits />} />
+          <Route path="/AdmEmp/statistiques/statistiquesavis" element={<StatistiquesAvis />} />
+          <Route path="/AdmEmp/statistiques/statistiquesemployes" element={<StatistiquesEmployes />} />
+
+          <Route path="/admin/statistiques/statistiquesreservations" element={<StatistiquesReservations />} />
+          <Route path="/admin/statistiques/statistiquesvoitures" element={<StatistiquesVoitures />} />
+
+
+
           {/* Routes pour la gestion des utilisateurs */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/testapi" element={<TestApi />} />
           <Route path="/Userinfo" element={<Userinfo />} />
+          <Route path="/PreferencesConducteur" element={<PreferencesConducteur />} />
+          <Route path="/HistoriqueOperations" element={<HistoriqueOperations />} />
           
           <Route path="/dashboard" element={<Dashboard />} />
 
