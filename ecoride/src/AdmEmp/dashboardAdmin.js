@@ -12,23 +12,39 @@ const DashboardAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  
+  // Récupération et affichage des données administrateur
   useEffect(() => {
     const fetchAllData = async () => {
       try {
         const [usersRes, voituresRes, trajetsRes, reservationsRes, avisRes] = await Promise.all([
-          axios.get("http://localhost/api/Controllers/UtilisateurController.php", { withCredentials: true }, { headers: { "Content-Type": "application/json" } }),
-          axios.get("http://localhost/api/Controllers/VoitureController.php", { withCredentials: true }, { headers: { "Content-Type": "application/json" } }),
-          axios.get("http://localhost/api/Controllers/TrajetController.php", { withCredentials: true }, { headers: { "Content-Type": "application/json" } }),
-          axios.get("http://localhost/api/Controllers/ReservationController.php", { withCredentials: true }, { headers: { "Content-Type": "application/json" } }),
-          axios.get("http://localhost/api/Controllers/AvisController.php", { withCredentials: true }, { headers: { "Content-Type": "application/json" } }),
+          axios.get("http://localhost/api/ControllersAdministrateur/UtilisateurAdminController.php", {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          }),
+          axios.get("http://localhost/api/ControllersAdministrateur/VoitureAdminController.php", {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          }),
+          axios.get("http://localhost/api/ControllersAdministrateur/TrajetAdminController.php", {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          }),
+          axios.get("http://localhost/api/ControllersAdministrateur/ReservationAdminController.php", {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          }),
+          axios.get("http://localhost/api/ControllersAdministrateur/AvisAdminController.php", {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          }),
         ]);
-        setUsers(usersRes.data);
-        setVoitures(voituresRes.data.data);
-        setTrajets(trajetsRes.data);
+        setUsers(usersRes.data || usersRes.data.data || []);
+        setVoitures(voituresRes.data.data || []);
+        setTrajets(trajetsRes.data || []);
         console.log(trajetsRes.data.data);
-        setReservations(reservationsRes.data);
-        setAvis(avisRes.data.data);
+        setReservations(reservationsRes.data || []);
+        setAvis(avisRes.data.data || []);
       } catch (error) {
         setError("Erreur lors du chargement des données administrateur.");
         console.error(error);
@@ -38,6 +54,43 @@ const DashboardAdmin = () => {
     };
     fetchAllData();
   }, []);
+
+  // Activation d'un compte utilisateur
+  const handleActivateUser = async (userId) => {
+    try {
+      await axios.post(
+        "http://localhost/api/Controllers/UtilisateurController.php",
+        { utilisateur_id: userId },
+        { action: "activate" },
+        { role: "Administrateur" },
+        { withCredentials: true, headers: { "Content-Type": "application/json" } }
+      );
+      setUsers(users => users.map(u => u.utilisateur_id === userId
+        ? { ...u, actif: true }
+        : u
+      ));
+    } catch (error) {
+      alert("Erreur lors de l'activation du compte.");
+    }
+  };
+  // Désactivation d'un compte utilisateur
+  const handleDeactivateUser = async (userId) => {
+    try {
+      await axios.post(
+        "http://localhost/api/Controllers/UtilisateurController.php",
+        { utilisateur_id: userId },
+        { action: "deactivate" },
+        { role: "Administrateur" },
+        { withCredentials: true, headers: { "Content-Type": "application/json" } }
+      );
+      setUsers(users => users.map(u => u.utilisateur_id === userId
+        ? { ...u, actif: false }
+        : u
+      ));
+    } catch (error) {
+      alert("Erreur lors de la désactivation du compte 120.");
+    }
+  };
 
   if (loading) return <p>Chargement...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -50,7 +103,6 @@ const DashboardAdmin = () => {
       <section className="mb-8">
         <h2 className="mb-4 text-xl font-semibold">Statistiques Clés</h2>
         <Statistiques />
-
       </section>
 
       <section>
@@ -63,37 +115,30 @@ const DashboardAdmin = () => {
                 <th className="px-2 py-1 border">Email</th>
                 <th className="px-2 py-1 border">Role</th>
                 <th className="px-2 py-1 border">Statut</th>
-                <th className="px-2 py-1 border">Action</th>
+                <th className="px-2 py-1 border">Actions</th>
               </tr>
             </thead>
             <tbody>
               {users.map(user => (
-                <tr key={user.utilisateur_id}>
+                <tr key={user.utilisateur_id|| []}>
                   <td className="px-2 py-1 border">{user.nom}</td>
                   <td className="px-2 py-1 border">{user.email}</td>
                   <td className="px-2 py-1 border">{user.role}</td>
-                  <td className="px-2 py-1 border">{user.actif ? "Actif" : "Désactivé"}</td>
-                  <td className="px-2 py-1 border">
+                  <td className="px-2 py-1 border">{user.compte_actif ? "Actif" : "Inactif"}</td>
+                  <td className="flex gap-2 px-2 py-1 border">
                     <button
-                      className={`px-2 py-1 rounded ${user.actif ? "bg-red-500 text-white" : "bg-green-500 text-white"}`}
-                      onClick={async () => {
-                        try {
-                          await axios.post(
-                            "http://localhost/api/Controllers/UtilisateurController.php/toggle",
-                            { utilisateur_id: user.utilisateur_id, actif: !user.actif },
-                            { withCredentials: true, headers: { "Content-Type": "application/json" } }
-                          );
-                          setUsers(users => users.map(u => u.utilisateur_id === user.utilisateur_id
-                            ? { ...u, actif: !u.actif }
-                            : u
-                          )
-                          );
-                        } catch (err) {
-                          alert("Erreur lors de la modification du statut.");
-                        }
-                      } }
+                      className="px-2 py-1 text-white bg-green-500 rounded disabled:opacity-50"
+                      onClick={() => handleActivateUser(user.utilisateur_id)}
+                      disabled={user.compte_actif}
                     >
-                      {user.actif ? "Désactiver" : "Activer"}
+                      Activer
+                    </button>
+                    <button
+                      className="px-2 py-1 text-white bg-red-500 rounded disabled:opacity-50"
+                      onClick={() => handleDeactivateUser(user.utilisateur_id)}
+                      disabled={!user.compte_actif}
+                    >
+                      Désactiver
                     </button>
                   </td>
                 </tr>
