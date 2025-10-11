@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+const STATUTS = ["tous", "confirmé", "en_attente", "annulée", "terminée"];
+
 const VisualiserReservations = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,6 +11,7 @@ const VisualiserReservations = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [userLoading, setUserLoading] = useState(false);
   const [userError, setUserError] = useState(null);
+  const [statutFilter, setStatutFilter] = useState("tous");
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("utilisateur.id");
 
   // Charger les réservations de l'utilisateur
@@ -94,18 +97,41 @@ const VisualiserReservations = () => {
     }
   };
 
+  // Filtrage des réservations selon le statut sélectionné
+  const filteredReservations = statutFilter === "tous"
+    ? reservations
+    : reservations.filter(r => r.statut === statutFilter);
+
   return (
     <div className="p-6 mb-6 bg-white border border-gray-100 shadow-lg rounded-xl">
       <h2 className="mb-6 text-2xl font-semibold text-center">Mes Réservations</h2>
+
+      {/* Filtres par statut */}
+      <div className="flex flex-wrap justify-center gap-2 mb-6">
+        {STATUTS.map((statut) => (
+          <button
+            key={statut}
+            className={`px-4 py-1 rounded-full border transition ${
+              statutFilter === statut
+                ? "bg-customGreen-100 text-white border-customGreen-100"
+                : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-customGreen-50"
+            }`}
+            onClick={() => setStatutFilter(statut)}
+          >
+            {statut.charAt(0).toUpperCase() + statut.slice(1)}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <div className="py-4 text-center text-gray-500">Chargement des réservations...</div>
       ) : error ? (
         <div className="py-4 text-center text-red-500">{error}</div>
-      ) : reservations.length === 0 ? (
+      ) : filteredReservations.length === 0 ? (
         <div className="py-4 text-center text-gray-500">Aucune réservation trouvée.</div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reservations.map((reservation) => (
+          {filteredReservations.map((reservation) => (
             <div
               key={reservation.reservation_id}
               className="flex flex-col p-5 transition-all duration-200 bg-white border border-gray-100 shadow-md rounded-xl hover:shadow-xl"
@@ -139,6 +165,14 @@ const VisualiserReservations = () => {
               >
                 Voir les détails
               </button>
+              {reservation.statut === "en_attente" && (
+                <button
+                  className="px-4 py-2 mt-2 text-white transition bg-red-600 rounded-lg hover:bg-red-700"
+                  onClick={() => handleCancelReservation(reservation.reservation_id)}
+                >
+                  Annuler
+                </button>
+              )}
             </div>
           ))}
         </div>
