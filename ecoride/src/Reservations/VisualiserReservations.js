@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Modal from './Modal'; // Assurez-vous que le chemin d'importation est correct
 
 const STATUTS = ["tous", "confirmé", "en_attente", "annulée", "terminée"];
 
@@ -103,7 +104,7 @@ const VisualiserReservations = () => {
     : reservations.filter(r => r.statut === statutFilter);
 
   return (
-    <div className="p-6 mb-6 bg-white border border-gray-100 shadow-lg rounded-xl">
+    <div className="w-full p-2 mb-2 bg-white border border-gray-100 shadow-lg rounded-xl">
       <h2 className="mb-6 text-2xl font-semibold text-center">Mes Réservations</h2>
 
       {/* Filtres par statut */}
@@ -130,7 +131,7 @@ const VisualiserReservations = () => {
       ) : filteredReservations.length === 0 ? (
         <div className="py-4 text-center text-gray-500">Aucune réservation trouvée.</div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
           {filteredReservations.map((reservation) => (
             <div
               key={reservation.reservation_id}
@@ -178,51 +179,46 @@ const VisualiserReservations = () => {
         </div>
       )}
 
-      {selectedReservation && (
-        <div className="pt-6 mt-8 border-t">
-          <div className="max-w-full p-6 bg-white border border-gray-100 shadow-md rounded-xl">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-xl font-semibold">Détail de la réservation</h3>
-              <button
-                className="px-3 py-1 text-sm text-white transition bg-gray-600 rounded-lg hover:bg-gray-700"
-                onClick={() => setSelectedReservation(null)}
-              >
-                Fermer
-              </button>
-            </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <div className="p-4 rounded-lg bg-gray-50">
-                <h4 className="mb-3 font-semibold text-gray-800">Informations de la réservation</h4>
-                <ul className="space-y-2">
-                  <li><b>Départ :</b> {selectedReservation.ville_depart}</li>
-                  <li><b>Arrivée :</b> {selectedReservation.ville_arrivee}</li>
-                  <li><b>Date :</b> {selectedReservation.date_depart}</li>
-                  <li><b>Prix :</b> {selectedReservation.prix} €</li>
-                  <li><b>Places réservées :</b> {selectedReservation.nombre_places_reservees}</li>
-                  <li><b>Statut :</b> {selectedReservation.statut}</li>
-                </ul>
-              </div>
-              <div className="p-4 rounded-lg bg-gray-50">
-                <h4 className="mb-3 font-semibold text-gray-800">Informations sur le conducteur</h4>
-                {userLoading ? (
-                  <div className="text-gray-500">Chargement des infos utilisateur...</div>
-                ) : userError ? (
-                  <div className="text-red-500">{userError}</div>
-                ) : userInfo ? (
-                  <ul className="space-y-2">
-                    <li><b>Nom :</b> {userInfo.nom || '-'}</li>
-                    <li><b>Prénom :</b> {userInfo.prenom || '-'}</li>
-                    <li><b>Email :</b> {userInfo.email || '-'}</li>
-                    <li><b>Téléphone :</b> {userInfo.telephone || '-'}</li>
-                  </ul>
-                ) : (
-                  <div className="text-gray-500">Aucune information utilisateur trouvée.</div>
-                )}
-              </div>
-            </div>
+      <Modal
+        isOpen={!!selectedReservation}
+        onClose={() => setSelectedReservation(null)}
+        title="Détail de la réservation"
+      >
+        <div className="flex flex-row gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="p-4 rounded-lg bg-gray-50">
+            <h4 className="mb-3 font-semibold text-gray-800">Informations de la réservation</h4>
+            <ul className="space-y-2">
+              <li><b>Départ :</b> {selectedReservation?.ville_depart}</li>
+              <li><b>Date :</b> {selectedReservation?.date_depart}</li>
+              <li><b>Heure :</b> {selectedReservation?.heure_depart}</li>
+              <li><b>Arrivée :</b> {selectedReservation?.ville_arrivee}</li>
+              <li><b>Date d'arrivée :</b> {selectedReservation?.date_arrivee}</li>
+              <li><b>Heure d'arrivée :</b> {selectedReservation?.heure_arrivee}</li>       
+              <li><b>Prix :</b> {selectedReservation?.prix} €</li>
+              <li><b>Places réservées :</b> {selectedReservation?.nombre_places_reservees}</li>
+              <li><b>Statut :</b> {selectedReservation?.statut}</li>
+            </ul>
+          </div>
+          <div className="p-4 rounded-lg bg-gray-50">
+            <h4 className="mb-3 font-semibold text-gray-800">Informations sur le conducteur</h4>
+            {userLoading ? (
+              <div className="text-gray-500">Chargement des infos utilisateur...</div>
+            ) : userError ? (
+              <div className="text-red-500">{userError}</div>
+            ) : userInfo ? (
+              <ul className="space-y-2">
+                <li><b>Nom :</b> {userInfo.nom || '-'}</li>
+                <li><b>Prénom :</b> {userInfo.prenom || '-'}</li>
+                <li><b>Email :</b> {userInfo.email || '-'}</li>
+                <li><b>Téléphone :</b> {userInfo.telephone || '-'}</li>
+                <li><b>Note :</b> {userInfo.note ? `${userInfo.note} / 5` : '-'}</li>
+              </ul>
+            ) : (
+              <div className="text-gray-500">Aucune information utilisateur trouvée.</div>
+            )}
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };
