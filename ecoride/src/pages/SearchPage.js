@@ -12,6 +12,7 @@ const SearchPage = () => {
     motorisation: "",
   });
   const [trajets, setTrajets] = useState([]);
+  const [suggestedTrajets, setSuggestedTrajets] = useState([]); // Suggestions statiques ou dynamiques
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
@@ -214,6 +215,20 @@ const SearchPage = () => {
             <p className="mt-2 text-gray-500">
               Essayez d'autres critères ou dates de recherche.
             </p>
+            {/* Suggestion de trajets alternatifs (optionnel) */}
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold">Suggestions de trajets :</h3>
+              <ul className="mt-2">
+                {trajets.map((trajet) => (
+                  <li key={trajet.trajet_id} className="py-2 border-b">
+                    <p className="font-medium">{trajet.destination}</p>
+                    <p className="text-sm text-gray-500">
+                      {formatDate(trajet.date_depart)} - {formatTime(trajet.date_depart)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
