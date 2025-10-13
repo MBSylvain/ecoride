@@ -21,9 +21,12 @@ const StatistiquesCredits = () => {
     const creditsParJour = stats?.credits_par_jour || [];
 
     return (
-        <div className="flex justify-center w-full overflow-x-auto">
+        <div className="flex flex-col justify-center w-full overflow-x-auto place-items-center">
+            <div className="w-full max-w-4xl mb-8 text-center">
             <h3 className="text-lg font-bold">Crédits</h3>
             <p>{stats?.total_credits ?? "—"} crédits gagnés</p>
+            </div>
+            <section className="flex flex-row w-full max-w-4xl p-4 mb-8 bg-white border border-gray-100 shadow-lg rounded-xl">
             <BarChart width={500} height={300} data={creditsParJour}>
                 <XAxis dataKey="jour" />
                 <YAxis />
@@ -31,8 +34,8 @@ const StatistiquesCredits = () => {
                 <Legend />
                 <Bar dataKey="credits" fill="#00C49F" />
             </BarChart>
-            <div className="mt-4">
-                <p>
+            <div className="flex flex-row mt-4 md:flex-col md:items-start md:mt-2">
+                <p className="mb-2">
                     Moyenne de crédits par jour :{" "}
                     {creditsParJour.length > 0
                         ? (
@@ -41,7 +44,7 @@ const StatistiquesCredits = () => {
                         ).toFixed(2)
                         : "—"}
                 </p>
-                <p>
+                <p className="mb-2">
                     Jour avec le plus de crédits :{" "}
                     {creditsParJour.length > 0
                         ? creditsParJour.reduce((max, item) =>
@@ -49,14 +52,16 @@ const StatistiquesCredits = () => {
                         ).jour
                         : "—"}
                 </p>
-                <p>
+                <p className="mb-2">
                     Crédits max en un jour :{" "}
                     {creditsParJour.length > 0
                         ? Math.max(...creditsParJour.map((item) => Number(item.credits)))
                         : "—"}
                 </p>
             </div>
+            </section>
         </div>
+       
     );
 };
 
