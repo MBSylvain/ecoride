@@ -20,7 +20,7 @@ const StatistiquesVoitures = () => {
     if (loading) return <p>Chargement...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-     // Conversion des totaux en nombres
+    // Conversion des totaux en nombres
     const dataEnergie = (stats?.voitures_par_energie || []).map(item => ({
         ...item,
         total: Number(item.total)
@@ -34,97 +34,102 @@ const StatistiquesVoitures = () => {
         total: Number(item.total)
     }));
 
-
     return (
-        <div className="flex justify-center w-full overflow-x-auto">
-            <h3 className="text-lg font-bold">Voitures</h3>
-            <p>{stats?.total_voitures ?? "—"} voitures enregistrées</p>
+        <div className="flex flex-col flex-wrap justify-center overflow-x-auto">
+            <div className="m-2">
+                <h3 className="text-lg font-bold">Voitures</h3>
+                <p>{stats?.total_voitures ?? "—"} voitures enregistrées</p>
+            </div>
+            <section className="flex flex-col w-full gap-8 p-4 mb-8 bg-white border border-gray-100 shadow-lg xl:flex-row rounded-xl">
+                {/* Répartition par énergie */}
+                <section className="flex flex-col items-center flex-1 p-4 rounded-lg bg-gray-50">
+                    <h4 className="mt-2 mb-2 font-semibold text-center">Répartition par énergie</h4>
+                    <PieChart width={250} height={220}>
+                        <Pie
+                            data={dataEnergie}
+                            dataKey="total"
+                            nameKey="energie"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            label
+                        >
+                            {dataEnergie.map((entry, index) => (
+                                <Cell key={`cell-energie-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                    </PieChart>
+                    <ul className="mt-2 text-xs">
+                        {(stats?.voitures_par_energie || []).map((item, idx) => (
+                            <li key={idx}>
+                                <span className="inline-block w-3 h-3 mr-2 rounded-full" style={{ background: COLORS[idx % COLORS.length] }}></span>
+                                {item.energie} : {item.total}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
 
-            {/* Répartition par énergie */}
-            <section className="w-full max-w-2xl px-2 mx-auto my-8">
-            <h4 className="mt-4 font-semibold">Répartition par énergie</h4>
-            <PieChart width={400} height={250}>
-            <Pie
-                data={dataEnergie}
-                dataKey="total"
-                nameKey="energie"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-            >
-                {dataEnergie.map((entry, index) => (
-                <Cell key={`cell-energie-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-            </PieChart>
-            <ul>
-                {(stats?.voitures_par_energie || []).map((item, idx) => (
-                    <li key={idx}>
-                        {item.energie} : {item.total}
-                    </li>
-                ))}
-            </ul>
-            </section>
+                {/* Répartition par marque */}
+                <section className="flex flex-col items-center flex-1 p-4 rounded-lg bg-gray-50">
+                    <h4 className="mt-2 mb-2 font-semibold text-center">Répartition par marque</h4>
+                    <PieChart width={250} height={220}>
+                        <Pie
+                            data={dataMarque}
+                            dataKey="total"
+                            nameKey="marque"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            label
+                        >
+                            {dataMarque.map((entry, index) => (
+                                <Cell key={`cell-marque-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                    </PieChart>
+                    <ul className="mt-2 text-xs">
+                        {(stats?.voitures_par_marque || []).map((item, idx) => (
+                            <li key={idx}>
+                                <span className="inline-block w-3 h-3 mr-2 rounded-full" style={{ background: COLORS[idx % COLORS.length] }}></span>
+                                {item.marque} : {item.total}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
 
-            {/* Répartition par marque */}
-            <section className="w-full max-w-2xl px-2 mx-auto my-8">
-            <h4 className="mt-4 font-semibold">Répartition par marque</h4>
-            <PieChart width={400} height={250}>
-                <Pie
-                    data={dataMarque}
-                    dataKey="total"
-                    nameKey="marque"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label
-                >
-                    {(stats?.voitures_par_marque || []).map((entry, index) => (
-                        <Cell key={`cell-marque-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-            </PieChart>
-            <ul>
-                {(stats?.voitures_par_marque || []).map((item, idx) => (
-                    <li key={idx}>
-                        {item.marque} : {item.total}
-                    </li>
-                ))}
-            </ul>
-            </section>
-
-            {/* Répartition par nombre de places */}
-            <section className="w-full max-w-2xl px-2 mx-auto my-8">
-            <h4 className="mt-4 font-semibold">Répartition par nombre de places</h4>
-            <PieChart width={400} height={250}>
-                <Pie
-                    data={dataPlaces}
-                    dataKey="total"
-                    nameKey="nombre_places"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label={entry => `${entry.nombre_places} places`}
-                >
-                    {(stats?.voitures_par_places || []).map((entry, index) => (
-                        <Cell key={`cell-places-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-            </PieChart>
-            <ul>
-                {(stats?.voitures_par_places || []).map((item, idx) => (
-                    <li key={idx}>
-                        {item.nombre_places} places : {item.total}
-                    </li>
-                ))}
-            </ul>
+                {/* Répartition par nombre de places */}
+                <section className="flex flex-col items-center flex-1 p-4 rounded-lg bg-gray-50">
+                    <h4 className="mt-2 mb-2 font-semibold text-center">Répartition par nombre de places</h4>
+                    <PieChart width={250} height={220}>
+                        <Pie
+                            data={dataPlaces}
+                            dataKey="total"
+                            nameKey="nombre_places"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            label={entry => `${entry.nombre_places} places`}
+                        >
+                            {dataPlaces.map((entry, index) => (
+                                <Cell key={`cell-places-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                    </PieChart>
+                    <ul className="mt-2 text-xs">
+                        {(stats?.voitures_par_places || []).map((item, idx) => (
+                            <li key={idx}>
+                                <span className="inline-block w-3 h-3 mr-2 rounded-full" style={{ background: COLORS[idx % COLORS.length] }}></span>
+                                {item.nombre_places} places : {item.total}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
             </section>
         </div>
     );
