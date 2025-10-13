@@ -1,16 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import axios from 'axios';
 
+// Fonction utilitaire pour mapper les champs du trajet vers le formulaire
+const mapTrajetToFormData = (trajet) => {
+  if (!trajet) return {};
+  return {
+    depart: trajet.ville_depart || "",
+    arrivee: trajet.ville_arrivee || "",
+    date: trajet.date_depart ? trajet.date_depart.split("T")[0] : "",
+    heure: trajet.heure_depart || "",
+    prix: trajet.prix || "",
+    places_disponibles: trajet.nombre_places || "",
+    description: trajet.description || "",
+  };
+};
+
 const EditTrajetModal = ({ isOpen, onClose, onTrajetUpdated, trajet }) => {
-  const [formData, setFormData] = useState(trajet);
+  const [formData, setFormData] = useState(mapTrajetToFormData(trajet));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Met à jour formData à chaque changement de trajet sélectionné
+  useEffect(() => {
+    setFormData(mapTrajetToFormData(trajet));
+  }, [trajet]);
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Fonction pour gérer la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -30,7 +49,7 @@ const EditTrajetModal = ({ isOpen, onClose, onTrajetUpdated, trajet }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Modifier un trajet">
-      <form onSubmit={handleSubmit} className="p-4 space-y-4">
+      <form onSubmit={handleSubmit} className="px-4 py-2 space-y-2 md:px-8 md:py-4">
         <div className="flex flex-col">
           <label className="mb-1 font-medium text-gray-700">Départ</label>
           <input
