@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import React from "react";
+import CreerSignalement from "../Signalement/CreerSignalement";
 
 const getStatusColor = (statut) => {
   switch (statut) {
@@ -17,53 +18,13 @@ const getStatusColor = (statut) => {
   }
 };
 
-const ReservationsTimeline = ({ reservations, onVoirDetail, onAnnuler, onLaisserAvis }) => (
-  <ol className="relative border-l border-gray-300">
-    {reservations.map((r, idx) => (
-      <li key={r.reservation_id} className="mb-8 ml-6">
-        <span className={`absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-white ${getStatusColor(r.statut)}`}>
-          {idx + 1}
-        </span>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div>
-            <div className="font-semibold">{r.ville_depart} → {r.ville_arrivee}</div>
-            <div className="text-sm text-gray-500">{r.date_depart} à {r.heure_depart}</div>
-            <div className="text-xs text-gray-400">Places : {r.nombre_places_reservees} | Prix : {r.prix} €</div>
-            <div className="mt-1">
-              <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(r.statut)}`}>
-                {r.statut}
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-2 mt-2 md:mt-0">
-            <button
-              className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-              onClick={() => onVoirDetail(r)}
-            >
-              Détail
-            </button>
-            {r.statut === "en_attente" && (
-              <button
-                className="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-                onClick={() => onAnnuler(r)}
-              >
-                Annuler
-              </button>
-            )}
-            {r.statut === "terminée" && (
-              <button
-                className="px-3 py-1 text-white bg-green-500 rounded hover:bg-green-600"
-                onClick={() => onLaisserAvis(r)}
-              >
-                Laisser un avis
-              </button>
-            )}
-          </div>
-        </div>
-      </li>
-    ))}
-  </ol>
-);
+const STATUTS = [
+  { value: "", label: "Tous" },
+  { value: "confirmé", label: "Confirmé" },
+  { value: "en_attente", label: "En attente" },
+  { value: "annulée", label: "Annulée" },
+  { value: "terminée", label: "Terminée" }
+];
 
 const VisualiserAvis = ({ utilisateurId }) => {
   const [trajetsPasses, setTrajetsPasses] = useState([]);
@@ -74,6 +35,10 @@ const VisualiserAvis = ({ utilisateurId }) => {
   const [newAvis, setNewAvis] = useState({ note: 5, commentaire: '' });
   const [submitting, setSubmitting] = useState(false);
   const [creator, setCreator] = useState(null);
+  const [showSignalement, setShowSignalement] = useState(false);
+  const [statutFilter, setStatutFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const trajetsPerPage = 5;
 
   // Charger les trajets passés
   useEffect(() => {
@@ -94,13 +59,11 @@ const VisualiserAvis = ({ utilisateurId }) => {
           });
 
           setTrajetsPasses(pastReservations);
-          console.log('Réservations passées récupérées :', pastReservations);
         } else {
           setTrajetsPasses([]);
         }
       } catch (err) {
         setError("Erreur lors du chargement des réservations");
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -124,7 +87,6 @@ const VisualiserAvis = ({ utilisateurId }) => {
 
           if (creatorResponse.data) {
             setCreator(creatorResponse.data);
-            console.log('Données du créateur récupérées :', creatorResponse.data);
           } else {
             setCreator(null);
           }
@@ -142,7 +104,6 @@ const VisualiserAvis = ({ utilisateurId }) => {
           }
         } catch (err) {
           setError("Erreur lors du chargement des données");
-          console.error(err);
         } finally {
           setLoading(false);
         }
@@ -166,7 +127,7 @@ const VisualiserAvis = ({ utilisateurId }) => {
           note: newAvis.note,
           utilisateur_id: selectedTrajet.utilisateur_id,
           commentaire: newAvis.commentaire,
-          statut: newAvis.statut || 'publié'
+          statut: newAvis.statut || 'modéré'
         },
         { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
       );
@@ -182,130 +143,266 @@ const VisualiserAvis = ({ utilisateurId }) => {
       }
     } catch (err) {
       setSubmitting(false);
-      console.error(err);
       alert("Erreur lors de la soumission de votre avis. Veuillez réessayer.");
     }
   };
 
+  // Filtres et pagination
+  const filteredTrajets = statutFilter
+    ? trajetsPasses.filter(t => t.statut === statutFilter)
+    : trajetsPasses;
+
+  const totalPages = Math.ceil(filteredTrajets.length / trajetsPerPage);
+  const paginatedTrajets = filteredTrajets.slice((currentPage - 1) * trajetsPerPage, currentPage * trajetsPerPage);
+
   return (
-    <div className="max-w-4xl p-6 mx-auto bg-white border border-gray-100 shadow-md rounded-xl">
+    <div className="max-w-5xl p-6 mx-auto bg-white border border-gray-100 shadow-md rounded-xl">
       <h2 className="mb-4 text-2xl font-bold">Vos trajets passés</h2>
-      {loading && <div>Loading...</div>}
+      {loading && <div>Chargement...</div>}
       {error && <div className="text-red-500">{error}</div>}
       {!loading && !error && (
-        <ReservationsTimeline
-          reservations={trajetsPasses}
-          onVoirDetail={(trajet) => setSelectedTrajet(trajet)}
-          onAnnuler={async (reservation) => {
-            if (window.confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
-              try {
-                await axios.delete(
-                  `http://localhost/api/Controllers/ReservationController.php?reservation_id=${reservation.reservation_id}`,
-                  { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
-                );
-                setTrajetsPasses(trajetsPasses.filter((t) => t.reservation_id !== reservation.reservation_id));
-                alert("Réservation annulée avec succès.");
-              } catch (err) {
-                console.error(err);
-                alert("Erreur lors de l'annulation de la réservation. Veuillez réessayer.");
-              }
-            }
-          }}
-          onLaisserAvis={(trajet) => setSelectedTrajet(trajet)}
-        />
+        <>
+          {/* Filtres */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <label className="font-medium">Filtrer par statut :</label>
+            <select
+              value={statutFilter}
+              onChange={e => { setStatutFilter(e.target.value); setCurrentPage(1); }}
+              className="px-2 py-1 border rounded"
+            >
+              {STATUTS.map(s => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+          {/* Tableau */}
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm border">
+              <thead>
+                <tr>
+                  <th className="px-2 py-1 border">Départ</th>
+                  <th className="px-2 py-1 border">Arrivée</th>
+                  <th className="px-2 py-1 border">Date</th>
+                  <th className="px-2 py-1 border">Heure</th>
+                  <th className="px-2 py-1 border">Places</th>
+                  <th className="px-2 py-1 border">Prix (€)</th>
+                  <th className="px-2 py-1 border">Statut</th>
+                  <th className="px-2 py-1 border">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedTrajets.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="py-4 text-center">Aucun trajet trouvé.</td>
+                  </tr>
+                )}
+                {paginatedTrajets.map(trajet => (
+                  <tr key={trajet.reservation_id}>
+                    <td className="px-2 py-1 border">{trajet.ville_depart}</td>
+                    <td className="px-2 py-1 border">{trajet.ville_arrivee}</td>
+                    <td className="px-2 py-1 border">{trajet.date_depart}</td>
+                    <td className="px-2 py-1 border">{trajet.heure_depart}</td>
+                    <td className="px-2 py-1 border">{trajet.nombre_places_reservees}</td>
+                    <td className="px-2 py-1 border">{trajet.prix}</td>
+                    <td className="px-2 py-1 border">
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(trajet.statut)}`}>
+                        {trajet.statut}
+                      </span>
+                    </td>
+                    <td className="flex flex-wrap gap-2 px-2 py-1 border">
+                      <button
+                        className="px-2 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
+                        onClick={() => setSelectedTrajet(trajet)}
+                      >
+                        Détail
+                      </button>
+                      {trajet.statut === "en_attente" && (
+                        <>
+                        <button
+                          className="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
+                          onClick={async () => {
+                            if (window.confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
+                              try {
+                                await axios.delete(
+                                  `http://localhost/api/Controllers/ReservationController.php?reservation_id=${trajet.reservation_id}`,
+                                  { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+                                );
+                                setTrajetsPasses(trajetsPasses.filter((t) => t.reservation_id !== trajet.reservation_id));
+                                alert("Réservation annulée avec succès.");
+                              } catch (err) {
+                                alert("Erreur lors de l'annulation de la réservation. Veuillez réessayer.");
+                              }
+                            }
+                          }}
+                        >
+                          Annuler
+                        </button>
+
+                        <button
+                          className="px-2 py-1 text-white bg-yellow-600 rounded hover:bg-yellow-700"
+                          onClick={() => setShowSignalement(trajet)}
+                        >
+                          Signaler
+                        </button>
+                        </>
+                      )}
+                      {trajet.statut === "terminée" && (
+                        <>
+                          <button
+                            className="px-2 py-1 text-white bg-green-500 rounded hover:bg-green-600"
+                            onClick={() => setSelectedTrajet(trajet)}
+                          >
+                            Laisser un avis
+                          </button>
+                          <button
+                            className="px-2 py-1 text-white bg-yellow-600 rounded hover:bg-yellow-700"
+                            onClick={() => setShowSignalement(trajet)}
+                          >
+                            Signaler
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Pagination */}
+          <div className="flex justify-center gap-2 my-4">
+            <button
+              className="px-2 py-1 border rounded"
+              onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Précédent
+            </button>
+            {[...Array(totalPages)].map((_, idx) => (
+              <button
+                key={idx}
+                className={`px-2 py-1 border rounded ${currentPage === idx + 1 ? "bg-customGreen-100 text-white" : ""}`}
+                onClick={() => setCurrentPage(idx + 1)}
+              >
+                {idx + 1}
+              </button>
+            ))}
+            <button
+              className="px-2 py-1 border rounded"
+              onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Suivant
+            </button>
+          </div>
+        </>
       )}
 
+      {/* Modale détail trajet + avis */}
       {selectedTrajet && (
-        <div className="p-4 mt-8 border rounded">
-          <h3 className="mb-4 text-xl font-semibold">Détails du trajet</h3>
-          <div className="mb-4">
-            <strong>Itinéraire :</strong> {selectedTrajet.ville_depart} → {selectedTrajet.ville_arrivee}
-          </div>
-          <div className="mb-4">
-            <strong>Date et heure de départ :</strong> {selectedTrajet.date_depart} à {selectedTrajet.heure_depart}
-          </div>
-          <div className="mb-4">
-            <strong>Places réservées :</strong> {selectedTrajet.nombre_places_reservees}
-          </div>
-          <div className="mb-4">
-            <strong>Prix :</strong> {selectedTrajet.prix} €
-          </div>
-          <div className="mb-4">
-            <strong>Statut :</strong> <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(selectedTrajet.statut)}`}>{selectedTrajet.statut}</span>
-          </div>
-
-          {creator && (
-            <div className="mb-4">
-              <strong>Conducteur :</strong> {creator.nom} {creator.prenom}
-            </div>
-          )}
-
-          <h4 className="mt-4 mb-2 text-lg font-semibold">Avis sur ce trajet</h4>
-          {avis.length === 0 && <div>Aucun avis trouvé pour ce trajet.</div>}
-          {avis.map((a) => (
-            <div key={a.avis_id} className="py-2 border-b">
-              <div className="flex justify-between">
-                <div>
-                  <strong>{a.auteur_id === localStorage.getItem("utilisateur_id") ? "Vous" : a.auteur_nom}</strong>
-                  <span className="ml-2 text-xs text-gray-500">{new Date(a.date_creation).toLocaleString()}</span>
-                </div>
-                <div>
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(a.statut)}`}>{a.statut}</span>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-1">
-                <div className="flex items-center">
-                  {[...Array(a.note)].map((_, i) => (
-                    <svg key={i} xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M10 15.27L16.18 18 14.54 11.97 20 7.24l-6.91-.59L10 0 7.91 6.65 1 7.24l4.46 4.73L5.82 18z" />
-                    </svg>
-                  ))}
-                </div>
-                <div className="text-sm text-gray-700">{a.commentaire}</div>
-              </div>
-            </div>
-          ))}
-
-          <div className="mt-4">
-            <h4 className="mb-2 text-lg font-semibold">Laisser un avis</h4>
-            <form onSubmit={handleSubmitAvis}>
-              <div className="flex gap-2 mb-2">
-                <select
-                  value={newAvis.note}
-                  onChange={(e) => setNewAvis({ ...newAvis, note: parseInt(e.target.value) })}
-                  className="px-3 py-1 border rounded"
-                >
-                  <option value={5}>5 étoiles</option>
-                  <option value={4}>4 étoiles</option>
-                  <option value={3}>3 étoiles</option>
-                  <option value={2}>2 étoiles</option>
-                  <option value={1}>1 étoile</option>
-                </select>
-                <button
-                  type="submit"
-                  className="px-3 py-1 text-white bg-green-500 rounded hover:bg-green-600"
-                  disabled={submitting}
-                >
-                  {submitting ? "Envoi en cours..." : "Envoyer l'avis"}
-                </button>
-              </div>
-              <textarea
-                value={newAvis.commentaire}
-                onChange={(e) => setNewAvis({ ...newAvis, commentaire: e.target.value })}
-                className="w-full px-3 py-2 border rounded"
-                rows="3"
-                placeholder="Votre commentaire (facultatif)"
-              />
-            </form>
-          </div>
-
-          <div className="mt-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative w-full max-w-2xl p-6 bg-white rounded-lg shadow-lg">
             <button
+              className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
               onClick={() => setSelectedTrajet(null)}
-              className="px-3 py-1 text-white bg-gray-500 rounded hover:bg-gray-600"
             >
-              Retour à la liste des trajets
+              ✕
             </button>
+            <h3 className="mb-4 text-xl font-semibold">Détails du trajet</h3>
+            <div className="mb-2"><strong>Itinéraire :</strong> {selectedTrajet.ville_depart} → {selectedTrajet.ville_arrivee}</div>
+            <div className="mb-2"><strong>Date et heure de départ :</strong> {selectedTrajet.date_depart} à {selectedTrajet.heure_depart}</div>
+            <div className="mb-2"><strong>Places réservées :</strong> {selectedTrajet.nombre_places_reservees}</div>
+            <div className="mb-2"><strong>Prix :</strong> {selectedTrajet.prix} €</div>
+            <div className="mb-2"><strong>Statut :</strong> <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(selectedTrajet.statut)}`}>{selectedTrajet.statut}</span></div>
+            {creator && (
+              <div className="mb-2"><strong>Conducteur :</strong> {creator.nom} {creator.prenom}</div>
+            )}
+
+            <h4 className="mt-4 mb-2 text-lg font-semibold">Avis sur ce trajet</h4>
+            {avis.length === 0 && <div>Aucun avis trouvé pour ce trajet.</div>}
+            {avis.map((a) => (
+              <div key={a.avis_id} className="py-2 border-b">
+                <div className="flex justify-between">
+                  <div>
+                    <strong>{a.auteur_id === localStorage.getItem("utilisateur_id") ? "Vous" : a.auteur_nom}</strong>
+                    <span className="ml-2 text-xs text-gray-500">{new Date(a.date_creation).toLocaleString()}</span>
+                  </div>
+                  <div>
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(a.statut)}`}>{a.statut}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <div className="flex items-center">
+                    {[...Array(a.note)].map((_, i) => (
+                      <svg key={i} xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 15.27L16.18 18 14.54 11.97 20 7.24l-6.91-.59L10 0 7.91 6.65 1 7.24l4.46 4.73L5.82 18z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <div className="text-sm text-gray-700">{a.commentaire}</div>
+                </div>
+              </div>
+            ))}
+
+            <div className="mt-4">
+              <h4 className="mb-2 text-lg font-semibold">Laisser un avis</h4>
+              <form onSubmit={handleSubmitAvis}>
+                <div className="flex gap-2 mb-2">
+                  <select
+                    value={newAvis.note}
+                    onChange={(e) => setNewAvis({ ...newAvis, note: parseInt(e.target.value) })}
+                    className="px-3 py-1 border rounded"
+                  >
+                    <option value={5}>5 étoiles</option>
+                    <option value={4}>4 étoiles</option>
+                    <option value={3}>3 étoiles</option>
+                    <option value={2}>2 étoiles</option>
+                    <option value={1}>1 étoile</option>
+                  </select>
+                  <button
+                    type="submit"
+                    className="px-3 py-1 text-white bg-green-500 rounded hover:bg-green-600"
+                    disabled={submitting}
+                  >
+                    {submitting ? "Envoi en cours..." : "Envoyer l'avis"}
+                  </button>
+                </div>
+                <textarea
+                  value={newAvis.commentaire}
+                  onChange={(e) => setNewAvis({ ...newAvis, commentaire: e.target.value })}
+                  className="w-full px-3 py-2 border rounded"
+                  rows="3"
+                  placeholder="Votre commentaire (facultatif)"
+                />
+              </form>
+            </div>
+
+            <div className="mt-4">
+              <button
+                onClick={() => setSelectedTrajet(null)}
+                className="px-3 py-1 text-white bg-gray-500 rounded hover:bg-gray-600"
+              >
+                Retour à la liste des trajets
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modale signalement */}
+      {showSignalement && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative w-full max-w-xl p-6 bg-white rounded-lg shadow-lg">
+            <button
+              className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
+              onClick={() => setShowSignalement(false)}
+            >
+              ✕
+            </button>
+            <CreerSignalement
+              trajet_id={showSignalement.trajet_id}
+              utilisateur_id={utilisateurId}
+              onSuccess={() => setShowSignalement(false)}
+            />
           </div>
         </div>
       )}
