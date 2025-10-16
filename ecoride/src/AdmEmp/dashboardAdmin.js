@@ -14,6 +14,7 @@ import GestionAvis from "../AdmEmp/Employe/GestionAvis";
 import TrajetsProblemes from "../AdmEmp/Employe/TrajetsProblemes";
 import checkAuth from "../features/checkAuth";
 import axios from "axios";
+import TraitementSignalements from "../Signalement/TaitementSignalement";
 
 const DashboardAdmin = () => {
   const [role, setRole] = useState(null);
@@ -71,6 +72,8 @@ const DashboardAdmin = () => {
         <div className="mb-8 text-gray-700">
           <p className="">Gérer les problèmes de trajets signalés.</p>
           <TrajetsProblemes />
+          <p className="mt-2 text-sm text-gray-500"> Gestion des litiges et problèmes signalés par les utilisateurs. </p>
+          <TraitementSignalements />
         </div>
       </div>
     );
