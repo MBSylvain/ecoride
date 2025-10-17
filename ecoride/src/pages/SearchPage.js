@@ -59,17 +59,24 @@ const SearchPage = () => {
       );
 
       if (response.data && typeof response.data === "object") {
-        if (response.data.data.trajets) {
-          setTrajets(
-            Array.isArray(response.data.data.trajets) ? response.data.data.trajets : []
-          );
-          console.log("Trajets récupérés:", response.data.data.trajets);
-        } else {
-          setTrajets(Array.isArray(response.data.data) ? response.data.data : []);
-        }
-      } else {
-        setTrajets([]);
-      }
+  if (
+    response.data.success === false &&
+    response.data.suggestions &&
+    Object.keys(response.data.suggestions).length > 0
+  ) {
+    setTrajets([]);
+    setSuggestedTrajets(Object.values(response.data.suggestions));
+  } else if (response.data.data && response.data.data.trajets) {
+    setTrajets(Array.isArray(response.data.data.trajets) ? response.data.data.trajets : []);
+    setSuggestedTrajets([]);
+  } else {
+    setTrajets(Array.isArray(response.data.data) ? response.data.data : []);
+    setSuggestedTrajets([]);
+  }
+} else {
+  setTrajets([]);
+  setSuggestedTrajets([]);
+}
     } catch (err) {
       console.error("Erreur lors de la recherche:", err);
       setError(
@@ -105,7 +112,11 @@ const SearchPage = () => {
   const mins = minutes % 60;
   return `${hours}h${mins > 0 ? ` ${mins}min` : ''}`;
 };
-
+const suggestionsArray = Array.isArray(suggestedTrajets)
+  ? suggestedTrajets
+  : suggestedTrajets && typeof suggestedTrajets === "object"
+    ? Object.values(suggestedTrajets)
+    : [];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -215,20 +226,31 @@ const SearchPage = () => {
             <p className="mt-2 text-gray-500">
               Essayez d'autres critères ou dates de recherche.
             </p>
-            {/* Suggestion de trajets alternatifs (optionnel) */}
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold">Suggestions de trajets :</h3>
-              <ul className="mt-2">
-                {trajets.map((trajet) => (
-                  <li key={trajet.trajet_id} className="py-2 border-b">
-                    <p className="font-medium">{trajet.destination}</p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(trajet.date_depart)} - {formatTime(trajet.date_depart)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* Suggestions de trajets alternatifs */}
+            {suggestionsArray.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold">Suggestions de trajets :</h3>
+                <ul className="mt-2">
+                  {suggestedTrajets.map((trajet) => (
+                    <li key={trajet.trajet_id} className="py-2 border-b">
+                      <p className="font-medium">{trajet.ville_depart} → {trajet.ville_arrivee}</p>
+                      <p className="text-sm text-gray-500">
+                        {trajet.date_depart} - {trajet.heure_depart}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Conducteur : {trajet.conducteur_prenom} {trajet.conducteur_nom} ({trajet.conducteur_email})
+                      </p>
+                      <button
+                        className="px-4 py-2 mt-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                        onClick={() => handleReservation(trajet.trajet_id)}
+                      >
+                        Réserver ce trajet
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
