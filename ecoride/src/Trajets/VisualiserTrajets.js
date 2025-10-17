@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreateTrajetModal from './CreateTrajetModal';
 import EditTrajetModal from './EditTrajetModal';
+import BoutonStatutTrajet from '../components/ButtonStatutTrajet';
 
 // Exemple de composant Modal générique pour la consultation des détails
 const Modal = ({ isOpen, onClose, title, children }) => {
@@ -307,6 +308,7 @@ async function handleDeleteTrajet(trajetId) {
                   >
                     Supprimer
                   </button>
+                  <BoutonStatutTrajet trajet={trajet} />
                   </div>
                 </td>
               </tr>
