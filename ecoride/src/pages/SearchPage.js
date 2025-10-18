@@ -59,23 +59,23 @@ const SearchPage = () => {
       );
 
       if (response.data && typeof response.data === "object") {
-  if (
-    response.data.success === false &&
-    response.data.suggestions &&
-    Object.keys(response.data.suggestions).length > 0
-  ) {
-    setTrajets([]);
-    setSuggestedTrajets(Object.values(response.data.suggestions));
-  } else if (response.data.data && response.data.data.trajets) {
-    setTrajets(Array.isArray(response.data.data.trajets) ? response.data.data.trajets : []);
-    setSuggestedTrajets([]);
-  } else {
-    setTrajets(Array.isArray(response.data.data) ? response.data.data : []);
-    setSuggestedTrajets([]);
-  }
-} else {
-  setTrajets([]);
-  setSuggestedTrajets([]);
+        if (
+          response.data.success === false &&
+          response.data.suggestions &&
+          Object.keys(response.data.suggestions).length > 0
+        ) {
+          setTrajets([]);
+          setSuggestedTrajets(Object.values(response.data.suggestions));
+        } else if (response.data.data && response.data.data.trajets) {
+          setTrajets(Array.isArray(response.data.data.trajets) ? response.data.data.trajets : []);
+          setSuggestedTrajets([]);
+        } else {
+          setTrajets(Array.isArray(response.data.data) ? response.data.data : []);
+          setSuggestedTrajets([]);
+        }
+      } else {
+        setTrajets([]);
+        setSuggestedTrajets([]);
 }
     } catch (err) {
       console.error("Erreur lors de la recherche:", err);
