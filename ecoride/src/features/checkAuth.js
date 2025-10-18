@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 
 
@@ -16,6 +15,8 @@ const checkAuth = async () => {
       localStorage.setItem("utilisateur_id", response.data.utilisateur_id);
       localStorage.setItem("user.email", response.data.email);
       localStorage.setItem("user.role", response.data.role);
+      localStorage.setItem("Authenticated", "true");
+      
             return true;
     } else {
       localStorage.clear();
