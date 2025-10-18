@@ -4,6 +4,8 @@ import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/PrivateRoute";
+import { useState } from "react";
+import { AuthProvider } from "./contexts/AuthContext";
 
  // Import des composants pour les pages
 import Accueil from "./pages/accueil";
@@ -59,10 +61,14 @@ import VisualiserReservations from "./Reservations/VisualiserReservations";
 
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   return (
     <Router>
+       <AuthProvider>
       <div className="App">
         <Header />
+     
+
         <Routes>
           {/* Routes pour la gestion des pages*/}
           <Route exact path="/" element={<Accueil />} />
@@ -130,6 +136,7 @@ function App() {
         </Routes>
         <Footer />
       </div>
+      </AuthProvider>
     </Router>
   );
 }
