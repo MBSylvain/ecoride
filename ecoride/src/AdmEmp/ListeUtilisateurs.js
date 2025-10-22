@@ -2,179 +2,105 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const ListeUtilisateurs = () => {
-  const [users, setUsers] = useState([]);
+  const [utilisateurs, setUtilisateurs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("Tous");
-  const [statutFilter, setStatutFilter] = useState("Tous");
-  const [sortKey, setSortKey] = useState("nom");
-  const [sortAsc, setSortAsc] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 10;
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Pour la modale de création/édition
-  const [showModal, setShowModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const utilisateursPerPage = 10;
 
   useEffect(() => {
-    fetchUsers();
+    fetchUtilisateurs();
   }, []);
 
-  const fetchUsers = () => {
+  const fetchUtilisateurs = async () => {
     setLoading(true);
-    axios
-      .get("http://localhost/api/ControllersAdministrateur/UtilisateurAdminController.php", {
+    try {
+      const res = await axios.get("http://localhost/api/ControllersAdministrateur/UtilisateurAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
-      })
-      .then(res => {
-        let usersArray = [];
-        if (Array.isArray(res.data)) {
-          usersArray = res.data;
-        } else if (Array.isArray(res.data.data)) {
-          usersArray = res.data.data;
-        }
-        setUsers(usersArray);
-      })
-      .catch(() => setError("Erreur lors du chargement des utilisateurs."))
-      .finally(() => setLoading(false));
-  };
-
-  // Recherche, filtre, tri
-  const filteredUsers = users
-    .filter(u =>
-      (search === "" ||
-        u.nom?.toLowerCase().includes(search.toLowerCase()) ||
-        u.email?.toLowerCase().includes(search.toLowerCase()))
-      && (roleFilter === "Tous" || u.role === roleFilter)
-      && (statutFilter === "Tous" || (statutFilter === "Actif" ? (!u.suspendu && u.suspendu !== undefined) : (u.suspendu && u.suspendu !== undefined)))
-    )
-    .sort((a, b) => {
-      if (!a[sortKey] || !b[sortKey]) return 0;
-      if (a[sortKey] < b[sortKey]) return sortAsc ? -1 : 1;
-      if (a[sortKey] > b[sortKey]) return sortAsc ? 1 : -1;
-      return 0;
-    });
-
-  // Pagination
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-  const paginatedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage);
-
-  // Gestion suppression
-  const handleDelete = (utilisateur_id) => {
-    if (window.confirm("Supprimer ce compte utilisateur ?")) {
-      axios.delete(`http://localhost/api/ControllersAdministrateur/UtilisateurAdminController.php?utilisateur_id=${utilisateur_id}`, {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(() => fetchUsers());
+      });
+      setUtilisateurs(Array.isArray(res.data) ? res.data : res.data.data || []);
+    } catch (e) {
+      // Erreur silencieuse
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Gestion création/édition
-  const handleSave = (user) => {
-    const method = user.utilisateur_id ? "put" : "post";
-    axios[method]("http://localhost/api/ControllersAdministrateur/UtilisateurAdminController.php", user, {
-      withCredentials: true,
-      headers: { "Content-Type": "application/json" }
-    })
-    .then(() => {
-      setShowModal(false);
-      fetchUsers();
-    });
-  };
+  // Filtrage
+  const filteredUtilisateurs = utilisateurs
+    .filter(u =>
+      (search === "" ||
+        String(u.nom).toLowerCase().includes(search.toLowerCase()) ||
+        String(u.prenom).toLowerCase().includes(search.toLowerCase()) ||
+        String(u.email).toLowerCase().includes(search.toLowerCase()))
+      && (roleFilter === "Tous" || u.role === roleFilter)
+    );
 
-  if (loading) return <p>Chargement...</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
+  // Pagination
+  const totalPages = Math.ceil(filteredUtilisateurs.length / utilisateursPerPage);
+  const paginatedUtilisateurs = filteredUtilisateurs.slice((currentPage - 1) * utilisateursPerPage, currentPage * utilisateursPerPage);
 
   return (
-    <section>
-      <h2>Utilisateurs</h2>
-      {/* Recherche et filtres */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
+    <section className="max-w-4xl p-8 mx-auto my-8 font-sans bg-white rounded-lg shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold text-primary-100">Liste des utilisateurs</h2>
+      <div className="flex flex-wrap items-center gap-4 mb-6">
         <input
           type="text"
-          placeholder="Recherche nom ou email..."
+          placeholder="Recherche nom, prénom ou email..."
           value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="px-2 py-1 border rounded"
+          onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
         />
-        <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="px-2 py-1 border rounded">
-          <option value="Tous">Tous les rôles</option>
-          <option value="Utilisateur">Utilisateur</option>
-          <option value="Employé">Employé</option>
-          <option value="Administrateur">Administrateur</option>
-        </select>
-        <select value={statutFilter} onChange={e => setStatutFilter(e.target.value)} className="px-2 py-1 border rounded">
-          <option value="Tous">Tous les statuts</option>
-          <option value="Actif">Actif</option>
-          <option value="Inactif">Inactif</option>
-        </select>
-        <button
-          className="px-4 py-2 ml-auto text-white bg-blue-600 rounded hover:bg-blue-700"
-          onClick={() => { setSelectedUser(null); setShowModal(true); }}
+        <select
+          value={roleFilter}
+          onChange={e => { setRoleFilter(e.target.value); setCurrentPage(1); }}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
         >
-          Créer un compte
-        </button>
+          <option value="Tous">Tous les rôles</option>
+          <option value="Administrateur">Administrateur</option>
+          <option value="Employé">Employé</option>
+          <option value="Utilisateur">Utilisateur</option>
+        </select>
       </div>
-      {/* Tableau */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm border">
-          <thead>
-            <tr>
-              <th className="px-2 py-1 border cursor-pointer" aria-label="Trier par nom" onClick={() => { setSortKey("nom"); setSortAsc(k => !k); }}>Nom</th>
-              <th className="px-2 py-1 border cursor-pointer" aria-label="Trier par email" onClick={() => { setSortKey("email"); setSortAsc(k => !k); }}>Email</th>
-              <th className="px-2 py-1 border cursor-pointer" aria-label="Trier par rôle" onClick={() => { setSortKey("role"); setSortAsc(k => !k); }}>Rôle</th>
-              <th className="px-2 py-1 border cursor-pointer" aria-label="Trier par statut" onClick={() => { setSortKey("suspendu"); setSortAsc(k => !k); }}>Statut</th>
-              <th className="px-2 py-1 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedUsers.map(user => (
-              <tr key={user.utilisateur_id}>
-                <td className="px-2 py-1 border">{user.nom}</td>
-                <td className="px-2 py-1 border">{user.email}</td>
-                <td className="px-2 py-1 border">
-                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    user.role === "Administrateur" ? "bg-blue-100 text-blue-800" :
-                    user.role === "Employé" ? "bg-yellow-100 text-yellow-800" :
-                    "bg-green-100 text-green-800"
-                  }`}>
-                    {user.role}
-                  </span>
-                </td>
-                <td className="px-2 py-1 border">
-                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    !user.suspendu ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                  }`}>
-                    {!user.suspendu ? "Actif" : "Inactif"}
-                  </span>
-                </td>
-                <td className="flex flex-wrap gap-2 px-2 py-1 border">
-                  <button
-                    className="px-2 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-                    onClick={() => { setSelectedUser(user); setShowModal(true); }}
-                  >
-                    Modifier
-                  </button>
-                  <button
-                    className="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-                    onClick={() => handleDelete(user.utilisateur_id)}
-                  >
-                    Supprimer
-                  </button>
-                </td>
+      {loading ? (
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement...</span>
+        </div>
+      ) : paginatedUtilisateurs.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm bg-white border border-gray-100 rounded-lg shadow">
+            <thead>
+              <tr className="bg-customGrey-100">
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Nom</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Prénom</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Email</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Téléphone</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Rôle</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {paginatedUtilisateurs.map(u => (
+                <tr key={u.utilisateur_id}>
+                  <td className="px-4 py-2 border-b">{u.nom}</td>
+                  <td className="px-4 py-2 border-b">{u.prenom}</td>
+                  <td className="px-4 py-2 border-b">{u.email}</td>
+                  <td className="px-4 py-2 border-b">{u.telephone}</td>
+                  <td className="px-4 py-2 border-b">{u.role}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="text-gray-600">Aucun utilisateur trouvé.</p>
+      )}
       {/* Pagination */}
-      <div className="flex justify-center gap-2 my-4">
+      <div className="flex justify-center gap-2 my-6">
         <button
-          className="px-2 py-1 border rounded"
-          aria-label="Page précédente"
+          className="px-4 py-2 border border-gray-300 rounded-lg"
           onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
           disabled={currentPage === 1}
         >
@@ -183,127 +109,21 @@ const ListeUtilisateurs = () => {
         {[...Array(totalPages)].map((_, idx) => (
           <button
             key={idx}
-            className={`px-2 py-1 border rounded ${currentPage === idx + 1 ? "bg-customGreen-100 text-white" : ""}`}
-            aria-label={`Page ${idx + 1}`}
+            className={`px-4 py-2 border border-gray-300 rounded-lg ${currentPage === idx + 1 ? "bg-customGreen-100 text-white" : ""}`}
             onClick={() => setCurrentPage(idx + 1)}
           >
             {idx + 1}
           </button>
         ))}
         <button
-          className="px-2 py-1 border rounded"
-          aria-label="Page suivante"
+          className="px-4 py-2 border border-gray-300 rounded-lg"
           onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
           disabled={currentPage === totalPages}
         >
           Suivant
         </button>
       </div>
-
-      {/* Modale création/édition */}
-      {showModal && (
-        <UserModal
-          user={selectedUser}
-          onClose={() => setShowModal(false)}
-          onSave={handleSave}
-        />
-      )}
     </section>
-  );
-};
-
-// Modale utilisateur (création/édition)
-const UserModal = ({ user, onClose, onSave }) => {
-  const [form, setForm] = useState(
-    user || { nom: "", email: "", role: "Utilisateur", suspendu: false }
-  );
-
-  const handleChange = e => {
-    const { name, value, type, checked } = e.target;
-    setForm(f => ({
-      ...f,
-      [name]: type === "checkbox" ? checked : value
-    }));
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    onSave(form);
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <button
-          className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
-          onClick={onClose}
-        >
-          ✕
-        </button>
-        <h2 className="mb-4 text-xl font-bold">{user ? "Modifier" : "Créer"} un utilisateur</h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label className="block text-sm font-medium">Nom</label>
-            <input
-              name="nom"
-              className="w-full px-2 py-1 border rounded"
-              value={form.nom}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Email</label>
-            <input
-              name="email"
-              type="email"
-              className="w-full px-2 py-1 border rounded"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Rôle</label>
-            <select
-              name="role"
-              className="w-full px-2 py-1 border rounded"
-              value={form.role}
-              onChange={handleChange}
-            >
-              <option value="Utilisateur">Utilisateur</option>
-              <option value="Modérateur">Employé</option>
-              <option value="Administrateur">Administrateur</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              name="suspendu"
-              type="checkbox"
-              checked={form.suspendu}
-              onChange={handleChange}
-              id="suspendu"
-            />
-            <label htmlFor="suspendu" className="text-sm">Compte suspendu</label>
-          </div>
-          <div className="flex gap-2 mt-4">
-            <button
-              type="submit"
-              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-            >
-              Enregistrer
-            </button>
-            <button
-              type="button"
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              onClick={onClose}
-            >
-              Annuler
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
   );
 };
 
