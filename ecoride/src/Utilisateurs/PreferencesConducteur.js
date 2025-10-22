@@ -122,10 +122,10 @@ const PreferencesConducteur = () => {
   };
 
   return (
-    <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-xl font-semibold">Mes préférences conducteur</h2>
+    <div className="max-w-3xl p-8 mx-auto mb-8 bg-white rounded-lg shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold text-primary-100">Mes préférences conducteur</h2>
       <button
-        className="px-4 py-2 mb-4 text-white rounded bg-primary-100 hover:bg-primary-200"
+        className="px-6 py-2 mb-6 font-bold text-white transition-all duration-200 rounded-md shadow-md bg-primary-100 hover:bg-customGreen2-100"
         onClick={() => {
           // Si l'utilisateur a déjà des préférences, pré-remplir le formulaire
           if (preferences && preferences.length > 0) {
@@ -143,81 +143,100 @@ const PreferencesConducteur = () => {
 
       {/* Modale d'ajout de préférences */}
       {showAdd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="w-full max-w-md p-6 bg-white rounded shadow-lg">
-            <h3 className="mb-4 text-lg font-semibold">Sélectionnez vos préférences</h3>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+          aria-modal="true"
+          role="dialog"
+        >
+          <div className="relative w-full max-w-lg p-8 transition-all duration-300 bg-white rounded-lg shadow-lg">
+            <button
+              className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
+              onClick={() => setShowAdd(false)}
+              aria-label="Fermer"
+            >
+              ✕
+            </button>
+            <h3 className="mb-4 text-lg font-bold text-primary-100">Sélectionnez vos préférences</h3>
             <form onSubmit={handleAddSubmit} className="space-y-2">
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="fumeur_autorise"
                   checked={!!newPrefs.fumeur_autorise}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Fumeur autorisé
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="animaux_autorises"
                   checked={!!newPrefs.animaux_autorises}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Animaux autorisés
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="bagages_volumineux"
                   checked={!!newPrefs.bagages_volumineux}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Bagages volumineux
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="musique_autorisee"
                   checked={!!newPrefs.musique_autorisee}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Musique autorisée
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="discussion"
                   checked={!!newPrefs.discussion}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Discussion autorisée
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="pauses_prevues"
                   checked={!!newPrefs.pauses_prevues}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Pauses prévues
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="climatisation"
                   checked={!!newPrefs.climatisation}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Climatisation
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="nourriture_autorisee"
                   checked={!!newPrefs.nourriture_autorisee}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Nourriture autorisée
               </label>
-              <label>
+              <label className="flex items-center">
                 Type de conduite :
                 <select
                   name="type_conduite"
                   value={newPrefs.type_conduite}
                   onChange={handleChange}
-                  className="ml-2 border rounded"
+                  className="px-2 py-1 ml-2 border rounded focus:ring-2 focus:ring-customGreen2-100"
                 >
                   <option value="">Sélectionner</option>
                   <option value="souple">Souple</option>
@@ -225,25 +244,26 @@ const PreferencesConducteur = () => {
                   <option value="rapide">Rapide</option>
                 </select>
               </label>
-              <label>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
                   name="accessibilite_pmr"
                   checked={!!newPrefs.accessibilite_pmr}
                   onChange={handleChange}
+                  className="mr-2 accent-customGreen2-100"
                 /> Accessibilité PMR
               </label>
               <div className="flex justify-end mt-4 space-x-2">
                 <button
                   type="button"
-                  className="px-4 py-2 bg-gray-200 rounded"
+                  className="px-4 py-2 transition-all duration-200 bg-gray-200 rounded hover:bg-gray-300"
                   onClick={() => setShowAdd(false)}
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white rounded bg-primary-100 hover:bg-primary-200"
+                  className="px-4 py-2 font-bold text-white transition-all duration-200 rounded bg-primary-100 hover:bg-customGreen2-100"
                 >
                   Enregistrer
                 </button>
@@ -254,10 +274,13 @@ const PreferencesConducteur = () => {
       )}
 
       {loading ? (
-        <div className="p-4 text-center">Chargement...</div>
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement...</span>
+        </div>
       ) : preferences && preferences.length > 0 ? (
         <div className="mb-4">
-          <h3 className="mb-2 font-semibold">Préférences actuelles :</h3>
+          <h3 className="mb-2 font-semibold text-primary-100">Préférences actuelles :</h3>
           <ul className="grid grid-cols-1 gap-2 md:grid-cols-2">
             <li>Fumeur autorisé : <strong>{preferences[0].fumeur_autorise ? "Oui" : "Non"}</strong></li>
             <li>Animaux autorisés : <strong>{preferences[0].animaux_autorises ? "Oui" : "Non"}</strong></li>
@@ -272,7 +295,7 @@ const PreferencesConducteur = () => {
           </ul>
         </div>
       ) : (
-        <p>Aucune préférence enregistrée.</p>
+        <p className="text-gray-600">Aucune préférence enregistrée.</p>
       )}
     </div>
   );
