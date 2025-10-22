@@ -9,99 +9,133 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-primary-100 text-white py-8">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-row mx-10 justify-center gap-x-24">
-          <div>
+    <footer className="py-8 font-sans text-white bg-primary-100">
+      <div className="container px-4 mx-auto">
+        <div className="flex flex-col justify-center mx-4 md:flex-row md:mx-10 gap-x-16 gap-y-8">
+          <div className="flex justify-center md:justify-start">
             <img
-              src="./logoecoblanc.png"
-              width={50}
+              src="/logoecoblanc.png"
+              width={60}
               height={50}
-              alt="logo"
-              className=""
+              alt="logo EcoRide"
+              className="rounded shadow"
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <h3 className="mb-4 text-lg font-semibold">Company</h3>
             <ul>
               <li>
-                <Link to="/" className="hover:underline">
+                <Link
+                  to="/"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
                   Accueil
                 </Link>
               </li>
               <li>
-                <Link to="/Search" className="hover:underline">
+                <Link
+                  to="/Search"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
                   Trouver un trajet
                 </Link>
               </li>
               <li>
-                <Link to="/Aboutus" className="hover:underline">
-                  A propos de nous
+                <Link
+                  to="/Aboutus"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
+                  À propos de nous
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Support</h3>
+            <h3 className="mb-4 text-lg font-semibold">Support</h3>
             <ul>
               <li>
-                <Link to="/help" className="hover:underline">
-                  Help Center
+                <Link
+                  to="/help"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
+                  Centre d'aide
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:underline">
-                  Contact Us
+                <Link
+                  to="/contact"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
+                  Contact
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:underline">
-                  Privacy Policy
+                <Link
+                  to="/privacy"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
+                  Politique de confidentialité
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Services</h3>
+            <h3 className="mb-4 text-lg font-semibold">Services</h3>
             <ul>
               <li>
-                <Link to="/consulting" className="hover:underline">
+                <Link
+                  to="/consulting"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
                   Consulting
                 </Link>
               </li>
               <li>
-                <Link to="/sales" className="hover:underline">
-                  Sales
+                <Link
+                  to="/sales"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
+                  Ventes
                 </Link>
               </li>
               <li>
-                <Link to="/support" className="hover:underline">
+                <Link
+                  to="/support"
+                  className="text-white transition-colors hover:text-customGreen2-100"
+                >
                   Support
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
+            <h3 className="mb-4 text-lg font-semibold">Suivez-nous</h3>
             <div className="flex space-x-4">
               <a
                 href="https://www.facebook.com"
-                className="hover:text-gray-400"
+                aria-label="Facebook"
+                className="text-2xl text-white transition-colors hover:text-customGreen2-100"
               >
                 <FaFacebookF />
               </a>
-              <a href="https://www.twitter.com" className="hover:text-gray-400">
+              <a
+                href="https://www.twitter.com"
+                aria-label="Twitter"
+                className="text-2xl text-white transition-colors hover:text-customGreen2-100"
+              >
                 <FaTwitter />
               </a>
               <a
                 href="https://www.instagram.com"
-                className="hover:text-gray-400"
+                aria-label="Instagram"
+                className="text-2xl text-white transition-colors hover:text-customGreen2-100"
               >
                 <FaInstagram />
               </a>
               <a
                 href="https://www.linkedin.com"
-                className="hover:text-gray-400"
+                aria-label="LinkedIn"
+                className="text-2xl text-white transition-colors hover:text-customGreen2-100"
               >
                 <FaLinkedinIn />
               </a>
