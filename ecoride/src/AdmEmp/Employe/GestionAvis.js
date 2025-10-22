@@ -27,7 +27,7 @@ const GestionAvis = () => {
     axios
       .put(
         "http://localhost/api/ControllersAdministrateur/AvisAdminController.php",
-        {avis_id: id, statut: valider ? "publié" : "refusé"  },
+        { avis_id: id, statut: valider ? "publié" : "refusé" },
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
@@ -40,47 +40,61 @@ const GestionAvis = () => {
       .catch(() => setFeedback("Erreur lors du traitement."));
   };
 
-  if (loading) return <p>Chargement...</p>;
   return (
-    <section className="max-w-3xl p-4 mx-auto my-8 bg-white rounded shadow">
-      <h2 className="mb-4 text-lg font-bold">Gestion des avis à valider</h2>
-      {feedback && <div className="mb-2 text-green-700">{feedback}</div>}
-      {avis.length === 0 ? (
-        <p>Aucun avis à traiter.</p>
+    <section className="max-w-3xl p-8 mx-auto my-8 font-sans bg-white rounded-lg shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold text-primary-100">Gestion des avis à valider</h2>
+      {loading ? (
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement...</span>
+        </div>
       ) : (
-        <table className="min-w-full text-sm border">
-          <thead>
-            <tr>
-              <th className="px-2 py-1 border">Utilisateur</th>
-              <th className="px-2 py-1 border">Note</th>
-              <th className="px-2 py-1 border">Commentaire</th>
-              <th className="px-2 py-1 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {avis.map(a => (
-              <tr key={a.avis_id || a.id}>
-                <td className="px-2 py-1 border">{a.utilisateur_id}</td>
-                <td className="px-2 py-1 border">{a.note}</td>
-                <td className="px-2 py-1 border">{a.commentaire}</td>
-                <td className="flex gap-2 px-2 py-1 border">
-                  <button
-                    className="px-2 py-1 text-white bg-green-600 rounded hover:bg-green-700"
-                    onClick={() => handleValidation(a.avis_id || a.id, true)}
-                  >
-                    Valider
-                  </button>
-                  <button
-                    className="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700"
-                    onClick={() => handleValidation(a.avis_id || a.id, false)}
-                  >
-                    Refuser
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          {feedback && (
+            <div className="px-4 py-2 mb-4 font-semibold text-white rounded shadow bg-customGreen2-100">
+              {feedback}
+            </div>
+          )}
+          {avis.length === 0 ? (
+            <p className="text-gray-600">Aucun avis à traiter.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm bg-white border border-gray-100 rounded-lg shadow">
+                <thead>
+                  <tr className="bg-customGrey-100">
+                    <th className="px-4 py-2 font-semibold text-left text-primary-100">Utilisateur</th>
+                    <th className="px-4 py-2 font-semibold text-left text-primary-100">Note</th>
+                    <th className="px-4 py-2 font-semibold text-left text-primary-100">Commentaire</th>
+                    <th className="px-4 py-2 font-semibold text-left text-primary-100">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {avis.map(a => (
+                    <tr key={a.avis_id || a.id} className="border-b border-gray-200">
+                      <td className="px-4 py-2">{a.utilisateur_id}</td>
+                      <td className="px-4 py-2">{a.note}</td>
+                      <td className="px-4 py-2">{a.commentaire}</td>
+                      <td className="flex gap-2 px-4 py-2">
+                        <button
+                          className="px-4 py-2 font-bold text-white transition-all duration-200 rounded-md bg-customGreen-100 hover:bg-customGreen2-100"
+                          onClick={() => handleValidation(a.avis_id || a.id, true)}
+                        >
+                          Valider
+                        </button>
+                        <button
+                          className="px-4 py-2 font-bold text-white transition-all duration-200 bg-red-500 rounded-md hover:bg-red-600"
+                          onClick={() => handleValidation(a.avis_id || a.id, false)}
+                        >
+                          Refuser
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
