@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import CreateVehicleModal from './CreateVehicleModal';
 import EditVehicleModal from './EditVehicleModal';
-import { Link } from 'react-router-dom';
 
 const VoitureUser = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -22,8 +21,7 @@ const VoitureUser = () => {
       try {
         const response = await axios.get(
           `http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`,
-          { withCredentials: true },
-          { headers: { 'Content-Type': 'application/json' } }
+          { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(response.data || []);
       } catch (error) {
@@ -44,8 +42,7 @@ const VoitureUser = () => {
       try {
         await axios.delete(
           `http://localhost/api/Controllers/VoitureController.php?voiture_id=${vehicleId}`,
-          { withCredentials: true },
-          { headers: { 'Content-Type': 'application/json' } }
+          { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(vehicles.filter((vehicle) => vehicle.voiture_id !== vehicleId));
       } catch (error) {
@@ -58,42 +55,43 @@ const VoitureUser = () => {
   const handleEdit = (vehicle) => {
     setSelectedVehicle(vehicle);
     setShowEditModal(true);
-
-    // Ajouter voiture_id dans l'URL
     navigate(`/vehicles/edit/${vehicle.voiture_id}`);
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-xl font-semibold">Mes véhicules</h2>
+    <div className="max-w-4xl p-8 mx-auto bg-white rounded-lg shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold text-primary-100">Mes véhicules</h2>
       {isLoading ? (
-        <p>Chargement...</p>
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement...</span>
+        </div>
       ) : vehicles.length > 0 ? (
-        <table className="min-w-full bg-white">
+        <table className="min-w-full bg-white border border-gray-100 rounded-lg shadow">
           <thead>
-            <tr>
-              <th>Modèle</th>
-              <th>Immatriculation</th>
-              <th>Énergie</th>
-              <th>Actions</th>
+            <tr className="bg-customGrey-100">
+              <th className="px-4 py-2 font-semibold text-left text-primary-100">Modèle</th>
+              <th className="px-4 py-2 font-semibold text-left text-primary-100">Immatriculation</th>
+              <th className="px-4 py-2 font-semibold text-left text-primary-100">Énergie</th>
+              <th className="px-4 py-2 font-semibold text-left text-primary-100">Actions</th>
             </tr>
           </thead>
           <tbody>
             {vehicles.map((vehicle) => (
-              <tr key={vehicle.voiture_id}>
-                <td>{vehicle.modele}</td>
-                <td>{vehicle.immatriculation}</td>
-                <td>{vehicle.energie}</td>
-                <td>
-                  <button
-                  
-                    className="px-2 py-1 text-white bg-blue-500 rounded"
+              <tr key={vehicle.voiture_id} className="border-b border-gray-200">
+                <td className="px-4 py-2">{vehicle.modele}</td>
+                <td className="px-4 py-2">{vehicle.immatriculation}</td>
+                <td className="px-4 py-2">{vehicle.energie}</td>
+                <td className="px-4 py-2">
+                  <Link
+                    to={`/UpdateVehicleForm/${vehicle.voiture_id}`}
+                    className="px-3 py-1 mr-2 font-semibold text-white transition-all duration-200 rounded-md bg-customGreen-100 hover:bg-customGreen2-100"
                   >
-                   <Link to={`/UpdateVehicleForm/${vehicle.voiture_id}`}>Modifier</Link>
-                  </button>
+                    Modifier
+                  </Link>
                   <button
                     onClick={() => handleDelete(vehicle.voiture_id)}
-                    className="px-2 py-1 ml-2 text-white bg-red-500 rounded"
+                    className="px-3 py-1 font-semibold text-white transition-all duration-200 bg-red-500 rounded-md hover:bg-red-600"
                   >
                     Supprimer
                   </button>
@@ -103,11 +101,11 @@ const VoitureUser = () => {
           </tbody>
         </table>
       ) : (
-        <p>Aucun véhicule trouvé.</p>
+        <p className="text-gray-600">Aucun véhicule trouvé.</p>
       )}
       <button
         onClick={() => setShowCreateModal(true)}
-        className="px-4 py-2 mt-4 text-white bg-green-500 rounded"
+        className="px-6 py-2 mt-6 font-bold text-white transition-all duration-200 rounded-md shadow-md bg-primary-100 hover:bg-customGreen2-100"
       >
         Ajouter un véhicule
       </button>
@@ -125,7 +123,7 @@ const VoitureUser = () => {
           isOpen={showEditModal}
           onClose={() => {
             setShowEditModal(false);
-            navigate('/vehicles'); // Retirer voiture_id de l'URL
+            navigate('/vehicles');
           }}
           onVehicleUpdated={(updatedVehicle) => {
             setVehicles(
@@ -134,7 +132,7 @@ const VoitureUser = () => {
               )
             );
           }}
-          vehicle={selectedVehicle} // Passez l'objet complet
+          vehicle={selectedVehicle}
         />
       )}
     </div>
