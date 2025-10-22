@@ -56,23 +56,25 @@ const CreerSignalement = ({ trajet_id, utilisateur_id, onSuccess }) => {
 
   return (
     <form
-      className="flex flex-col max-w-xl gap-4 p-6 mx-auto my-8 bg-white rounded-lg shadow"
+      className="flex flex-col max-w-xl gap-4 p-6 mx-auto my-8 font-sans bg-white rounded-lg shadow-md"
       onSubmit={handleSubmit}
     >
-      <h2 className="mb-2 text-xl font-bold text-customGreen-100">Signaler un trajet problématique</h2>
+      <h2 className="mb-2 text-xl font-bold text-primary-100">Signaler un trajet problématique</h2>
       {/* Champs cachés pour trajet_id et utilisateur_id */}
       <input type="hidden" name="trajet_id" value={form.trajet_id} />
       <input type="hidden" name="utilisateur_id" value={utilisateur_id} />
       {feedback && (
-        <div className={`p-2 rounded text-center ${feedback.includes("succès") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+        <div className={`p-2 rounded text-center font-semibold shadow-md ${
+          feedback.includes("succès") ? "bg-customGreen2-100 text-white" : "bg-red-500 text-white"
+        }`}>
           {feedback}
         </div>
       )}
       <div>
-        <label className="block mb-1 text-sm font-medium">Motif du signalement</label>
+        <label className="block mb-1 text-sm font-semibold text-primary-100">Motif du signalement</label>
         <select
           name="motif"
-          className="w-full px-2 py-1 border rounded"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
           value={form.motif}
           onChange={handleChange}
           required
@@ -84,10 +86,10 @@ const CreerSignalement = ({ trajet_id, utilisateur_id, onSuccess }) => {
         </select>
       </div>
       <div>
-        <label className="block mb-1 text-sm font-medium">Description détaillée</label>
+        <label className="block mb-1 text-sm font-semibold text-primary-100">Description détaillée</label>
         <textarea
           name="description"
-          className="w-full px-2 py-1 border rounded"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
           value={form.description}
           onChange={handleChange}
           required
@@ -95,17 +97,21 @@ const CreerSignalement = ({ trajet_id, utilisateur_id, onSuccess }) => {
         />
       </div>
       <div>
-        <label className="block mb-1 text-sm font-medium">Statut</label>
+        <label className="block mb-1 text-sm font-semibold text-primary-100">Statut</label>
         <input
           name="statut"
-          className="w-full px-2 py-1 border rounded"
+          className="w-full p-3 text-gray-500 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed"
           value={form.statut}
           disabled
         />
       </div>
       <button
         type="submit"
-        className="w-full py-2 mt-2 font-semibold text-white transition rounded bg-customGreen-100 hover:bg-customGreen-200"
+        className={`w-full py-2 mt-2 font-bold rounded-md shadow-md transition-colors ${
+          loading
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-primary-100 text-white hover:bg-customPink-100"
+        }`}
         disabled={loading}
       >
         {loading ? "Envoi en cours..." : "Envoyer le signalement"}
