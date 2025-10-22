@@ -10,15 +10,10 @@ const ReservationsSection = () => {
   const [error, setError] = useState(null);
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
 
-  // Fonction séparée pour récupérer les réservations
   const fetchReservations = async () => {
     setReservationsLoading(true);
     setError(null);
-    
     try {
-      console.log("Tentative de récupération des réservations pour l'utilisateur:", utilisateur_id);
-      
-      // Ajout du paramètre action qui est crucial
       const response = await axios.get(
         `http://localhost/api/Controllers/ReservationController.php?&utilisateur_id=${utilisateur_id}`,
         {
@@ -26,10 +21,6 @@ const ReservationsSection = () => {
           withCredentials: true
         }
       );
-      
-      console.log("Réponse API réservations:", response.data);
-      
-      // Traitement de la réponse
       if (response.data && typeof response.data === 'object') {
         if (response.data.reservations) {
           setReservations(Array.isArray(response.data.reservations) ? response.data.reservations : []);
@@ -40,37 +31,28 @@ const ReservationsSection = () => {
         setReservations([]);
       }
     } catch (error) {
-      console.error("Erreur détaillée:", error);
-      if (error.response) {
-        console.error("Statut:", error.response.status);
-        console.error("Données:", error.response.data);
-      }
       setError("Erreur lors du chargement des réservations: " + error.message);
       setReservations([]);
     } finally {
       setReservationsLoading(false);
     }
   };
-  
-  // useEffect appelle maintenant la fonction séparée
+
   useEffect(() => {
     if (utilisateur_id) {
       fetchReservations();
     }
   }, [utilisateur_id]);
 
-  // Gestion de l'annulation d'une réservation
   const handleCancelReservation = async (reservation_id) => {
     if (!window.confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
       return;
     }
-    
     try {
-      // Ajout du paramètre action pour la requête d'annulation
       const response = await axios.put(
         `http://localhost/api/Controllers/ReservationController.php`,
         {
-          action: "put",  // Ajout de l'action
+          action: "put",
           reservation_id: reservation_id,
           statut: "annulée",
           utilisateur_id: utilisateur_id
@@ -80,96 +62,95 @@ const ReservationsSection = () => {
           withCredentials: true
         }
       );
-      
       if (response.data && response.data.success) {
-        // Mise à jour de l'état local
-        setReservations(prevReservations => 
-          prevReservations.map(res => 
-            res.reservation_id === reservation_id ? {...res, statut: "annulé"} : res
+        setReservations(prevReservations =>
+          prevReservations.map(res =>
+            res.reservation_id === reservation_id ? { ...res, statut: "annulée" } : res
           )
         );
       } else {
         alert(response.data?.message || "Une erreur s'est produite lors de l'annulation");
       }
     } catch (error) {
-      console.error("Erreur lors de l'annulation de la réservation", error);
       alert("Erreur de connexion au serveur");
     }
   };
 
-  // Style conditionnel selon le statut
   const getStatusClass = (status) => {
     switch (status.toLowerCase()) {
-      case "confirmé": return "bg-green-100 text-green-800";
-      case "en attente": return "bg-yellow-100 text-yellow-800";
-      case "annulé": return "bg-red-100 text-red-800";
-      case "refusé": return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "confirmé": return "bg-customGreen2-100 text-white";
+      case "en attente": return "bg-yellow-400 text-black";
+      case "annulée": return "bg-red-500 text-white";
+      case "refusé": return "bg-gray-300 text-gray-800";
+      default: return "bg-primary-100 text-white";
     }
   };
 
-  // Afficher les détails d'une réservation
   const viewReservationDetails = (trajet_id) => {
     navigate(`/dashboard/trajet/${trajet_id}`);
   };
 
   return (
-    <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-xl font-semibold text-primary-100">Mes réservations</h2>
-      
+    <div className="p-6 mb-6 font-sans bg-white rounded-lg shadow-md">
+      <h2 className="mb-4 text-2xl font-bold text-primary-100">Mes réservations</h2>
       {error && (
-        <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded">
+        <div className="p-3 mb-4 text-sm font-semibold text-white bg-red-500 rounded-md shadow-md">
           {error}
         </div>
       )}
-      
-      {/* Ajout d'un bouton de rafraîchissement qui tire parti de la fonction séparée */}
-      <button 
-        onClick={fetchReservations} 
-        className="px-4 py-2 mb-4 text-sm bg-blue-100 rounded hover:bg-blue-200"
+      <button
+        onClick={fetchReservations}
+        className="px-4 py-2 mb-4 text-sm font-bold text-white transition-colors rounded-md shadow-md bg-customGreen-100 hover:bg-customGreen2-100"
       >
         Rafraîchir les données
       </button>
-      
       {reservationsLoading ? (
-        <div className="p-4 text-center text-customGreen-60">Chargement...</div>
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement...</span>
+        </div>
       ) : reservations.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white">
+          <table className="min-w-full text-sm bg-white border border-gray-100 rounded-lg shadow">
             <thead>
-              <tr className="border-b-2 border-gray-200">
-                <th className="px-4 py-3 text-left">Trajet</th>
-                <th className="px-4 py-3 text-left">Date</th>
-                <th className="px-4 py-3 text-left">Places</th>
-                <th className="px-4 py-3 text-left">Montant</th>
-                <th className="px-4 py-3 text-left">Statut</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+              <tr className="bg-customGrey-100">
+                <th className="px-4 py-3 font-semibold text-left text-primary-100">Trajet</th>
+                <th className="px-4 py-3 font-semibold text-left text-primary-100">Date</th>
+                <th className="px-4 py-3 font-semibold text-left text-primary-100">Places</th>
+                <th className="px-4 py-3 font-semibold text-left text-primary-100">Montant</th>
+                <th className="px-4 py-3 font-semibold text-left text-primary-100">Statut</th>
+                <th className="px-4 py-3 font-semibold text-left text-primary-100">Actions</th>
               </tr>
             </thead>
             <tbody>
               {reservations.map((res) => (
-                <tr key={res.reservation_id} className="border-b hover:bg-gray-50">
+                <tr key={res.reservation_id} className="border-b hover:bg-customGrey-100">
                   <td className="px-4 py-3">{res.ville_depart} → {res.ville_arrivee}</td>
                   <td className="px-4 py-3">{res.date_depart}</td>
                   <td className="px-4 py-3">{res.nombre_places_reservees}</td>
-                  <td className="px-4 py-3">{res.nombre_places_reservees}*{res.prix} €</td>
+                  <td className="px-4 py-3">{res.nombre_places_reservees} × {res.prix} €</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded-full ${getStatusClass(res.statut)}`}>
+                    <span className={`px-2 py-1 rounded-full font-bold ${getStatusClass(res.statut)}`}>
                       {res.statut}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <button 
+                  <td className="flex flex-wrap gap-2 px-4 py-3">
+                    <button
                       onClick={() => viewReservationDetails(res.trajet_id)}
-                      className="px-3 py-1 mr-2 text-white rounded bg-primary-100 hover:bg-primary-60"
+                      className="px-3 py-1 font-bold text-white transition-colors rounded-md shadow-md bg-primary-100 hover:bg-customPink-100"
                     >
                       Détails
                     </button>
-                    <Link to={`../VisualiserTrajet/${res.trajet_id}`}>Voir le trajet</Link> 
-                    {res.statut.toLowerCase() !== "annulé" && res.statut.toLowerCase() !== "refusé" && (
-                      <button 
+                    <Link
+                      to={`../VisualiserTrajet/${res.trajet_id}`}
+                      className="px-3 py-1 font-bold text-customGreen2-100 hover:underline"
+                    >
+                      Voir le trajet
+                    </Link>
+                    {res.statut.toLowerCase() !== "annulée" && res.statut.toLowerCase() !== "refusé" && (
+                      <button
                         onClick={() => handleCancelReservation(res.reservation_id)}
-                        className="px-3 py-1 text-white bg-red-600 rounded hover:bg-red-700"
+                        className="px-3 py-1 font-bold text-white transition-colors bg-red-500 rounded-md shadow-md hover:bg-red-600"
                       >
                         Annuler
                       </button>
@@ -182,11 +163,13 @@ const ReservationsSection = () => {
         </div>
       ) : (
         <>
-          <p>Vous n'avez pas encore effectué de réservation.</p>
-          <div className="mt-4">
-            <button 
+          <div className="p-4 text-center text-gray-600 rounded-lg bg-customGrey-100">
+            Vous n'avez pas encore effectué de réservation.
+          </div>
+          <div className="flex justify-center mt-4">
+            <button
               onClick={() => navigate('/search')}
-              className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700"
+              className="px-4 py-2 font-bold text-white transition-colors rounded-md shadow-md bg-customGreen-100 hover:bg-customGreen2-100"
             >
               Rechercher un trajet
             </button>
