@@ -35,67 +35,68 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-10 p-4 font-sans lg:flex-row lg:gap-40 md:p-8 lg:p-10">
-      <div className="flex flex-col items-center w-full mb-8 text-center lg:w-1/3 lg:mb-0">
-        <h1 className="mb-4 text-2xl font-bold md:text-3xl">Contactez-nous</h1>
-        <p className="mb-6 text-base md:text-lg">
-          Nous serions ravis de vous entendre! Si vous avez des questions, des
-          suggestions ou des préoccupations, n'hésitez pas à nous contacter.
+    <div className="max-w-4xl p-8 mx-auto mb-8 font-sans bg-white rounded-lg shadow-lg">
+      <h1 className="mb-6 text-2xl font-bold text-center text-primary-100">Contactez-nous</h1>
+      <div className="mb-8 text-center">
+        <p className="mb-4 text-base leading-relaxed text-gray-700">
+          Nous serions ravis de vous entendre ! Si vous avez des questions, des suggestions ou des préoccupations, n'hésitez pas à nous contacter.
         </p>
-        <div className="mb-8">
-          <h2 className="mb-2 text-xl font-semibold md:text-2xl">Informations de contact</h2>
-          <p className="text-sm md:text-base">Email: support@ecoride.com</p>
-          <p className="text-sm md:text-base">Téléphone: +33 1 23 45 67 89</p>
-          <p className="text-sm md:text-base">Adresse: 123 Rue de l'Écologie, 75001 Paris, France</p>
+        <div className="mb-4">
+          <h2 className="mb-2 text-xl font-semibold text-primary-100">Informations de contact</h2>
+          <p className="text-base text-gray-700">Email : <span className="font-semibold text-customGreen2-100">support@ecoride.com</span></p>
+          <p className="text-base text-gray-700">Téléphone : <span className="font-semibold text-customGreen2-100">+33 1 23 45 67 89</span></p>
+          <p className="text-base text-gray-700">Adresse : <span className="font-semibold text-customGreen2-100">123 Rue de l'Écologie, 75001 Paris, France</span></p>
         </div>
       </div>
 
-      <div className="flex flex-col items-center w-full">
-        <h2 className="mb-4 text-xl font-semibold md:text-2xl">Formulaire de contact</h2>
+      <div className="flex flex-col items-center">
+        <h2 className="mb-4 text-xl font-semibold text-primary-100">Formulaire de contact</h2>
         {success && (
-          <div className="w-full max-w-lg p-4 mb-4 text-green-700 bg-green-100 rounded">{success}</div>
+          <div className="w-full max-w-lg p-4 mb-4 text-white rounded-md shadow bg-customGreen2-100">
+            {success}
+          </div>
         )}
         {errors.length > 0 && (
-          <div className="w-full max-w-lg p-4 mb-4 text-red-700 bg-red-100 rounded">
+          <div className="w-full max-w-lg p-4 mb-4 text-white bg-red-500 rounded-md shadow">
             {errors.map((err, idx) => (
               <p key={idx}>{err}</p>
             ))}
           </div>
         )}
         <form
-          className="w-full max-w-lg p-4 mb-4 bg-white border border-gray-300 rounded-lg shadow-2xl md:p-6"
+          className="w-full max-w-lg p-6 mb-4 bg-white border border-gray-100 rounded-lg shadow-md"
           onSubmit={handleSubmit}
         >
           <div className="mb-4">
-            <label className="block mb-2 text-sm md:text-base">Nom:</label>
+            <label className="block mb-2 text-sm font-semibold text-primary-100">Nom</label>
             <input
               type="text"
               name="name"
               required
-              className="w-full p-2 text-sm border border-gray-300 rounded md:text-base"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
               value={formData.name}
               onChange={handleChange}
               disabled={isSubmitting}
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2 text-sm md:text-base">Email:</label>
+            <label className="block mb-2 text-sm font-semibold text-primary-100">Email</label>
             <input
               type="email"
               name="email"
               required
-              className="w-full p-2 text-sm border border-gray-300 rounded md:text-base"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
               value={formData.email}
               onChange={handleChange}
               disabled={isSubmitting}
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2 text-sm md:text-base">Message:</label>
+            <label className="block mb-2 text-sm font-semibold text-primary-100">Message</label>
             <textarea
               name="message"
               required
-              className="w-full p-2 text-sm border border-gray-300 rounded md:text-base"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
               value={formData.message}
               onChange={handleChange}
               disabled={isSubmitting}
@@ -104,7 +105,7 @@ const ContactPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600 md:w-auto"
+            className="w-full px-4 py-2 font-bold text-white transition-all duration-200 rounded-md shadow-md bg-primary-100 hover:bg-customGreen2-100"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Envoi..." : "Envoyer"}
