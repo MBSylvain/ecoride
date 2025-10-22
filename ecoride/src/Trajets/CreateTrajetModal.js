@@ -91,87 +91,87 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
     <Modal isOpen={isOpen} onClose={onClose} title="Ajouter un trajet">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col px-4 py-2 space-y-2 md:px-8 md:py-4"
+        className="p-6 space-y-4 font-sans bg-white rounded-lg shadow-lg"
       >
-        {error && <div className="text-red-600">{error}</div>}
-        {success && <div className="text-green-600">{success}</div>}
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+        {error && <div className="px-4 py-2 mb-2 text-white bg-red-500 rounded-md">{error}</div>}
+        {success && <div className="px-4 py-2 mb-2 text-white rounded-md bg-customGreen2-100">{success}</div>}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="block mb-1 text-sm font-medium">Ville de départ *</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Ville de départ *</label>
             <input
               type="text"
               name="ville_depart"
               value={formData.ville_depart}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Ville d'arrivée *</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Ville d'arrivée *</label>
             <input
               type="text"
               name="ville_arrivee"
               value={formData.ville_arrivee}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Adresse de départ</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Adresse de départ</label>
             <input
               type="text"
               name="adresse_depart"
               value={formData.adresse_depart}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Adresse d'arrivée</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Adresse d'arrivée</label>
             <input
               type="text"
               name="adresse_arrivee"
               value={formData.adresse_arrivee}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Date de départ *</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Date de départ *</label>
             <input
               type="date"
               name="date_depart"
               value={formData.date_depart}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
               min={new Date().toISOString().split('T')[0]}
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Heure de départ</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Heure de départ</label>
             <input
               type="time"
               name="heure_depart"
               value={formData.heure_depart}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Heure d'arrivée</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Heure d'arrivée</label>
             <input
               type="time"
               name="heure_arrivee"
               value={formData.heure_arrivee}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Nombre de places *</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Nombre de places *</label>
             <input
               type="number"
               name="nombre_places"
@@ -179,11 +179,11 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
               onChange={handleChange}
               required
               min="1"
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Prix *</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Prix *</label>
             <input
               type="number"
               name="prix"
@@ -191,16 +191,16 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
               onChange={handleChange}
               required
               min="1"
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block mb-1 text-sm font-medium">Description</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             />
           </div>
           <div className="flex items-center space-x-2">
@@ -209,9 +209,9 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
               name="bagages_autorises"
               checked={formData.bagages_autorises}
               onChange={handleChange}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 border-gray-300 rounded text-customGreen2-100 focus:ring-customGreen2-100"
             />
-            <label className="text-sm font-medium">Bagages autorisés</label>
+            <label className="text-sm font-semibold text-primary-100">Bagages autorisés</label>
           </div>
           <div className="flex items-center space-x-2">
             <input
@@ -219,41 +219,44 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
               name="animaux_autorises"
               checked={formData.animaux_autorises}
               onChange={handleChange}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 border-gray-300 rounded text-customGreen2-100 focus:ring-customGreen2-100"
             />
-            <label className="text-sm font-medium">Animaux autorisés</label>
+            <label className="text-sm font-semibold text-primary-100">Animaux autorisés</label>
           </div>
           <div className="md:col-span-2">
-            <label className="block mb-1 text-sm font-medium">Voiture *</label>
+            <label className="block mb-1 text-sm font-semibold text-primary-100">Voiture *</label>
             <select
               name="voiture_id"
-              value={voitures.voiture_id}
+              value={formData.voiture_id}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
             >
               <option value="">Sélectionnez une voiture</option>
               {voitures.map((voiture) => (
-                <option key={voiture.id} value={voiture.voiture_id}>
+                <option key={voiture.voiture_id} value={voiture.voiture_id}>
                   {voiture.marque} {voiture.modele}
                 </option>
               ))}
             </select>
-
           </div>
         </div>
         <div className="flex justify-end pt-4 space-x-2">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-2 text-white transition bg-blue-600 rounded shadow hover:bg-blue-700 disabled:opacity-50"
+            className={`px-6 py-2 font-bold rounded-md shadow-md transition-colors ${
+              isSubmitting
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-primary-100 text-white hover:bg-customPink-100'
+            }`}
           >
             {isSubmitting ? 'Enregistrement...' : 'Ajouter'}
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2 text-white transition bg-gray-600 rounded shadow hover:bg-gray-700"
+            className="px-6 py-2 font-bold text-white transition-colors rounded-md shadow-md bg-customGreen-100 hover:bg-customGreen2-100"
           >
             Annuler
           </button>
