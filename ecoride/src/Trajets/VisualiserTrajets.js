@@ -1,24 +1,23 @@
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CreateTrajetModal from './CreateTrajetModal';
 import EditTrajetModal from './EditTrajetModal';
 import BoutonStatutTrajet from '../components/ButtonStatutTrajet';
 
-// Exemple de composant Modal générique pour la consultation des détails
+// Modal conforme à la charte graphique EcoRide
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="relative w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" aria-modal="true" role="dialog">
+      <div className="relative w-full max-w-lg p-8 transition-all duration-300 bg-white rounded-lg shadow-lg">
         <button
           className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
           onClick={onClose}
+          aria-label="Fermer"
         >
           ✕
         </button>
-        {title && <h2 className="mb-4 text-xl font-bold">{title}</h2>}
+        {title && <h2 className="mb-4 text-lg font-bold text-primary-100">{title}</h2>}
         {children}
       </div>
     </div>
@@ -43,39 +42,38 @@ const VisualiserTrajets = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [trajetToView, setTrajetToView] = useState(null);
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("utilisateur.id");
+  const [deleteError, setDeleteError] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Récupération des trajets
+  const fetchTrajets = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+        { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+      );
+      if (Array.isArray(response.data)) {
+        setTrajets(response.data);
+      } else if (response.data && Array.isArray(response.data.trajets)) {
+        setTrajets(response.data.trajets);
+      } else {
+        setTrajets([]);
+      }
+    } catch (err) {
+      setError("Erreur lors du chargement des trajets");
+      setTrajets([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchTrajets = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
-                { withCredentials: true },
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-            // Si la réponse est un tableau directement
-            if (Array.isArray(response.data)) {
-                setTrajets(response.data);
-                console.log("Trajets:", response.data);
-            } else if (response.data && Array.isArray(response.data.trajets)) {
-                setTrajets(response.data.trajets);
-                console.log("Trajets:", response.data.trajets);
-            } else {
-                setTrajets([]);
-                console.log("Aucun trajet trouvé ou format de réponse incorrect");
-            }
-        } catch (err) {
-            setError("Erreur lors du chargement des trajets");
-            console.error(err);
-            setTrajets([]);
-        } finally {
-            setLoading(false);
-        }
-    };
     fetchTrajets();
   }, []);
 
-  // Récupérer les infos utilisateur quand selectedTrajet change
+  // Récupérer les infos utilisateur et réservations quand selectedTrajet change
   useEffect(() => {
     if (selectedTrajet) {
       setUserLoading(true);
@@ -85,36 +83,29 @@ const VisualiserTrajets = () => {
       setPassengers([]);
       setReservationsLoading(true);
       setReservationsError(null);
-      // 1. Charger infos conducteur
-      axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`,
-        { withCredentials: true },
-        { headers: { 'Content-Type': 'application/json' } }
+
+      axios.get(
+        `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`,
+        { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then(res => {
-          console.log('Réponse API conducteur:', res.data);
-          // Vérifier si la réponse contient un objet utilisateur ou un tableau
-            if (Array.isArray(res.data) && res.data.length > 0) {
-                setUserInfo(res.data[0]); // Prendre le premier utilisateur si c'est un tableau
-            } else if (res.data && res.data.utilisateur) {
-                setUserInfo(res.data.utilisateur); // Si la réponse contient un objet utilisateur
-            } else if (res.data && typeof res.data === 'object') {
-                setUserInfo(res.data); // Si c'est directement un objet utilisateur
-            } else {
-                setUserInfo(null);
-                setUserError("Aucune donnée utilisateur trouvée pour l'ID " + selectedTrajet.utilisateur_id);
-            }
-          
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setUserInfo(res.data[0]);
+          } else if (res.data && res.data.utilisateur) {
+            setUserInfo(res.data.utilisateur);
+          } else if (res.data && typeof res.data === 'object') {
+            setUserInfo(res.data);
+          } else {
+            setUserInfo(null);
+            setUserError("Aucune donnée utilisateur trouvée pour l'ID " + selectedTrajet.utilisateur_id);
+          }
         })
-        .catch((err) => {
-          setUserError("Erreur lors du chargement des infos utilisateur");
-          console.error('Erreur API conducteur:', err);
-        })
+        .catch(() => setUserError("Erreur lors du chargement des infos utilisateur"))
         .finally(() => setUserLoading(false));
 
-      // 2. Charger les réservations du trajet
-      axios.get(`http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`,
-        { withCredentials: true },
-        { headers: { 'Content-Type': 'application/json' } }
+      axios.get(
+        `http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`,
+        { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then(res => {
           let reservationsList = [];
@@ -124,28 +115,23 @@ const VisualiserTrajets = () => {
             reservationsList = res.data.reservations;
           }
           setReservations(reservationsList);
-          // 3. Charger les infos utilisateurs pour chaque réservation
           if (reservationsList.length > 0) {
             Promise.all(reservationsList.map(r =>
-              axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`,
-                { withCredentials: true },
-                { headers: { 'Content-Type': 'application/json' } }
+              axios.get(
+                `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`,
+                { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
               )
                 .then(uRes => {
-                  console.log('Réponse API passager:', uRes.data);
                   if (Array.isArray(uRes.data) && uRes.data.length > 0) {
-                    return uRes.data[0]; // Prendre le premier utilisateur si c'est un tableau
+                    return uRes.data[0];
                   } else if (uRes.data && uRes.data.utilisateur) {
-                    return uRes.data.utilisateur; // Si la réponse contient un objet utilisateur
+                    return uRes.data.utilisateur;
                   } else if (uRes.data && typeof uRes.data === 'object') {
-                    return uRes.data; // Si c'est directement un objet utilisateur
+                    return uRes.data;
                   }
                   return null;
                 })
-                .catch((err) => {
-                  console.error('Erreur API passager:', err);
-                  return null;
-                })
+                .catch(() => null)
             )).then(passengerList => {
               setPassengers(passengerList.filter(Boolean));
             });
@@ -169,17 +155,17 @@ const VisualiserTrajets = () => {
     }
   }, [selectedTrajet]);
 
-  // Fonction pour mettre à jour le statut d'une réservation
+  // Mise à jour du statut d'une réservation
   const handleUpdateReservationStatus = async (reservationId, newStatus) => {
     try {
       await axios.post(`http://localhost/api/Controllers/ReservationController.php`, {
         reservation_id: reservationId,
         statut: newStatus
       });
-      // Mettre à jour l'affichage localement (rafraîchir les réservations)
       if (selectedTrajet) {
-        // Recharge les réservations pour ce trajet
-        const res = await axios.get(`http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`);
+        const res = await axios.get(
+          `http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`
+        );
         let reservationsList = [];
         if (res.data && Array.isArray(res.data)) {
           reservationsList = res.data;
@@ -188,65 +174,33 @@ const VisualiserTrajets = () => {
         }
         setReservations(reservationsList);
       }
-    } catch (error) {
+    } catch {
       alert("Erreur lors de la mise à jour du statut de la réservation");
     }
   };
 
-  // Fonction pour recharger les trajets après création/modification
-  const fetchTrajets = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-        const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
-            { withCredentials: true },
-            { headers: { 'Content-Type': 'application/json' } }
-        );
-        // Si la réponse est un tableau directement
-        if (Array.isArray(response.data)) {
-            setTrajets(response.data);
-            console.log("Trajets:", response.data);
-        } else if (response.data && Array.isArray(response.data.trajets)) {
-            setTrajets(response.data.trajets);
-            console.log("Trajets:", response.data.trajets);
-        } else {
-            setTrajets([]);
-            console.log("Aucun trajet trouvé ou format de réponse incorrect");
-        }
-    } catch (err) {
-        setError("Erreur lors du chargement des trajets");
-        console.error(err);
-        setTrajets([]);
-    } finally {
-        setLoading(false);
-    }
-};
-// Fonction pour supprimer un trajet
-  const [deleteError, setDeleteError] = useState('');
-const [isDeleting, setIsDeleting] = useState(false);
-
-async function handleDeleteTrajet(trajetId) {
-  if (window.confirm("Êtes-vous sûr de vouloir supprimer ce trajet ?")) {
-    setIsDeleting(true);
-    setDeleteError('');
-    try {
-      await axios.delete(`http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`);
-      fetchTrajets(); // Rafraîchir la liste
-    } catch (error) {
-      setDeleteError("Erreur lors de la suppression du trajet.");
-      console.error("Erreur lors de la suppression du trajet :", error);
-    } finally {
-      setIsDeleting(false);
+  // Suppression d'un trajet
+  async function handleDeleteTrajet(trajetId) {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce trajet ?")) {
+      setIsDeleting(true);
+      setDeleteError('');
+      try {
+        await axios.delete(`http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`);
+        fetchTrajets();
+      } catch {
+        setDeleteError("Erreur lors de la suppression du trajet.");
+      } finally {
+        setIsDeleting(false);
+      }
     }
   }
-}
 
   return (
-    <div className="p-6 m-6 bg-white border border-gray-100 shadow-lg rounded-xl">
+    <div className="p-6 m-6 font-sans bg-white border border-gray-100 shadow-lg rounded-xl">
       <div className="flex flex-col mb-6 md:flex-row md:items-center md:justify-between">
-        <h2 className="text-2xl font-semibold text-center md:text-left">Tous les trajets</h2>
+        <h2 className="text-2xl font-bold text-center text-primary-100 md:text-left">Tous les trajets</h2>
         <button
-          className="px-5 py-2 mt-4 text-white transition rounded-lg md:mt-0 bg-customGreen-100 hover:bg-customGreen-200"
+          className="px-5 py-2 mt-4 font-bold text-white transition-colors rounded-md shadow-md bg-customGreen-100 hover:bg-customGreen2-100 md:mt-0"
           onClick={() => setShowCreateModal(true)}
         >
           + Ajouter un trajet
@@ -255,67 +209,79 @@ async function handleDeleteTrajet(trajetId) {
 
       {/* Affichage des erreurs ou du chargement */}
       {loading ? (
-        <div className="my-8 text-center text-gray-500">Chargement des trajets...</div>
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement des trajets...</span>
+        </div>
       ) : error ? (
-        <div className="my-8 text-center text-red-500">{error}</div>
+        <div className="p-4 my-8 text-center text-white bg-red-500 rounded-lg shadow-md">{error}</div>
       ) : trajets.length === 0 ? (
-        <div className="my-8 text-center text-gray-500">Aucun trajet trouvé.</div>
+        <div className="p-4 my-8 text-center text-gray-600 rounded-lg bg-customGrey-100">Aucun trajet trouvé.</div>
       ) : (
-        <table className="m-2">
-          <thead>
-            <tr>
-              <th className="px-2 py-1 border">Départ</th>
-              <th className="px-2 py-1 border">Arrivée</th>
-              <th className="px-2 py-1 border">Date</th>
-              <th className="px-2 py-1 border">Heure</th>
-              <th className="px-2 py-1 border">Prix</th>
-              <th className="px-2 py-1 border">Places</th>
-              <th className="px-2 py-1 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {trajets.map((trajet) => (
-              <tr key={trajet.utilisateur_id}>
-                <td className="px-2 py-1 border">{trajet.ville_depart}</td>
-                <td className="px-2 py-1 border">{trajet.ville_arrivee}</td>
-                <td className="px-2 py-1 border">{trajet.date_depart}</td>
-                <td className="px-2 py-1 border">{trajet.heure_depart}</td>
-                <td className="px-2 py-1 border">{trajet.prix}</td>
-                <td className="px-2 py-1 border">{trajet.nombre_places}</td>
-                <td className="px-2 py-1 border">
-                  <div className="flex gap-2">
-                  <button
-                    className="px-3 py-1 text-white bg-blue-600 rounded hover:bg-blue-700"
-                    onClick={() => {
-                      setTrajetToView(trajet);
-                      setShowDetailModal(true);
-                    }}
-                  >
-                    Détail
-                  </button>
-                  <button
-                    className="px-3 py-1 text-white bg-yellow-500 rounded hover:bg-yellow-600"
-                    onClick={() => {
-                      setTrajetToEdit(trajet);
-                      setShowEditModal(true);
-                    }}
-                  >
-                    Modifier
-                  </button>
-                  <button
-                    className="px-3 py-1 text-white bg-red-600 rounded hover:bg-red-700"
-                    onClick={() => handleDeleteTrajet(trajet.trajet_id)}
-                  >
-                    Supprimer
-                  </button>
-                  <BoutonStatutTrajet trajet={trajet} />
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm bg-white border border-gray-100 rounded-lg shadow">
+            <thead>
+              <tr className="bg-customGrey-100">
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Départ</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Arrivée</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Date</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Heure</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Prix</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Places</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {trajets.map((trajet) => (
+                <tr key={trajet.trajet_id}>
+                  <td className="px-4 py-2 border-b">{trajet.ville_depart}</td>
+                  <td className="px-4 py-2 border-b">{trajet.ville_arrivee}</td>
+                  <td className="px-4 py-2 border-b">{trajet.date_depart}</td>
+                  <td className="px-4 py-2 border-b">{trajet.heure_depart}</td>
+                  <td className="px-4 py-2 border-b">{trajet.prix} €</td>
+                  <td className="px-4 py-2 border-b">{trajet.nombre_places}</td>
+                  <td className="px-4 py-2 border-b">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        className="px-4 py-2 font-bold text-white transition-colors rounded-md shadow-md bg-primary-100 hover:bg-customPink-100"
+                        onClick={() => {
+                          setTrajetToView(trajet);
+                          setShowDetailModal(true);
+                        }}
+                      >
+                        Détail
+                      </button>
+                      <button
+                        className="px-4 py-2 font-bold text-black transition-colors bg-yellow-400 rounded-md shadow-md hover:bg-yellow-500"
+                        onClick={() => {
+                          setTrajetToEdit(trajet);
+                          setShowEditModal(true);
+                        }}
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        className="px-4 py-2 font-bold text-white transition-colors bg-red-500 rounded-md shadow-md hover:bg-red-600"
+                        onClick={() => handleDeleteTrajet(trajet.trajet_id)}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Suppression..." : "Supprimer"}
+                      </button>
+                      <BoutonStatutTrajet trajet={trajet} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
+
+      {deleteError && (
+        <div className="p-4 my-4 text-center text-white bg-red-500 rounded-lg shadow-md">{deleteError}</div>
+      )}
+
+      {/* Modal création */}
       {showCreateModal && (
         <CreateTrajetModal
           isOpen={showCreateModal}
@@ -344,14 +310,13 @@ async function handleDeleteTrajet(trajetId) {
       {showDetailModal && trajetToView && (
         <Modal isOpen={showDetailModal} onClose={() => setShowDetailModal(false)} title="Détail du trajet">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div><p className='font-bold'>Départ :</p> {trajetToView.ville_depart}</div>
-            <div><p className='font-bold'>Arrivée :</p> {trajetToView.ville_arrivee}</div>
-            <div><p className='font-bold'>Date :</p> {trajetToView.date_depart}</div>
-            <div><p className='font-bold'>Heure :</p> {trajetToView.heure_depart}</div>
-            <div><p className='font-bold'>Prix :</p> {trajetToView.prix} €</div>
-            <div><p className='font-bold'>Places :</p> {trajetToView.nombre_places}</div>
-            <div><p className='font-bold'>Description :</p> {trajetToView.description || 'Aucune'}</div>
-            {/* Ajoute d'autres champs si besoin */}
+            <div><p className='font-bold text-primary-100'>Départ :</p> {trajetToView.ville_depart}</div>
+            <div><p className='font-bold text-primary-100'>Arrivée :</p> {trajetToView.ville_arrivee}</div>
+            <div><p className='font-bold text-primary-100'>Date :</p> {trajetToView.date_depart}</div>
+            <div><p className='font-bold text-primary-100'>Heure :</p> {trajetToView.heure_depart}</div>
+            <div><p className='font-bold text-primary-100'>Prix :</p> {trajetToView.prix} €</div>
+            <div><p className='font-bold text-primary-100'>Places :</p> {trajetToView.nombre_places}</div>
+            <div><p className='font-bold text-primary-100'>Description :</p> {trajetToView.description || 'Aucune'}</div>
           </div>
         </Modal>
       )}
