@@ -9,84 +9,93 @@ const VoitureModal = ({ voiture, isOpen, onClose, onSave, onDelete }) => {
   }, [voiture]);
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="relative w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" aria-modal="true" role="dialog">
+      <div className="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-lg">
         <button
           className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
           onClick={onClose}
+          aria-label="Fermer"
         >
           ✕
         </button>
-        <h2 className="mb-4 text-xl font-bold">{voiture ? "Modifier" : "Ajouter"} une voiture</h2>
-        <div className="space-y-2">
+        <h2 className="mb-4 text-xl font-bold text-primary-100">{voiture ? "Modifier" : "Ajouter"} une voiture</h2>
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Modèle</label>
+            <label className="block text-sm font-semibold text-primary-100">Modèle</label>
             <input
-              className="w-full px-2 py-1 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               value={editData.modele || ""}
               onChange={e => setEditData({ ...editData, modele: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Immatriculation</label>
+            <label className="block text-sm font-semibold text-primary-100">Immatriculation</label>
             <input
-              className="w-full px-2 py-1 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               value={editData.immatriculation || ""}
               onChange={e => setEditData({ ...editData, immatriculation: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Énergie</label>
-            <input
-              className="w-full px-2 py-1 border rounded"
+            <label className="block text-sm font-semibold text-primary-100">Énergie</label>
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               value={editData.energie || ""}
               onChange={e => setEditData({ ...editData, energie: e.target.value })}
-            />
+            >
+              <option value="">Sélectionner</option>
+              <option value="Essence">Essence</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Électrique">Électrique</option>
+              <option value="Hybride">Hybride</option>
+              <option value="GPL">GPL</option>
+            </select>
           </div>
           <div>
-            <label className="block text-sm font-medium">Couleur</label>
+            <label className="block text-sm font-semibold text-primary-100">Couleur</label>
             <input
-              className="w-full px-2 py-1 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               value={editData.couleur || ""}
               onChange={e => setEditData({ ...editData, couleur: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Places</label>
+            <label className="block text-sm font-semibold text-primary-100">Places</label>
             <input
               type="number"
-              className="w-full px-2 py-1 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               value={editData.nombre_places || ""}
               onChange={e => setEditData({ ...editData, nombre_places: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Date 1ère immatriculation</label>
+            <label className="block text-sm font-semibold text-primary-100">Date 1ère immatriculation</label>
             <input
               type="date"
-              className="w-full px-2 py-1 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               value={editData.date_premiere_immatriculation || ""}
               onChange={e => setEditData({ ...editData, date_premiere_immatriculation: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Description</label>
+            <label className="block text-sm font-semibold text-primary-100">Description</label>
             <textarea
-              className="w-full px-2 py-1 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               value={editData.description || ""}
               onChange={e => setEditData({ ...editData, description: e.target.value })}
+              rows={3}
             />
           </div>
           <div className="flex gap-2 mt-4">
             <button
-              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+              className="px-6 py-2 font-bold text-white transition-all duration-200 rounded-md shadow-md bg-primary-100 hover:bg-customGreen2-100"
               onClick={() => onSave(editData)}
             >
               Enregistrer
             </button>
             {voiture && (
               <button
-                className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
+                className="px-6 py-2 font-bold text-white transition-all duration-200 bg-red-500 rounded-md shadow-md hover:bg-red-600"
                 onClick={() => {
                   if (window.confirm("Supprimer cette voiture ?")) onDelete(editData.voiture_id);
                 }}
@@ -125,7 +134,7 @@ const AdminVoitures = () => {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });
-      setVoitures(res.data.data || res.data || []);
+      setVoitures(Array.isArray(res.data) ? res.data : res.data.data || []);
     } catch (e) {
       setFeedback("Erreur lors du chargement des voitures");
     } finally {
@@ -184,91 +193,101 @@ const AdminVoitures = () => {
   };
 
   return (
-    <section>
-      <h2 className="mb-2 text-lg font-semibold">Voitures</h2>
+    <section className="max-w-4xl p-8 mx-auto my-8 font-sans bg-white rounded-lg shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold text-primary-100">Gestion des voitures</h2>
       {feedback && (
-        <div className="p-2 mb-2 text-center text-green-800 bg-green-100 rounded">
-          {feedback}
-          <button className="ml-4 text-sm text-green-900" onClick={() => setFeedback(null)}>x</button>
+        <div className="flex items-center justify-between p-4 mb-4 text-center text-white rounded-md shadow bg-customGreen2-100">
+          <span>{feedback}</span>
+          <button className="ml-4 text-sm text-white" onClick={() => setFeedback(null)}>x</button>
         </div>
       )}
       {/* Filtres */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-4 mb-6">
         <input
           type="text"
           placeholder="Recherche modèle, immatriculation ou couleur..."
           value={search}
           onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
-          className="px-2 py-1 border rounded"
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
         />
-        <select value={energieFilter} onChange={e => { setEnergieFilter(e.target.value); setCurrentPage(1); }} className="px-2 py-1 border rounded">
+        <select
+          value={energieFilter}
+          onChange={e => { setEnergieFilter(e.target.value); setCurrentPage(1); }}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+        >
           <option value="Tous">Toutes les énergies</option>
           <option value="Essence">Essence</option>
           <option value="Diesel">Diesel</option>
           <option value="Électrique">Électrique</option>
           <option value="Hybride">Hybride</option>
+          <option value="GPL">GPL</option>
         </select>
+        <button
+          className="px-6 py-2 font-bold text-white transition-all duration-200 rounded-md shadow-md bg-primary-100 hover:bg-customGreen2-100"
+          onClick={() => { setSelectedVoiture(null); setShowVoitureModal(true); }}
+        >
+          Ajouter une voiture
+        </button>
       </div>
-      <button
-        className="px-4 py-2 mb-4 text-white bg-blue-600 rounded hover:bg-blue-700"
-        onClick={() => { setSelectedVoiture(null); setShowVoitureModal(true); }}
-      >
-        Ajouter une voiture
-      </button>
       {loading ? (
-        <p>Chargement...</p>
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement...</span>
+        </div>
       ) : paginatedVoitures.length > 0 ? (
-        <table className="min-w-full border">
-          <thead>
-            <tr>
-              <th className="px-2 py-1 border">Modèle</th>
-              <th className="px-2 py-1 border">Immatriculation</th>
-              <th className="px-2 py-1 border">Énergie</th>
-              <th className="px-2 py-1 border">Couleur</th>
-              <th className="px-2 py-1 border">Places</th>
-              <th className="px-2 py-1 border">Date 1ère immatriculation</th>
-              <th className="px-2 py-1 border">Description</th>
-              <th className="px-2 py-1 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedVoitures.map(voiture => (
-              <tr key={voiture.voiture_id}>
-                <td className="px-2 py-1 border">{voiture.modele}</td>
-                <td className="px-2 py-1 border">{voiture.immatriculation}</td>
-                <td className="px-2 py-1 border">{voiture.energie}</td>
-                <td className="px-2 py-1 border">{voiture.couleur}</td>
-                <td className="px-2 py-1 border">{voiture.nombre_places}</td>
-                <td className="px-2 py-1 border">{voiture.date_premiere_immatriculation}</td>
-                <td className="px-2 py-1 border">{voiture.description || "-"}</td>
-                <td className="flex flex-wrap gap-2 px-2 py-1 border">
-                  <button
-                    className="px-2 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-                    onClick={() => { setSelectedVoiture(voiture); setShowVoitureModal(true); }}
-                  >
-                    Détail
-                  </button>
-                  <button
-                    className="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-                    onClick={() => {
-                      if (window.confirm("Supprimer cette voiture ?")) handleDeleteVoiture(voiture.voiture_id);
-                    }}
-                  >
-                    Supprimer
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm bg-white border border-gray-100 rounded-lg shadow">
+            <thead>
+              <tr className="bg-customGrey-100">
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Modèle</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Immatriculation</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Énergie</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Couleur</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Places</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Date 1ère immatriculation</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Description</th>
+                <th className="px-4 py-2 font-semibold text-left text-primary-100">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {paginatedVoitures.map(voiture => (
+                <tr key={voiture.voiture_id}>
+                  <td className="px-4 py-2 border-b">{voiture.modele}</td>
+                  <td className="px-4 py-2 border-b">{voiture.immatriculation}</td>
+                  <td className="px-4 py-2 border-b">{voiture.energie}</td>
+                  <td className="px-4 py-2 border-b">{voiture.couleur}</td>
+                  <td className="px-4 py-2 border-b">{voiture.nombre_places}</td>
+                  <td className="px-4 py-2 border-b">{voiture.date_premiere_immatriculation}</td>
+                  <td className="px-4 py-2 border-b">{voiture.description || "-"}</td>
+                  <td className="flex flex-wrap gap-2 px-4 py-2 border-b">
+                    <button
+                      className="px-4 py-2 font-bold text-white transition-all duration-200 rounded-md bg-primary-100 hover:bg-customGreen2-100"
+                      onClick={() => { setSelectedVoiture(voiture); setShowVoitureModal(true); }}
+                    >
+                      Détail
+                    </button>
+                    <button
+                      className="px-4 py-2 font-bold text-white transition-all duration-200 bg-red-500 rounded-md hover:bg-red-600"
+                      onClick={() => {
+                        if (window.confirm("Supprimer cette voiture ?")) handleDeleteVoiture(voiture.voiture_id);
+                      }}
+                    >
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <p>Aucune voiture trouvée.</p>
+        <p className="text-gray-600">Aucune voiture trouvée.</p>
       )}
 
       {/* Pagination */}
-      <div className="flex justify-center gap-2 my-4">
+      <div className="flex justify-center gap-2 my-6">
         <button
-          className="px-2 py-1 border rounded"
+          className="px-4 py-2 border border-gray-300 rounded-lg"
           onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
           disabled={currentPage === 1}
         >
@@ -277,14 +296,14 @@ const AdminVoitures = () => {
         {[...Array(totalPages)].map((_, idx) => (
           <button
             key={idx}
-            className={`px-2 py-1 border rounded ${currentPage === idx + 1 ? "bg-customGreen-100 text-white" : ""}`}
+            className={`px-4 py-2 border border-gray-300 rounded-lg ${currentPage === idx + 1 ? "bg-customGreen-100 text-white" : ""}`}
             onClick={() => setCurrentPage(idx + 1)}
           >
             {idx + 1}
           </button>
         ))}
         <button
-          className="px-2 py-1 border rounded"
+          className="px-4 py-2 border border-gray-300 rounded-lg"
           onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
           disabled={currentPage === totalPages}
         >
