@@ -43,79 +43,97 @@ const TraitementSignalements = () => {
   };
 
   return (
-    <section className="max-w-4xl mx-auto my-8">
-      <h2 className="mb-4 text-xl font-bold">Signalements à traiter</h2>
+    <section className="max-w-4xl mx-auto my-8 font-sans">
+      <h2 className="mb-4 text-2xl font-bold text-primary-100">Signalements à traiter</h2>
       {feedback && (
-        <div className="p-2 mb-2 text-center text-green-700 bg-green-100 rounded">{feedback}</div>
+        <div className="p-2 mb-2 font-semibold text-center text-white rounded-md shadow-md bg-customGreen2-100">{feedback}</div>
       )}
-      <table className="min-w-full text-sm border">
-        <thead>
-          <tr>
-            <th className="px-2 py-1 border">ID</th>
-            <th className="px-2 py-1 border">Trajet</th>
-            <th className="px-2 py-1 border">Utilisateur</th>
-            <th className="px-2 py-1 border">Motif</th>
-            <th className="px-2 py-1 border">Statut</th>
-            <th className="px-2 py-1 border">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {signalements.map(s => (
-            <tr key={s.id}>
-              <td className="px-2 py-1 border">{s.id}</td>
-              <td className="px-2 py-1 border">{s.trajet_id}</td>
-              <td className="px-2 py-1 border">{s.utilisateur_id}</td>
-              <td className="px-2 py-1 border">{s.motif}</td>
-              <td className="px-2 py-1 border">{s.statut}</td>
-              <td className="px-2 py-1 border">
-                <button
-                  className="px-2 py-1 text-white bg-blue-600 rounded"
-                  onClick={() => setSelected(s)}
-                >
-                  Traiter
-                </button>
-              </td>
+      <div className="p-6 bg-white border border-gray-100 rounded-lg shadow-md">
+        <table className="min-w-full text-sm border">
+          <thead>
+            <tr className="bg-customGrey-100">
+              <th className="px-2 py-1 font-semibold border text-primary-100">ID</th>
+              <th className="px-2 py-1 font-semibold border text-primary-100">Trajet</th>
+              <th className="px-2 py-1 font-semibold border text-primary-100">Utilisateur</th>
+              <th className="px-2 py-1 font-semibold border text-primary-100">Motif</th>
+              <th className="px-2 py-1 font-semibold border text-primary-100">Statut</th>
+              <th className="px-2 py-1 font-semibold border text-primary-100">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {signalements.map(s => (
+              <tr key={s.id}>
+                <td className="px-2 py-1 border">{s.id}</td>
+                <td className="px-2 py-1 border">{s.trajet_id}</td>
+                <td className="px-2 py-1 border">{s.utilisateur_id}</td>
+                <td className="px-2 py-1 border">{s.motif}</td>
+                <td className="px-2 py-1 border">
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${
+                    s.statut === "traité" ? "bg-customGreen2-100 text-white"
+                    : s.statut === "rejeté" ? "bg-red-500 text-white"
+                    : s.statut === "en cours" ? "bg-yellow-400 text-black"
+                    : "bg-primary-100 text-white"
+                  }`}>
+                    {s.statut}
+                  </span>
+                </td>
+                <td className="px-2 py-1 border">
+                  <button
+                    className="px-3 py-1 font-bold text-white transition-colors rounded-md shadow-md bg-primary-100 hover:bg-customPink-100"
+                    onClick={() => setSelected(s)}
+                  >
+                    Traiter
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="w-full max-w-md p-6 bg-white rounded shadow-lg">
-            <h3 className="mb-2 text-lg font-bold">Traitement du signalement #{selected.id}</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" aria-modal="true" role="dialog">
+          <div className="relative w-full max-w-lg p-8 transition-all duration-300 bg-white rounded-lg shadow-lg">
+            <button
+              className="absolute text-gray-500 top-2 right-2 hover:text-gray-700"
+              onClick={() => setSelected(null)}
+              aria-label="Fermer"
+            >
+              ✕
+            </button>
+            <h3 className="mb-4 text-lg font-bold text-primary-100">Traitement du signalement #{selected.id}</h3>
             <div className="mb-2"><b>Motif :</b> {selected.motif}</div>
             <div className="mb-2"><b>Description :</b> {selected.description}</div>
-            <div className="mb-2">
-              <label className="block mb-1 text-sm font-medium">Statut</label>
+            <div className="mb-4">
+              <label className="block mb-1 text-sm font-semibold text-primary-100">Statut</label>
               <select
                 value={selected.statut}
                 onChange={e => setSelected({ ...selected, statut: e.target.value })}
-                className="w-full px-2 py-1 border rounded"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
               >
                 {STATUTS.map(s => (
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
             </div>
-            <div className="mb-2">
-              <label className="block mb-1 text-sm font-medium">Action effectuée</label>
+            <div className="mb-4">
+              <label className="block mb-1 text-sm font-semibold text-primary-100">Action effectuée</label>
               <input
                 type="text"
                 value={selected.action_effectuee || ""}
                 onChange={e => setSelected({ ...selected, action_effectuee: e.target.value })}
-                className="w-full px-2 py-1 border rounded"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
                 placeholder="Action prise par l'employé"
               />
             </div>
             <div className="flex gap-2 mt-4">
               <button
-                className="px-4 py-2 text-white bg-green-600 rounded"
+                className="px-4 py-2 font-bold text-white transition-colors rounded-md shadow-md bg-customGreen-100 hover:bg-customGreen2-100"
                 onClick={() => handleUpdate(selected)}
               >
                 Valider
               </button>
               <button
-                className="px-4 py-2 text-white bg-gray-400 rounded"
+                className="px-4 py-2 font-bold text-gray-500 transition-colors bg-gray-300 rounded-md shadow-md hover:bg-gray-400"
                 onClick={() => setSelected(null)}
               >
                 Annuler
