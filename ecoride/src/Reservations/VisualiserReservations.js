@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import Modal from './Modal'; // Assurez-vous que le chemin d'importation est correct
+import Modal from './Modal';
 
 const STATUTS = ["tous", "confirmé", "en_attente", "annulée", "terminée"];
 
@@ -15,7 +15,6 @@ const VisualiserReservations = () => {
   const [statutFilter, setStatutFilter] = useState("tous");
   const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("utilisateur.id");
 
-  // Charger les réservations de l'utilisateur
   useEffect(() => {
     const fetchReservations = async () => {
       setLoading(true);
@@ -34,7 +33,6 @@ const VisualiserReservations = () => {
         }
       } catch (err) {
         setError("Erreur lors du chargement des réservations");
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -42,7 +40,6 @@ const VisualiserReservations = () => {
     fetchReservations();
   }, [utilisateur_id]);
 
-  // Charger les informations utilisateur pour une réservation sélectionnée
   useEffect(() => {
     if (selectedReservation) {
       setUserLoading(true);
@@ -65,9 +62,8 @@ const VisualiserReservations = () => {
             setUserError("Aucune donnée utilisateur trouvée pour l'ID " + selectedReservation.utilisateur_id);
           }
         })
-        .catch((err) => {
+        .catch(() => {
           setUserError("Erreur lors du chargement des infos utilisateur");
-          console.error(err);
         })
         .finally(() => setUserLoading(false));
     } else {
@@ -92,30 +88,27 @@ const VisualiserReservations = () => {
           res.reservation_id === reservationId ? { ...res, statut: "annulée" } : res
         )
       );
-    } catch (error) {
+    } catch {
       alert("Erreur lors de l'annulation de la réservation");
-      console.error(error);
     }
   };
 
-  // Filtrage des réservations selon le statut sélectionné
   const filteredReservations = statutFilter === "tous"
     ? reservations
     : reservations.filter(r => r.statut === statutFilter);
 
   return (
-    <div className="w-full p-2 mb-2 bg-white border border-gray-100 shadow-lg rounded-xl">
-      <h2 className="mb-6 text-2xl font-semibold text-center">Mes Réservations</h2>
-
+    <div className="w-full p-6 mb-6 font-sans bg-white border border-gray-100 shadow-lg rounded-xl">
+      <h2 className="mb-6 text-2xl font-bold text-center text-primary-100">Mes Réservations</h2>
       {/* Filtres par statut */}
       <div className="flex flex-wrap justify-center gap-2 mb-6">
         {STATUTS.map((statut) => (
           <button
             key={statut}
-            className={`px-4 py-1 rounded-full border transition ${
+            className={`px-4 py-1 rounded-full border font-semibold transition-colors ${
               statutFilter === statut
                 ? "bg-customGreen-100 text-white border-customGreen-100"
-                : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-customGreen-50"
+                : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-customGreen2-100 hover:text-white"
             }`}
             onClick={() => setStatutFilter(statut)}
           >
@@ -123,13 +116,15 @@ const VisualiserReservations = () => {
           </button>
         ))}
       </div>
-
       {loading ? (
-        <div className="py-4 text-center text-gray-500">Chargement des réservations...</div>
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement des réservations...</span>
+        </div>
       ) : error ? (
-        <div className="py-4 text-center text-red-500">{error}</div>
+        <div className="py-4 font-semibold text-center text-white bg-red-500 rounded-md shadow-md">{error}</div>
       ) : filteredReservations.length === 0 ? (
-        <div className="py-4 text-center text-gray-500">Aucune réservation trouvée.</div>
+        <div className="py-4 text-center text-gray-600 rounded-md bg-customGrey-100">Aucune réservation trouvée.</div>
       ) : (
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
           {filteredReservations.map((reservation) => (
@@ -138,37 +133,39 @@ const VisualiserReservations = () => {
               className="flex flex-col p-5 transition-all duration-200 bg-white border border-gray-100 shadow-md rounded-xl hover:shadow-xl"
             >
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-primary-100">
                   {reservation.ville_depart} → {reservation.ville_arrivee}
                 </h3>
-                <span className="font-bold text-green-600">{reservation.prix} €</span>
+                <span className="font-bold text-customGreen2-100">{reservation.prix} €</span>
               </div>
               <div className="mb-3 text-gray-600">{reservation.date_depart}</div>
               <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 text-sm text-blue-800 bg-blue-100 rounded-full">
+                <span className="px-3 py-1 text-sm font-semibold rounded-full text-primary-100 bg-customGrey-100">
                   {reservation.nombre_places_reservees} place(s)
                 </span>
                 <span
-                  className={`px-3 py-1 text-sm rounded-full ${
+                  className={`px-3 py-1 text-sm rounded-full font-bold ${
                     reservation.statut === "confirmé"
-                      ? "bg-green-100 text-green-800"
+                      ? "bg-customGreen2-100 text-white"
                       : reservation.statut === "annulée"
-                      ? "bg-red-100 text-red-800"
-                      : "bg-gray-100 text-gray-800"
+                      ? "bg-red-500 text-white"
+                      : reservation.statut === "en_attente"
+                      ? "bg-yellow-400 text-black"
+                      : "bg-primary-100 text-white"
                   }`}
                 >
                   {reservation.statut}
                 </span>
               </div>
               <button
-                className="px-4 py-2 mt-auto text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
+                className="px-4 py-2 mt-auto font-bold text-white transition-colors rounded-md shadow-md bg-primary-100 hover:bg-customPink-100"
                 onClick={() => setSelectedReservation(reservation)}
               >
                 Voir les détails
               </button>
               {reservation.statut === "en_attente" && (
                 <button
-                  className="px-4 py-2 mt-2 text-white transition bg-red-600 rounded-lg hover:bg-red-700"
+                  className="px-4 py-2 mt-2 font-bold text-white transition-colors bg-red-500 rounded-md shadow-md hover:bg-red-600"
                   onClick={() => handleCancelReservation(reservation.reservation_id)}
                 >
                   Annuler
@@ -178,35 +175,37 @@ const VisualiserReservations = () => {
           ))}
         </div>
       )}
-
       <Modal
         isOpen={!!selectedReservation}
         onClose={() => setSelectedReservation(null)}
         title="Détail de la réservation"
       >
-        <div className="flex flex-row gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div className="p-4 rounded-lg bg-gray-50">
-            <h4 className="mb-3 font-semibold text-gray-800">Informations de la réservation</h4>
-            <ul className="space-y-2">
+        <div className="flex flex-col gap-4 md:flex-row">
+          <div className="flex-1 p-4 rounded-lg bg-customGrey-100">
+            <h4 className="mb-3 font-semibold text-primary-100">Informations de la réservation</h4>
+            <ul className="space-y-2 text-gray-700">
               <li><b>Départ :</b> {selectedReservation?.ville_depart}</li>
               <li><b>Date :</b> {selectedReservation?.date_depart}</li>
               <li><b>Heure :</b> {selectedReservation?.heure_depart}</li>
               <li><b>Arrivée :</b> {selectedReservation?.ville_arrivee}</li>
               <li><b>Date d'arrivée :</b> {selectedReservation?.date_arrivee}</li>
-              <li><b>Heure d'arrivée :</b> {selectedReservation?.heure_arrivee}</li>       
+              <li><b>Heure d'arrivée :</b> {selectedReservation?.heure_arrivee}</li>
               <li><b>Prix :</b> {selectedReservation?.prix} €</li>
               <li><b>Places réservées :</b> {selectedReservation?.nombre_places_reservees}</li>
               <li><b>Statut :</b> {selectedReservation?.statut}</li>
             </ul>
           </div>
-          <div className="p-4 rounded-lg bg-gray-50">
-            <h4 className="mb-3 font-semibold text-gray-800">Informations sur le conducteur</h4>
+          <div className="flex-1 p-4 rounded-lg bg-customGrey-100">
+            <h4 className="mb-3 font-semibold text-primary-100">Informations sur le conducteur</h4>
             {userLoading ? (
-              <div className="text-gray-500">Chargement des infos utilisateur...</div>
+              <div className="flex items-center">
+                <div className="inline-block w-6 h-6 mr-2 border-4 rounded-full border-customGreen2-100 border-t-transparent animate-spin"></div>
+                <span className="text-gray-600">Chargement des infos utilisateur...</span>
+              </div>
             ) : userError ? (
               <div className="text-red-500">{userError}</div>
             ) : userInfo ? (
-              <ul className="space-y-2">
+              <ul className="space-y-2 text-gray-700">
                 <li><b>Nom :</b> {userInfo.nom || '-'}</li>
                 <li><b>Prénom :</b> {userInfo.prenom || '-'}</li>
                 <li><b>Email :</b> {userInfo.email || '-'}</li>
