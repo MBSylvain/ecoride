@@ -2,48 +2,69 @@ import React from "react";
 
 const ProfilePreferencesBlock = () => {
   return (
-    <div className="flex items-center justify-center p-4 w-full bg-gray-100">
-      <div className="flex flex-col lg:flex-row w-full max-w-7xl p-4 md:p-6 lg:p-8 bg-white rounded-lg shadow-md gap-8">
+    <div className="flex items-center justify-center w-full p-6 font-sans bg-customGrey-100">
+      <div className="flex flex-col w-full gap-8 p-6 bg-white border border-gray-100 rounded-lg shadow-lg lg:flex-row max-w-7xl">
         {/* Préférence Contact */}
         <div className="w-full lg:w-1/3">
-          <h1 className="text-xl md:text-2xl font-bold mb-4">
+          <h2 className="mb-4 text-xl font-bold md:text-2xl text-primary-100">
             Préférence Contact
-          </h1>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Méthode de contact préférée :</strong> Email
+          </h2>
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">
+              Méthode de contact préférée :
+            </span>{" "}
+            Email
           </p>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Notifications :</strong> Activées
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">
+              Notifications :
+            </span>{" "}
+            Activées
           </p>
         </div>
         {/* Préférence Règlement */}
         <div className="w-full lg:w-1/3">
-          <h1 className="text-xl md:text-2xl font-bold mb-4">
+          <h2 className="mb-4 text-xl font-bold md:text-2xl text-primary-100">
             Préférence Règlement
-          </h1>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Méthode de paiement préférée :</strong> Carte de crédit
+          </h2>
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">
+              Méthode de paiement préférée :
+            </span>{" "}
+            Carte de crédit
           </p>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Facturation automatique :</strong> Activée
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">
+              Facturation automatique :
+            </span>{" "}
+            Activée
           </p>
         </div>
         {/* Préférence Voyage */}
         <div className="w-full lg:w-1/3">
-          <h1 className="text-xl md:text-2xl font-bold mb-4">
+          <h2 className="mb-4 text-xl font-bold md:text-2xl text-primary-100">
             Préférence Voyage
-          </h1>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Type de véhicule préféré :</strong> Berline
+          </h2>
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">
+              Type de véhicule préféré :
+            </span>{" "}
+            Berline
           </p>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Préférences de siège :</strong> Avant
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">
+              Préférences de siège :
+            </span>{" "}
+            Avant
           </p>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Musique :</strong> Oui
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">Musique :</span> Oui
           </p>
-          <p className="text-base md:text-lg mb-2">
-            <strong>Climatisation :</strong> Oui
+          <p className="mb-2 text-base leading-relaxed md:text-lg">
+            <span className="font-semibold text-primary-100">
+              Climatisation :
+            </span>{" "}
+            Oui
           </p>
         </div>
       </div>
