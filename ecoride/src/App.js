@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/PrivateRoute";
+import { useState } from "react";
+import { AuthProvider } from "./contexts/AuthContext";
+
  // Import des composants pour les pages
 import Accueil from "./pages/accueil";
 import Aboutus from "./pages/Aboutus";
@@ -14,14 +18,23 @@ import Help from "./pages/Helpcenter";
 import Privaty from "./pages/privaty";
 
 import TestApi from "./pages/testapi";
+// Import des composants pour la gestion des utilisateurs
 import Dashboard from "./pages/Dashboard";
 import Userinfo from "./Utilisateurs/Userinfo";
+import PreferencesConducteur from "./Utilisateurs/PreferencesConducteur";
+import HistoriqueOperations from "./Utilisateurs/HistoriqueOperations";
 
 import Trajetinfo from "./features/Trajetinfo";
-import Reservations from "./Reservations/Reservations";
-
-import Reservation from "./Reservations/ReservationUser";
-import VisualiserReservations from "./Reservations/VisualiserReservations";
+// Import des composants pour la gestion des administrateurs
+import AdminDashboard from "./AdmEmp/dashboardAdmin";
+import Statistiques from "./AdmEmp/Statistiques";
+import StatistiquesUtilisateurs from "./AdmEmp/Statistiques/StatistiquesUtilisateurs";
+import StatistiquesTrajets from "./AdmEmp/Statistiques/StatistiquesTrajets";
+import StatistiquesCredits from "./AdmEmp/Statistiques/StatistiquesCredits";
+import StatistiquesAvis from "./AdmEmp/Statistiques/StatistiquesAvis";
+import StatistiquesEmployes from "./AdmEmp/Statistiques/StatistiquesEmployes";
+import StatistiquesReservations from "./AdmEmp/Statistiques/StatistiquesReservations";
+import StatistiquesVoitures from "./AdmEmp/Statistiques/StatistiquesVoitures";
 
 // Import des composants pour la gestion des avis
 import AjouterAvisModal from "./avis/AjouterAvisModal";
@@ -31,22 +44,31 @@ import VisualiserAvis from "./avis/VisualiserAvis";
 import Carinfo from "./features/Carinfo";
 import UpdateVehicleForm from "./Voitures/UpdateVehicleForm";
 import VoitureUser from "./Voitures/VoitureUser";
-// Import des composants pour la gestion des réservations
 
 // Import des composants pour la gestion des trajets
 import TrajetUser from "./Trajets/TrajetUser";
 import CreateTrajetModal from "./Trajets/CreateTrajetModal";
 import EditTrajetModal from "./Trajets/EditTrajetModal";
-
-import Reservetrajet from "./Trajets/reservetrajet";
 import VisualiserTrajet from "./Trajets/VisualiserTrajets";
+
+// Import des composants pour la gestion des réservations
+import Reservetrajet from "./Trajets/reservetrajet";
+import Reservation from "./Reservations/ReservationUser";
+import Reservations from "./Reservations/Reservations";
+import VisualiserReservations from "./Reservations/VisualiserReservations";
+
+
 
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   return (
     <Router>
+       <AuthProvider>
       <div className="App">
         <Header />
+     
+
         <Routes>
           {/* Routes pour la gestion des pages*/}
           <Route exact path="/" element={<Accueil />} />
@@ -55,45 +77,66 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/helpcenter" element={<Help />} />
           <Route path="/privaty" element={<Privaty />} />
+          
+          {/* Routes pour la gestion des administrateurs */}
+          {/* Routes Protégées */}
+          <Route path="/AdmEmp/dashboardAdmin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/AdmEmp/statistiques" element={<ProtectedRoute><Statistiques /></ProtectedRoute>} />
+
+          <Route path="/AdmEmp/statistiques/statistiquesutilisateurs" element={<ProtectedRoute><StatistiquesUtilisateurs /></ProtectedRoute>} />
+          <Route path="/AdmEmp/statistiques/statistiquestrajets" element={<ProtectedRoute><StatistiquesTrajets /></ProtectedRoute>} />
+          <Route path="/AdmEmp/statistiques/statistiquescredits" element={<ProtectedRoute><StatistiquesCredits /></ProtectedRoute>} />
+          <Route path="/AdmEmp/statistiques/statistiquesavis" element={<ProtectedRoute><StatistiquesAvis /></ProtectedRoute>} />
+          <Route path="/AdmEmp/statistiques/statistiquesemployes" element={<ProtectedRoute><StatistiquesEmployes /></ProtectedRoute>} />
+
+          <Route path="/admin/statistiques/statistiquesreservations" element={<ProtectedRoute><StatistiquesReservations /></ProtectedRoute>} />
+          <Route path="/admin/statistiques/statistiquesvoitures" element={<ProtectedRoute><StatistiquesVoitures /></ProtectedRoute>} />
+
+
 
           {/* Routes pour la gestion des utilisateurs */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/testapi" element={<TestApi />} />
-          <Route path="/Userinfo" element={<Userinfo />} />
-          
-          <Route path="/dashboard" element={<Dashboard />} />
+           {/* Routes Protégées */}
 
-          <Route path="/Trajetinfo" element={<Trajetinfo />} />
-          <Route path="/reservetrajet/:trajetId" element={<Reservetrajet />} />
-          <Route path="/reservation/:userId" element={<Reservation />} />
-          <Route path="/reservation/:trajetId" element={<Reservation />} />
+          <Route path="/testapi" element={<ProtectedRoute><TestApi /></ProtectedRoute>} />
+          <Route path="/Userinfo" element={<ProtectedRoute><Userinfo /></ProtectedRoute>} />
+          <Route path="/PreferencesConducteur" element={<ProtectedRoute><PreferencesConducteur /></ProtectedRoute>} />
+          <Route path="/HistoriqueOperations" element={<ProtectedRoute><HistoriqueOperations /></ProtectedRoute>} />
+
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+          <Route path="/Trajetinfo" element={<ProtectedRoute><Trajetinfo /></ProtectedRoute>} />
+          <Route path="/reservetrajet/:trajetId" element={<ProtectedRoute><Reservetrajet /></ProtectedRoute>} />
+          <Route path="/reservation/:userId" element={<ProtectedRoute><Reservation /></ProtectedRoute>} />
+          <Route path="/reservation/:trajetId" element={<ProtectedRoute><Reservation /></ProtectedRoute>} />
 
           {/* Routes pour la gestion des Voiture */}
-          <Route path="/VoitureUser" element={<VoitureUser />} />
-          <Route path="/Carinfo" element={<Carinfo />} />
-          <Route path="/UpdateVehicleForm/:voitureId" element={<UpdateVehicleForm />} />
+          <Route path="/VoitureUser" element={<ProtectedRoute><VoitureUser /></ProtectedRoute>} />
+          <Route path="/Carinfo" element={<ProtectedRoute><Carinfo /></ProtectedRoute>} />
+          <Route path="/UpdateVehicleForm/:voitureId" element={<ProtectedRoute><UpdateVehicleForm /></ProtectedRoute>} />
 
 
           {/* Routes pour la gestion des Avis */}
-          <Route path="/VisualiserAvis" element={<VisualiserAvis />} />
-          <Route path="/AjouterAvisModal" element={<AjouterAvisModal />} />
+          <Route path="/VisualiserAvis" element={<ProtectedRoute><VisualiserAvis /></ProtectedRoute>} />
+          <Route path="/AjouterAvisModal" element={<ProtectedRoute><AjouterAvisModal /></ProtectedRoute>} />
 
           {/* Routes pour la gestion des Réservations */}
-          <Route path="/Reservations" element={<Reservations />} />
-          <Route path="/VisualiserReservations" element={<VisualiserReservations />} />
+          <Route path="/Reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
+          <Route path="/VisualiserReservations" element={<ProtectedRoute><VisualiserReservations /></ProtectedRoute>} />
 
 
 
           {/* Routes pour la gestion des trajets */}
-          <Route path="/trajets" element={<TrajetUser />} />
-          <Route path="/trajets/:trajetId" element={<TrajetUser />} />
-          <Route path="/VisualiserTrajet" element={<VisualiserTrajet />} />
-          <Route path="/trajets/create" element={<CreateTrajetModal isOpen={true} />} />
-          <Route path="/trajets/edit/:trajetId" element={<EditTrajetModal isOpen={true} />} />
+          <Route path="/trajets" element={<ProtectedRoute><TrajetUser /></ProtectedRoute>} />
+          <Route path="/trajets/:trajetId" element={<ProtectedRoute><TrajetUser /></ProtectedRoute>} />
+          <Route path="/VisualiserTrajet" element={<ProtectedRoute><VisualiserTrajet /></ProtectedRoute>} />
+          <Route path="/trajets/create" element={<ProtectedRoute><CreateTrajetModal isOpen={true} /></ProtectedRoute>} />
+          <Route path="/trajets/edit/:trajetId" element={<ProtectedRoute><EditTrajetModal isOpen={true} /></ProtectedRoute>} />
         </Routes>
         <Footer />
       </div>
+      </AuthProvider>
     </Router>
   );
 }

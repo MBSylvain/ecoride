@@ -37,41 +37,52 @@ const CreateReservationModal = ({ isOpen, onClose, onReservationCreated }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Ajouter une réservation">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Trajet ID</label>
+      <form onSubmit={handleSubmit} className="p-6 font-sans bg-white rounded-lg shadow-md">
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-semibold text-primary-100">Trajet ID</label>
           <input
             type="text"
             name="trajet_id"
             value={formData.trajet_id}
             onChange={handleChange}
             required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
           />
         </div>
-        <div>
-          <label>Date</label>
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-semibold text-primary-100">Date</label>
           <input
             type="date"
             name="date"
             value={formData.date}
             onChange={handleChange}
             required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
           />
         </div>
-        <div>
-          <label>Statut</label>
+        <div className="mb-6">
+          <label className="block mb-2 text-sm font-semibold text-primary-100">Statut</label>
           <select
             name="statut"
             value={formData.statut}
             onChange={handleChange}
             required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100 focus:outline-none"
           >
             <option value="En attente">En attente</option>
             <option value="Confirmée">Confirmée</option>
             <option value="Annulée">Annulée</option>
           </select>
         </div>
-        <button type="submit" disabled={isSubmitting}>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`w-full py-2 px-4 rounded-md font-bold shadow-md transition-colors ${
+            isSubmitting
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-primary-100 text-white hover:bg-customPink-100'
+          }`}
+        >
           {isSubmitting ? 'Enregistrement...' : 'Ajouter'}
         </button>
       </form>

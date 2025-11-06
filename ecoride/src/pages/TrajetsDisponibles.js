@@ -78,49 +78,49 @@ const TrajetsDisponibles = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen py-8">
-      <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-green-700 mb-8 text-center">Rechercher un trajet</h1>
+    <div className="min-h-screen py-8 bg-customGrey-100">
+      <div className="container px-4 mx-auto">
+        <h1 className="mb-8 text-3xl font-bold text-center text-primary-100">Rechercher un trajet</h1>
 
         {/* Formulaire de recherche */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <form className="grid grid-cols-1 md:grid-cols-4 gap-4" onSubmit={handleSearch}>
+        <div className="p-6 mb-8 bg-white rounded-lg shadow-md">
+          <form className="grid grid-cols-1 gap-4 md:grid-cols-4" onSubmit={handleSearch}>
             <div>
-              <label className="block text-gray-700 mb-2">Ville de départ</label>
+              <label className="block mb-2 text-primary-100">Ville de départ</label>
               <input
                 type="text"
                 name="ville_depart"
                 value={search.ville_depart}
                 onChange={handleChange}
                 placeholder="Ex: Paris"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customGreen2-100"
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Ville d'arrivée</label>
+              <label className="block mb-2 text-primary-100">Ville d'arrivée</label>
               <input
                 type="text"
                 name="ville_arrivee"
                 value={search.ville_arrivee}
                 onChange={handleChange}
                 placeholder="Ex: Lyon"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customGreen2-100"
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Date de départ</label>
+              <label className="block mb-2 text-primary-100">Date de départ</label>
               <input
                 type="date"
                 name="date_depart"
                 value={search.date_depart}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customGreen2-100"
               />
             </div>
             <div className="flex items-end">
               <button
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition duration-200"
+                className="w-full px-4 py-2 font-bold text-white transition duration-200 rounded-md bg-primary-100 hover:bg-customGreen2-100"
               >
                 Rechercher
               </button>
@@ -129,7 +129,7 @@ const TrajetsDisponibles = () => {
         </div>
 
         {/* Résultats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {results.length > 0 ? (
             results.map((trajet) => {
               const est_ecologique = ["electrique", "hybride"].includes(
@@ -140,16 +140,16 @@ const TrajetsDisponibles = () => {
               return (
                 <div
                   key={trajet.trajet_id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-lg hover:scale-102"
+                  className="overflow-hidden transition-transform duration-200 bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-102"
                 >
                   <div className="p-5">
                     {/* Conducteur */}
                     <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 mr-4 flex items-center justify-center">
+                      <div className="flex items-center justify-center w-12 h-12 mr-4 overflow-hidden rounded-full bg-customGrey-100">
                         {trajet.conducteur.photo ? (
-                          <img src={trajet.conducteur.photo} alt="Photo de profil" className="w-full h-full object-cover" />
+                          <img src={trajet.conducteur.photo} alt="Photo de profil" className="object-cover w-full h-full" />
                         ) : (
-                          <FaUser className="text-green-700 text-xl" />
+                          <FaUser className="text-xl text-primary-100" />
                         )}
                       </div>
                       <div>
@@ -164,7 +164,7 @@ const TrajetsDisponibles = () => {
                     <div className="mb-4">
                       <div className="flex items-center mb-2">
                         <div className="w-8 text-center">
-                          <FaMapMarkerAlt className="text-green-600" />
+                          <FaMapMarkerAlt className="text-primary-100" />
                         </div>
                         <div>
                           <h4 className="font-medium">{trajet.ville_depart}</h4>
@@ -186,44 +186,44 @@ const TrajetsDisponibles = () => {
                       </div>
                     </div>
                     {/* Prix et places */}
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center justify-between mb-4">
                       <div>
-                        <span className="font-bold text-xl text-green-700">{trajet.prix.toFixed(2)} €</span>
+                        <span className="text-xl font-bold text-primary-100">{trajet.prix.toFixed(2)} €</span>
                         <span className="text-sm text-gray-500">/personne</span>
                       </div>
                       <div>
-                        <span className={trajet.places_restantes > 0 ? "text-green-600" : "text-red-600"} + " font-medium"}>
+                        <span className={trajet.places_restantes > 0 ? "text-customGreen2-100" : "text-red-600" + " font-medium"}>
                           {trajet.places_restantes} place{trajet.places_restantes > 1 ? "s" : ""} restante{trajet.places_restantes > 1 ? "s" : ""}
                         </span>
                       </div>
                     </div>
                     {/* Badges et bouton */}
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div className="flex space-x-2">
                         {est_ecologique && (
-                          <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                          <span className="inline-block px-2 py-1 text-xs rounded-full bg-customGreen-100 text-primary-100">
                             <FaLeaf className="inline mr-1" /> Écologique
                           </span>
                         )}
                         {trajet.bagages_autorises && (
-                          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                          <span className="inline-block px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full">
                             <FaSuitcase className="inline mr-1" /> Bagages
                           </span>
                         )}
                         {trajet.animaux_autorises && (
-                          <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                          <span className="inline-block px-2 py-1 text-xs text-purple-800 bg-purple-100 rounded-full">
                             <FaPaw className="inline mr-1" /> Animaux
                           </span>
                         )}
                         {trajet.fumeur_autorise && (
-                          <span className="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                          <span className="inline-block px-2 py-1 text-xs text-orange-800 bg-orange-100 rounded-full">
                             <FaSmoking className="inline mr-1" /> Fumeur
                           </span>
                         )}
                       </div>
                       <button
                         onClick={() => setSelectedTrajet(trajet)}
-                        className="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded transition duration-200"
+                        className="px-4 py-2 text-sm font-bold text-white transition duration-200 rounded bg-primary-100 hover:bg-customGreen2-100"
                       >
                         Détails
                       </button>
@@ -233,10 +233,10 @@ const TrajetsDisponibles = () => {
               );
             })
           ) : (
-            <div className="col-span-full text-center py-12">
-              <FaMapMarkerAlt className="text-gray-300 text-5xl mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">Aucun trajet ne correspond à votre recherche</h3>
-              <p className="text-gray-500 max-w-md mx-auto">
+            <div className="py-12 text-center col-span-full">
+              <FaMapMarkerAlt className="mb-4 text-5xl text-gray-300" />
+              <h3 className="mb-2 text-xl font-semibold text-gray-600">Aucun trajet ne correspond à votre recherche</h3>
+              <p className="max-w-md mx-auto text-gray-500">
                 Essayez de modifier vos critères de recherche ou consultez les trajets à venir.
               </p>
             </div>
@@ -245,29 +245,29 @@ const TrajetsDisponibles = () => {
 
         {/* Détail du trajet (modal) */}
         {selectedTrajet && (
-          <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full relative">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
+            <div className="relative w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
               <button
                 onClick={() => setSelectedTrajet(null)}
-                className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                className="absolute px-3 py-1 font-bold text-white bg-red-600 rounded top-2 right-2 hover:bg-red-700"
               >
                 Fermer
               </button>
-              <h2 className="text-xl font-bold mb-4">Détails du trajet</h2>
+              <h2 className="mb-4 text-xl font-bold">Détails du trajet</h2>
               <div className="space-y-6">
                 {/* Conducteur */}
-                <div className="border-b pb-4">
-                  <h3 className="font-bold text-lg text-green-700 mb-2">Conducteur</h3>
+                <div className="pb-4 border-b">
+                  <h3 className="mb-2 text-lg font-bold text-primary-100">Conducteur</h3>
                   <div className="flex items-center">
-                    <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 mr-4 flex items-center justify-center">
+                    <div className="flex items-center justify-center w-16 h-16 mr-4 overflow-hidden rounded-full bg-customGrey-100">
                       {selectedTrajet.conducteur.photo ? (
-                        <img src={selectedTrajet.conducteur.photo} alt="Photo de profil" className="w-full h-full object-cover" />
+                        <img src={selectedTrajet.conducteur.photo} alt="Photo de profil" className="object-cover w-full h-full" />
                       ) : (
-                        <FaUser className="text-green-700 text-2xl" />
+                        <FaUser className="text-2xl text-primary-100" />
                       )}
                     </div>
                     <div>
-                      <p className="font-medium text-lg">
+                      <p className="text-lg font-medium">
                         {selectedTrajet.conducteur.pseudo ||
                           `${selectedTrajet.conducteur.prenom} ${selectedTrajet.conducteur.nom[0]}.`}
                       </p>
@@ -287,12 +287,12 @@ const TrajetsDisponibles = () => {
                   </div>
                 </div>
                 {/* Détails du trajet */}
-                <div className="border-b pb-4">
-                  <h3 className="font-bold text-lg text-green-700 mb-2">Détails du trajet</h3>
+                <div className="pb-4 border-b">
+                  <h3 className="mb-2 text-lg font-bold text-primary-100">Détails du trajet</h3>
                   <div className="space-y-3">
                     <div className="flex">
                       <div className="w-8 text-center">
-                        <FaMapMarkerAlt className="text-green-600" />
+                        <FaMapMarkerAlt className="text-primary-100" />
                       </div>
                       <div>
                         <p className="font-medium">{selectedTrajet.ville_depart}</p>
@@ -321,34 +321,34 @@ const TrajetsDisponibles = () => {
                   </div>
                 </div>
                 {/* Voiture */}
-                <div className="border-b pb-4">
-                  <h3 className="font-bold text-lg text-green-700 mb-2">Véhicule</h3>
+                <div className="pb-4 border-b">
+                  <h3 className="mb-2 text-lg font-bold text-primary-100">Véhicule</h3>
                   <p className="text-sm text-gray-600">{selectedTrajet.voiture.marque}</p>
                   <p className="text-sm text-gray-600">{selectedTrajet.voiture.modele}</p>
                   <p className="text-sm text-gray-600">Couleur: {selectedTrajet.voiture.couleur}</p>
                   <p className="text-sm text-gray-600">Énergie: {selectedTrajet.voiture.energie}</p>
                 </div>
                 {/* Options et préférences */}
-                <div className="border-b pb-4">
-                  <h3 className="font-bold text-lg text-green-700 mb-2">Préférences</h3>
+                <div className="pb-4 border-b">
+                  <h3 className="mb-2 text-lg font-bold text-primary-100">Préférences</h3>
                   <div className="flex flex-wrap gap-2">
                     {["electrique", "hybride"].includes((selectedTrajet.voiture.energie || "").toLowerCase()) && (
-                      <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                      <span className="inline-block px-2 py-1 text-xs rounded-full bg-customGreen-100 text-primary-100">
                         <FaLeaf className="inline mr-1" /> Véhicule écologique
                       </span>
                     )}
                     {selectedTrajet.bagages_autorises && (
-                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                      <span className="inline-block px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full">
                         <FaSuitcase className="inline mr-1" /> Bagages autorisés
                       </span>
                     )}
                     {selectedTrajet.animaux_autorises && (
-                      <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                      <span className="inline-block px-2 py-1 text-xs text-purple-800 bg-purple-100 rounded-full">
                         <FaPaw className="inline mr-1" /> Animaux autorisés
                       </span>
                     )}
                     {selectedTrajet.fumeur_autorise && (
-                      <span className="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                      <span className="inline-block px-2 py-1 text-xs text-orange-800 bg-orange-100 rounded-full">
                         <FaSmoking className="inline mr-1" /> Fumeur autorisé
                       </span>
                     )}
@@ -358,13 +358,13 @@ const TrajetsDisponibles = () => {
                 <div className="flex justify-between mt-4">
                   <Link
                     to={`/contact?conducteur=${selectedTrajet.conducteur.pseudo}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center"
+                    className="flex items-center px-4 py-2 font-bold text-white bg-blue-600 rounded hover:bg-blue-700"
                   >
                     <FaCommentAlt className="mr-1" /> Contacter
                   </Link>
                   <Link
                     to={`/reserver/${selectedTrajet.trajet_id}`}
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center"
+                    className="flex items-center px-4 py-2 font-bold text-white rounded bg-primary-100 hover:bg-customGreen2-100"
                   >
                     <FaCheck className="mr-1" /> Réserver
                   </Link>

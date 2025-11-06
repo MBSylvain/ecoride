@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import EditUserModal from './EditUserModal'; // Chemin relatif correct
+import EditUserModal from './EditUserModal';
+
 const UserInfoSection = () => {
-  // Récupération de l'ID utilisateur depuis le localStorage
-  const utilisateur_id = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
-  
-  // Définition des states au niveau supérieur du composant
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [utilisateur_id] = useState(localStorage.getItem('utilisateur_id'));
+
   const fetchUserData = async () => {
     setUserLoading(true);
     try {
-      const response = await axios.get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
-      {withCredentials: true,
-        headers: {
-          "Content-Type": "application/json"
-        },
-        
-      });
-      
+      const response = await axios.get(
+        `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json"
+          },
+        }
+      );
       setUser(response.data);
       console.log("Données utilisateur chargées:", response.data);
     } catch (error) {
@@ -29,8 +28,7 @@ const UserInfoSection = () => {
       setUserLoading(false);
     }
   };
-  
-  // useEffect à l'intérieur du composant
+
   useEffect(() => {
     if (utilisateur_id) {
       fetchUserData();
@@ -39,28 +37,47 @@ const UserInfoSection = () => {
 
   const handleUserUpdated = (updatedUser) => {
     setUser(updatedUser);
-    // Optionnel: rechargez les données complètes depuis le serveur
     fetchUserData();
   };
 
-  // Le JSX reste inchangé
   return (
-    <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-xl font-semibold">Mes informations personnelles</h2>
+    <div className="max-w-3xl p-8 mx-auto mb-8 bg-white rounded-lg shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold text-primary-100">Mes informations personnelles</h2>
       {userLoading ? (
-        <div className="p-4 text-center">Chargement...</div>
+        <div className="flex items-center justify-center p-8">
+          <div className="inline-block w-8 h-8 border-4 rounded-full border-primary-100 border-t-transparent animate-spin"></div>
+          <span className="ml-2 text-gray-600">Chargement...</span>
+        </div>
       ) : user ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div><p className="text-gray-600">Nom:</p><p className="font-medium">{user.nom}</p></div>
-          <div><p className="text-gray-600">Prénom:</p><p className="font-medium">{user.prenom}</p></div>
-          <div><p className="text-gray-600">Email:</p><p className="font-medium">{user.email}</p></div>
-          <div><p className="text-gray-600">Téléphone:</p><p className="font-medium">{user.telephone || "Non renseigné"}</p></div>
-          <div><p className="text-gray-600">Adresse:</p><p className="font-medium">{user.adresse || "Non renseigné"}</p></div>
-          <div><p className="text-gray-600">Date inscription:</p><p className="font-medium">{user.date_inscription || "Non renseigné"}</p></div>
-          <div className="mt-4">
-            <button 
-              onClick={() => setIsModalOpen(true)} 
-              className="px-4 py-2 text-white border-2 rounded bg-primary-100 border-customPink-100 hover:bg-white hover:border-customPink-80 hover:text-customPink-80"
+          <div>
+            <p className="text-gray-600">Nom :</p>
+            <p className="font-semibold text-primary-100">{user.nom}</p>
+          </div>
+          <div>
+            <p className="text-gray-600">Prénom :</p>
+            <p className="font-semibold text-primary-100">{user.prenom}</p>
+          </div>
+          <div>
+            <p className="text-gray-600">Email :</p>
+            <p className="font-medium">{user.email}</p>
+          </div>
+          <div>
+            <p className="text-gray-600">Téléphone :</p>
+            <p className="font-medium">{user.telephone || "Non renseigné"}</p>
+          </div>
+          <div>
+            <p className="text-gray-600">Adresse :</p>
+            <p className="font-medium">{user.adresse || "Non renseigné"}</p>
+          </div>
+          <div>
+            <p className="text-gray-600">Date inscription :</p>
+            <p className="font-medium">{user.date_inscription || "Non renseigné"}</p>
+          </div>
+          <div className="flex justify-end col-span-2 mt-4">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-6 py-2 font-bold text-white transition-all duration-200 border-2 rounded-md shadow-md bg-primary-100 hover:bg-customGreen2-100 border-customPink-100 hover:border-customPink-80 hover:text-customPink-80"
             >
               Modifier mes informations
             </button>
@@ -70,16 +87,11 @@ const UserInfoSection = () => {
               user={user}
               onUserUpdated={handleUserUpdated}
             />
-    
-
-
           </div>
         </div>
       ) : (
-        <p>Aucune information disponible.</p>
+        <p className="text-gray-600">Aucune information disponible.</p>
       )}
-      
-     
     </div>
   );
 };
