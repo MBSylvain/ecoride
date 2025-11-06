@@ -55,7 +55,7 @@ const LoginPage = () => {
     setApiError("");
     try {
       const response = await axios.post(
-        "http://localhost/api/Controllers/UtilisateurController.php",
+        "https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php",
         formData,
         {
           headers: { "Content-Type": "application/json" },
