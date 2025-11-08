@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
@@ -14,8 +14,8 @@ const ReservationsSection = () => {
     setReservationsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(
-        `http://localhost/api/Controllers/ReservationController.php?&utilisateur_id=${utilisateur_id}`,
+      const response = await axiosInstance.get(
+        `ReservationController.php?&utilisateur_id=${utilisateur_id}`,
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
@@ -49,8 +49,8 @@ const ReservationsSection = () => {
       return;
     }
     try {
-      const response = await axios.put(
-        `http://localhost/api/Controllers/ReservationController.php`,
+      const response = await axiosInstance.put(
+        `ReservationController.php`,
         {
           action: "put",
           reservation_id: reservation_id,

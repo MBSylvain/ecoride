@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import CreateTrajetModal from './CreateTrajetModal';
 import EditTrajetModal from './EditTrajetModal';
 
@@ -17,8 +17,8 @@ const TrajetUser = () => {
     const fetchTrajets = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+        const response = await axiosInstance.get(
+          `TrajetController.php?utilisateur_id=${utilisateur_id}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setTrajets(response.data || []);
@@ -38,8 +38,8 @@ const TrajetUser = () => {
   const handleDelete = async (trajetId) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce trajet ?')) {
       try {
-        await axios.delete(
-          `http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`,
+        await axiosInstance.delete(
+          `TrajetController.php?trajet_id=${trajetId}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setTrajets(trajets.filter((trajet) => trajet.trajet_id !== trajetId));

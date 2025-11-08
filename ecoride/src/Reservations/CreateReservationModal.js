@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '../components/Modal';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const CreateReservationModal = ({ isOpen, onClose, onReservationCreated }) => {
   const [formData, setFormData] = useState({
@@ -19,8 +19,8 @@ const CreateReservationModal = ({ isOpen, onClose, onReservationCreated }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        'http://localhost/api/Controllers/ReservationController.php',
+      const response = await axiosInstance.post(
+        'ReservationController.php',
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

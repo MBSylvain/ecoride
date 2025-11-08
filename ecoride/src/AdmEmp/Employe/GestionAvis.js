@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const GestionAvis = () => {
   const [avis, setAvis] = useState([]);
@@ -13,8 +13,8 @@ const GestionAvis = () => {
 
   const fetchAvis = () => {
     setLoading(true);
-    axios
-      .get("http://localhost/api/ControllersAdministrateur/AvisAdminController.php", {
+    axiosInstance
+      .get("Administrateur/AvisAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       })
@@ -24,9 +24,9 @@ const GestionAvis = () => {
   };
 
   const handleValidation = (id, valider) => {
-    axios
+    axiosInstance
       .put(
-        "http://localhost/api/ControllersAdministrateur/AvisAdminController.php",
+        "Administrateur/AvisAdminController.php",
         { avis_id: id, statut: valider ? "publié" : "refusé" },
         {
           withCredentials: true,

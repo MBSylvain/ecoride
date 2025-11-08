@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
   const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost/api/Controllers/UserController.php', formData);
+      const response = await axiosInstance.post('UserController.php', formData);
       onUserCreated(response.data);
       onClose();
     } catch (error) {

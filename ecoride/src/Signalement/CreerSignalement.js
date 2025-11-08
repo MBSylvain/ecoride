@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const motifs = [
   "Retard",
@@ -30,8 +30,8 @@ const CreerSignalement = ({ trajet_id, utilisateur_id, onSuccess }) => {
     setLoading(true);
     setFeedback(null);
     try {
-      await axios.post(
-        "http://localhost/api/ControllersAdministrateur/SignalementAdminController.php",
+      await axiosInstance.post(
+        "Administrateur/SignalementAdminController.php",
         form,
         {
           withCredentials: true,

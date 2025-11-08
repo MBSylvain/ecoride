@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const defaultPrefs = {
   fumeur_autorise: 0,
@@ -27,8 +27,8 @@ const PreferencesConducteur = () => {
   const fetchPreferences = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost/api/Controllers/PreferenceConducteurController.php?utilisateur_id=${utilisateur_id}`,
+      const response = await axiosInstance.get(
+        `PreferenceConducteurController.php?utilisateur_id=${utilisateur_id}`,
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
@@ -52,8 +52,8 @@ const PreferencesConducteur = () => {
   const handleDelete = async (preference_id) => {
     if (!window.confirm('Supprimer cette préférence ?')) return;
     try {
-      await axios.delete(
-        `http://localhost/api/Controllers/PreferenceConducteurController.php?preference_id=${preference_id}`,
+      await axiosInstance.delete(
+        `PreferenceConducteurController.php?preference_id=${preference_id}`,
         { withCredentials: true }
       );
       setPreferences(prefs => prefs.filter(p => p.preference_id !== preference_id));
@@ -71,8 +71,8 @@ const PreferencesConducteur = () => {
   // Sauvegarder la modification
   const handleSave = async (preference_id) => {
     try {
-      await axios.put(
-        `http://localhost/api/Controllers/PreferenceConducteurController.php`,
+      await axiosInstance.put(
+        `PreferenceConducteurController.php`,
         { preference_id, valeur: editValue },
         { withCredentials: true }
       );
@@ -100,15 +100,15 @@ const PreferencesConducteur = () => {
     try {
       if (preferences && preferences.length > 0) {
         // Mise à jour
-        await axios.put(
-          `http://localhost/api/Controllers/PreferenceConducteurController.php`,
+        await axiosInstance.put(
+          `PreferenceConducteurController.php`,
           { utilisateur_id, ...newPrefs, preference_id: preferences[0].preference_id },
           { withCredentials: true }
         );
       } else {
         // Création
-        await axios.post(
-          `http://localhost/api/Controllers/PreferenceConducteurController.php`,
+        await axiosInstance.post(
+          `PreferenceConducteurController.php`,
           { utilisateur_id, ...newPrefs },
           { withCredentials: true }
         );

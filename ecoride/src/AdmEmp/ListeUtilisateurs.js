@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const ListeUtilisateurs = () => {
   const [utilisateurs, setUtilisateurs] = useState([]);
@@ -16,7 +16,7 @@ const ListeUtilisateurs = () => {
   const fetchUtilisateurs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/UtilisateurAdminController.php", {
+      const res = await axiosInstance.get("Administrateur/UtilisateurAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

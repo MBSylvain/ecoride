@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 import EditUserModal from "../features/EditUserModal";
 import EditVehicleModal from "../Voitures/EditVehicleModal";
 import EditTrajetModal from "../features/EditTrajetModal";

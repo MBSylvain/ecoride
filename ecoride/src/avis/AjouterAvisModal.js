@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const AjouterAvisModal = ({ trajetId, onClose, onAvisAdded }) => {
   const [note, setNote] = useState(5);
@@ -13,8 +13,8 @@ const AjouterAvisModal = ({ trajetId, onClose, onAvisAdded }) => {
     setError(null);
 
     try {
-      const response = await axios.post(
-        `http://localhost/api/Controllers/AvisController.php`,
+      const response = await axiosInstance.post(
+        `AvisController.php`,
         {
           trajet_id: trajetId,
           note,

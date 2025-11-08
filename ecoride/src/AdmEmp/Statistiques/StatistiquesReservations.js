@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const COLORS = ["#58c3af", "#003051", "#e85d75", "#facc15", "#8884d8", "#FF6666", "#AAFF99"];
 
@@ -10,8 +10,8 @@ const StatistiquesReservations = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost/api/Controllers/StatistiqueController.php?action=reservations")
+    axiosInstance
+      .get("StatistiqueController.php?action=reservations")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques réservations."))
       .finally(() => setLoading(false));

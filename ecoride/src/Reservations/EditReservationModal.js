@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '../components/Modal';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const EditReservationModal = ({ isOpen, onClose, onReservationUpdated, reservation }) => {
   const [formData, setFormData] = useState(reservation);
@@ -15,8 +15,8 @@ const EditReservationModal = ({ isOpen, onClose, onReservationUpdated, reservati
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.put(
-        `http://localhost/api/Controllers/ReservationController.php?reservation_id=${reservation.reservation_id}`,
+      const response = await axiosInstance.put(
+        `ReservationController.php?reservation_id=${reservation.reservation_id}`,
         formData
       );
       onReservationUpdated(response.data);

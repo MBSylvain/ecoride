@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { useEffect, useState } from 'react';
 import CreateTrajetModal from './CreateTrajetModal';
 import EditTrajetModal from './EditTrajetModal';
@@ -50,8 +50,8 @@ const VisualiserTrajets = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(
-        `http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+      const response = await axiosInstance.get(
+        `TrajetController.php?utilisateur_id=${utilisateur_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       );
       if (Array.isArray(response.data)) {
@@ -84,8 +84,8 @@ const VisualiserTrajets = () => {
       setReservationsLoading(true);
       setReservationsError(null);
 
-      axios.get(
-        `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`,
+      axiosInstance.get(
+        `UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then(res => {
@@ -103,8 +103,8 @@ const VisualiserTrajets = () => {
         .catch(() => setUserError("Erreur lors du chargement des infos utilisateur"))
         .finally(() => setUserLoading(false));
 
-      axios.get(
-        `http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`,
+      axiosInstance.get(
+        `ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then(res => {
@@ -117,8 +117,8 @@ const VisualiserTrajets = () => {
           setReservations(reservationsList);
           if (reservationsList.length > 0) {
             Promise.all(reservationsList.map(r =>
-              axios.get(
-                `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`,
+              axiosInstance.get(
+                `UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`,
                 { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
               )
                 .then(uRes => {
@@ -158,13 +158,13 @@ const VisualiserTrajets = () => {
   // Mise à jour du statut d'une réservation
   const handleUpdateReservationStatus = async (reservationId, newStatus) => {
     try {
-      await axios.post(`http://localhost/api/Controllers/ReservationController.php`, {
+      await axiosInstance.post(`ReservationController.php`, {
         reservation_id: reservationId,
         statut: newStatus
       });
       if (selectedTrajet) {
-        const res = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`
+        const res = await axiosInstance.get(
+          `ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`
         );
         let reservationsList = [];
         if (res.data && Array.isArray(res.data)) {
@@ -185,7 +185,7 @@ const VisualiserTrajets = () => {
       setIsDeleting(true);
       setDeleteError('');
       try {
-        await axios.delete(`http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`);
+        await axiosInstance.delete(`TrajetController.php?trajet_id=${trajetId}`);
         fetchTrajets();
       } catch {
         setDeleteError("Erreur lors de la suppression du trajet.");

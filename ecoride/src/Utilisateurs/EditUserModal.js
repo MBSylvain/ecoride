@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const EditUserModal = ({ isOpen, onClose, onUserUpdated, user }) => {
   const [formData, setFormData] = useState(user);
@@ -15,8 +15,8 @@ const EditUserModal = ({ isOpen, onClose, onUserUpdated, user }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.put(
-        `http://localhost/api/Controllers/UserController.php?user_id=${user.user_id}`,
+      const response = await axiosInstance.put(
+        `UserController.php?user_id=${user.user_id}`,
         formData
       );
       onUserUpdated(response.data);

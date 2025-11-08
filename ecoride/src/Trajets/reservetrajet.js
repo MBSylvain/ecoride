@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 import checkAuth from "../features/checkAuth";
 
 const ReserverPage = () => {
@@ -41,8 +41,8 @@ const ReserverPage = () => {
     const fetchTrajetDetails = async () => {
       setIsLoading(true);
       try {
-        const trajetResponse = await axios.get(
-          `http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajetId}`,
+        const trajetResponse = await axiosInstance.get(
+          `TrajetController.php?trajet_id=${trajetId}`,
           { withCredentials: true, responseType: "json" }
         );
         const trajetData = trajetResponse.data.trajet || trajetResponse.data.data || trajetResponse.data;
@@ -50,16 +50,16 @@ const ReserverPage = () => {
 
         const conducteur_Id = trajetData.utilisateur_id;
         if (conducteur_Id) {
-          const conducteurResponse = await axios.get(
-            `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${conducteur_Id}`,
+          const conducteurResponse = await axiosInstance.get(
+            `UtilisateurController.php?utilisateur_id=${conducteur_Id}`,
             { withCredentials: true, responseType: "json" }
           );
           const conducteurData = conducteurResponse.data.utilisateur || conducteurResponse.data;
           setConducteur(conducteurData);
         }
 
-        const placesOccupeesResponse = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?trajet_id=${trajetId}`,
+        const placesOccupeesResponse = await axiosInstance.get(
+          `ReservationController.php?trajet_id=${trajetId}`,
           { withCredentials: true, responseType: "json" }
         );
         const placesOccupees = placesOccupeesResponse.data.placesoccupees || 0;
@@ -106,8 +106,8 @@ const ReserverPage = () => {
     }
 
     try {
-      const response = await axios.post(
-        `http://localhost/api/Controllers/ReservationController.php`,
+      const response = await axiosInstance.post(
+        `ReservationController.php`,
         {
           utilisateur_id: utilisateur_id,
           trajet_id: trajetId,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../contexts/AuthContext";
 
 const LoginPage = () => {
@@ -16,13 +16,13 @@ const LoginPage = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost/api/Controllers/CheckAuth.php",
+        const response = await axiosInstance.get(
+          "CheckAuth.php",
           { withCredentials: true }
         );
         if (response.data.authenticated) {
-          await axios.post(
-            "http://localhost/api/Controllers/logout.php",
+          await axiosInstance.post(
+            "logout.php",
             {},
             { withCredentials: true }
           );
@@ -54,8 +54,8 @@ const LoginPage = () => {
     setIsSubmitting(true);
     setApiError("");
     try {
-      const response = await axios.post(
-        "https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php",
+      const response = await axiosInstance.post(
+        "UtilisateurController.php",
         formData,
         {
           headers: { "Content-Type": "application/json" },

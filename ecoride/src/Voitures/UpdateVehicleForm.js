@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const EditVehicleForm = () => {
   const { voitureId } = useParams();
@@ -24,8 +24,8 @@ const EditVehicleForm = () => {
     const fetchVehicleData = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(
-          `http://localhost/api/Controllers/VoitureController.php?voiture_id=${voitureId}`,
+        const response = await axiosInstance.get(
+          `VoitureController.php?voiture_id=${voitureId}`,
           { withCredentials: true }
         );
         if (response.data) {
@@ -61,8 +61,8 @@ const EditVehicleForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
-        `http://localhost/api/Controllers/VoitureController.php?voiture_id=${voitureId}`,
+      const response = await axiosInstance.put(
+        `VoitureController.php?voiture_id=${voitureId}`,
         {
           ...formData,
           utilisateur_id: localStorage.getItem("utilisateur_id")

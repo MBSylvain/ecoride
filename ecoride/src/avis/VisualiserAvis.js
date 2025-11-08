@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { useEffect, useState } from 'react';
 import React from "react";
 import CreerSignalement from "../Signalement/CreerSignalement";
@@ -46,8 +46,8 @@ const VisualiserAvis = ({ utilisateurId }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateurId}`,
+        const response = await axiosInstance.get(
+          `ReservationController.php?utilisateur_id=${utilisateurId}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
 
@@ -80,8 +80,8 @@ const VisualiserAvis = ({ utilisateurId }) => {
         setError(null);
         try {
           // Charger les données du créateur
-          const creatorResponse = await axios.get(
-            `http://localhost/api/Controllers/TrajetController.php?trajet_id=${selectedTrajet.trajet_id}`,
+          const creatorResponse = await axiosInstance.get(
+            `TrajetController.php?trajet_id=${selectedTrajet.trajet_id}`,
             { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
           );
 
@@ -92,8 +92,8 @@ const VisualiserAvis = ({ utilisateurId }) => {
           }
 
           // Charger les avis
-          const avisResponse = await axios.get(
-            `http://localhost/api/Controllers/AvisController.php?trajet_id=${selectedTrajet.trajet_id}`,
+          const avisResponse = await axiosInstance.get(
+            `AvisController.php?trajet_id=${selectedTrajet.trajet_id}`,
             { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
           );
 
@@ -118,8 +118,8 @@ const VisualiserAvis = ({ utilisateurId }) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const response = await axios.post(
-        `http://localhost/api/Controllers/AvisController.php`,
+      const response = await axiosInstance.post(
+        `AvisController.php`,
         {
           trajet_id: selectedTrajet.trajet_id,
           auteur_id: localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id"),
@@ -228,8 +228,8 @@ const VisualiserAvis = ({ utilisateurId }) => {
                           onClick={async () => {
                             if (window.confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
                               try {
-                                await axios.delete(
-                                  `http://localhost/api/Controllers/ReservationController.php?reservation_id=${trajet.reservation_id}`,
+                                await axiosInstance.delete(
+                                  `ReservationController.php?reservation_id=${trajet.reservation_id}`,
                                   { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
                                 );
                                 setTrajetsPasses(trajetsPasses.filter((t) => t.reservation_id !== trajet.reservation_id));

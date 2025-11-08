@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import EditUserModal from './EditUserModal';
 
 const UserInfoSection = () => {
@@ -11,8 +11,8 @@ const UserInfoSection = () => {
   const fetchUserData = async () => {
     setUserLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
+      const response = await axiosInstance.get(
+        `UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
         {
           withCredentials: true,
           headers: {

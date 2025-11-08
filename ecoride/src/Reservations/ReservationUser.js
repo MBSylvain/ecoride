@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import CreateReservationModal from './CreateReservationModal';
 import EditReservationModal from './EditReservationModal';
 
@@ -16,8 +16,8 @@ const ReservationUser = () => {
     const fetchReservations = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`
+        const response = await axiosInstance.get(
+          `ReservationController.php?utilisateur_id=${utilisateur_id}`
         );
         setReservations(response.data || []);
       } catch (error) {
@@ -35,8 +35,8 @@ const ReservationUser = () => {
   const handleDelete = async (reservationId) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')) {
       try {
-        await axios.delete(
-          `http://localhost/api/Controllers/ReservationController.php?reservation_id=${reservationId}`
+        await axiosInstance.delete(
+          `ReservationController.php?reservation_id=${reservationId}`
         );
         setReservations(
           reservations.filter((reservation) => reservation.reservation_id !== reservationId)

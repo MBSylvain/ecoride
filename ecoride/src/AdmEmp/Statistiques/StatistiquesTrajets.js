@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const StatistiquesTrajets = () => {
   const [stats, setStats] = useState(null);
@@ -8,8 +8,8 @@ const StatistiquesTrajets = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost/api/Controllers/StatistiqueController.php?action=trajets")
+    axiosInstance
+      .get("StatistiqueController.php?action=trajets")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques trajets."))
       .finally(() => setLoading(false));

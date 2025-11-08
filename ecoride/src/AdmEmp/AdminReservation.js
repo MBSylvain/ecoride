@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 // Modale de détail/édition réservation
 const ReservationModal = ({ reservation, isOpen, onClose, onSave, onDelete }) => {
@@ -100,7 +100,7 @@ const AdminReservation = () => {
   const fetchReservations = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/ReservationAdminController.php", {
+      const res = await axiosInstance.get("Administrateur/ReservationAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });
@@ -133,13 +133,13 @@ const AdminReservation = () => {
   const handleSaveReservation = async (reservation) => {
     try {
       if (reservation.reservation_id) {
-        await axios.put("http://localhost/api/ControllersAdministrateur/ReservationAdminController.php", reservation, {
+        await axiosInstance.put("Administrateur/ReservationAdminController.php", reservation, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
         setFeedback("Réservation modifiée !");
       } else {
-        await axios.post("http://localhost/api/ControllersAdministrateur/ReservationAdminController.php", reservation, {
+        await axiosInstance.post("Administrateur/ReservationAdminController.php", reservation, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
@@ -154,7 +154,7 @@ const AdminReservation = () => {
 
   const handleDeleteReservation = async (reservationId) => {
     try {
-      await axios.delete(`http://localhost/api/ControllersAdministrateur/ReservationAdminController.php?reservation_id=${reservationId}`, {
+      await axiosInstance.delete(`Administrateur/ReservationAdminController.php?reservation_id=${reservationId}`, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

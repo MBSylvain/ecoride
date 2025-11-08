@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 // Modale de détail/édition avis
 const AvisModal = ({ avis, isOpen, onClose, onSave, onDelete }) => {
@@ -91,12 +91,9 @@ const AdminAvis = () => {
   const fetchAvis = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/AvisAdminController.php", {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" }
-      });
-      setAvis(res.data.data || res.data || []);
-    } catch (e) {
+      const response = await axiosInstance.get("Administrateur/AvisAdminController.php");
+      setAvis(response.data);
+    } catch (error) {
       setFeedback("Erreur lors du chargement des avis");
     } finally {
       setLoading(false);
@@ -119,16 +116,10 @@ const AdminAvis = () => {
   const handleSaveAvis = async (avis) => {
     try {
       if (avis.id) {
-        await axios.put("http://localhost/api/ControllersAdministrateur/AvisAdminController.php", avis, {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" }
-        });
+        await axiosInstance.put("Administrateur/AvisAdminController.php", avis);
         setFeedback("Avis modifié !");
       } else {
-        await axios.post("http://localhost/api/ControllersAdministrateur/AvisAdminController.php", avis, {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" }
-        });
+        await axiosInstance.post("Administrateur/AvisAdminController.php", avis);
         setFeedback("Avis ajouté !");
       }
       setShowAvisModal(false);
@@ -140,10 +131,7 @@ const AdminAvis = () => {
 
   const handleDeleteAvis = async (avisId) => {
     try {
-      await axios.delete(`http://localhost/api/ControllersAdministrateur/AvisAdminController.php?id=${avisId}`, {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" }
-      });
+      await axiosInstance.delete(`Administrateur/AvisAdminController.php?id=${avisId}`);
       setFeedback("Avis supprimé !");
       setShowAvisModal(false);
       fetchAvis();

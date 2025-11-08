@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import EditVehicleModal from '../Voitures/EditVehicleModal'; // Adjust path as needed
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ const VehiclesSection = ( ) => {
     const fetchVoitures = async () => {
       setVoituresLoading(true);
       try {
-        const response = await axios.get(`http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`);
+        const response = await axiosInstance.get(`VoitureController.php?utilisateur_id=${utilisateur_id}`);
         
         // Handle different response formats cleanly
         if (response.data && typeof response.data === 'object') {

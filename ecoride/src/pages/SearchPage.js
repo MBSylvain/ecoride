@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 import backgroundImage from "../assets/map.jpg";
 
 const SearchPage = () => {
@@ -53,8 +53,8 @@ const SearchPage = () => {
       if (searchParams.ecologique)
         queryParams.append("ecologique", "1");
 
-      const response = await axios.get(
-        `http://localhost/api/Controllers/TrajetController.php?${queryParams.toString()}`,
+      const response = await axiosInstance.get(
+        `TrajetController.php?${queryParams.toString()}`,
         { withCredentials: true }
       );
 

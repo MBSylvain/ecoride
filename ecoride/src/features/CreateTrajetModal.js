@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import Modal from './Modal';
 
 const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
@@ -29,8 +29,8 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
     const fetchUserCars = async () => {
         try {
             const utilisateurId = localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id");
-            const response = await axios.get(
-                `http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateurId}`,
+            const response = await axiosInstance.get(
+                `VoitureController.php?utilisateur_id=${utilisateurId}`,
                 { withCredentials: true }
             );
             
@@ -74,8 +74,8 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
         const dateComplete = formData.date_depart + (formData.heure_depart ? ' ' + formData.heure_depart : '');
         
         try {
-            const response = await axios.post(
-                `http://localhost/api/Controllers/TrajetController.php`,
+            const response = await axiosInstance.post(
+                `TrajetController.php`,
                 {
                     ...formData,
                     date_depart: dateComplete,

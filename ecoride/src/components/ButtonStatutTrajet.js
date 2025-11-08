@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const BoutonStatutTrajet = ({ trajet }) => {
   const [statut, setStatut] = useState(trajet.statut);
@@ -16,8 +16,8 @@ const BoutonStatutTrajet = ({ trajet }) => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost/api/Controllers/TrajetController.php",
+      const response = await axiosInstance.post(
+        "TrajetController.php",
         {
           trajet_id: trajet.trajet_id,
           statut: nouveauStatut,

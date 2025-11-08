@@ -13,7 +13,7 @@ import ListeUtilisateurs from "./ListeUtilisateurs";
 import GestionAvis from "../AdmEmp/Employe/GestionAvis";
 import TrajetsProblemes from "../AdmEmp/Employe/TrajetsProblemes";
 import checkAuth from "../features/checkAuth";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 import TraitementSignalements from "../Signalement/TaitementSignalement";
 
 const DashboardAdmin = () => {
@@ -22,7 +22,7 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchAuth = async () => {
       try {
-        const reponse = await axios.get("http://localhost/api/Controllers/checkAuth.php", {
+        const reponse = await axiosInstance.get("checkAuth.php", {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
         });

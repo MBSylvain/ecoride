@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
   const [formData, setFormData] = useState({
@@ -27,8 +27,8 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
     if (!isOpen) return;
     const fetchVoitures = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${localStorage.getItem('utilisateur_id')}`,
+        const response = await axiosInstance.get(
+          `VoitureController.php?utilisateur_id=${localStorage.getItem('utilisateur_id')}`,
           { withCredentials: true }
         );
         setVoitures(response.data);
@@ -70,8 +70,8 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
     if (!validateForm()) return;
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        'http://localhost/api/Controllers/TrajetController.php',
+      const response = await axiosInstance.post(
+        'TrajetController.php',
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

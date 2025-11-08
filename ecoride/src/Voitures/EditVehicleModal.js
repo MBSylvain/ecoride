@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import Modal from '../features/Modal'; // Assurez-vous que ce chemin est correct
 
 const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
@@ -26,8 +26,8 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
     const fetchVehicleData = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(
-          `http://localhost/api/Controllers/VoitureController.php?${voitureId}`,
+        const response = await axiosInstance.get(
+          `VoitureController.php?${voitureId}`,
           { withCredentials: true }
         );
         if (response.data && response.data.data) {
@@ -78,8 +78,8 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
     setIsSubmitting(true);
     setError('');
     try {
-      const response = await axios.put(
-        `http://localhost/api/Controllers/VoitureController.php?${voitureId}`,
+      const response = await axiosInstance.put(
+        `VoitureController.php?${voitureId}`,
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

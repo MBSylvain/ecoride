@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import Modal from './Modal';
 
 const EditTrajetModal = ({ isOpen, onClose, trajet, onTrajetUpdated }) => {
@@ -60,8 +60,8 @@ const EditTrajetModal = ({ isOpen, onClose, trajet, onTrajetUpdated }) => {
     const dateComplete = formData.date_depart + (formData.heure_depart ? ' ' + formData.heure_depart : '');
     
     try {
-      const response = await axios.put(
-        `http://localhost/api/Controllers/TrajetController.php`,
+      const response = await axiosInstance.put(
+        `TrajetController.php`,
         {
           ...formData,
           date_depart: dateComplete,

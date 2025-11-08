@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#FF6666", "#AAFF99"];
 
@@ -10,8 +10,8 @@ const StatistiquesVoitures = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost/api/Controllers/StatistiqueController.php?action=voitures")
+    axiosInstance
+      .get("StatistiqueController.php?action=voitures")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques voitures."))
       .finally(() => setLoading(false));

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const STATUTS = ["en attente", "en cours", "traité", "rejeté"];
 
@@ -14,7 +14,7 @@ const TraitementSignalements = () => {
 
   const fetchSignalements = async () => {
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/SignalementAdminController.php", {
+      const res = await axiosInstance.get("Administrateur/SignalementAdminController.php", {
         withCredentials: true
       });
       setSignalements(Array.isArray(res.data) ? res.data : []);
@@ -25,7 +25,7 @@ const TraitementSignalements = () => {
 
   const handleUpdate = async (data) => {
     try {
-      await axios.put("http://localhost/api/ControllersAdministrateur/SignalementAdminController.php", {
+      await axiosInstance.put("Administrateur/SignalementAdminController.php", {
         id: data.id,
         statut: data.statut,
         employe_id: localStorage.getItem("utilisateur_id"),

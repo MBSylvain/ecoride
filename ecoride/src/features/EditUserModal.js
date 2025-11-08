@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import Modal from '../features/Modal';
 import Bouton from '../components/Button';
 
@@ -44,7 +44,7 @@ const EditUserModal = ({ isOpen, onClose, user, onUserUpdated }) => {
     setError('');
     
     try {
-      const response = await axios.post('http://localhost/api/Controllers/UtilisateurController.php',
+      const response = await axiosInstance.post('UtilisateurController.php',
         {
           ...formData,
           utilisateur_id: user.id,

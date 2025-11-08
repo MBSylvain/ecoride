@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const StatistiquesEmployes = () => {
   const [stats, setStats] = useState(null);
@@ -7,8 +7,8 @@ const StatistiquesEmployes = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost/api/Controllers/StatistiqueController.php?action=employes")
+    axiosInstance
+      .get("StatistiqueController.php?action=employes")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques employés."))
       .finally(() => setLoading(false));

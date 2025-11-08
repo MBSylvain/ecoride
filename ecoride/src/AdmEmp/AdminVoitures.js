@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 // Modale de création/édition voiture
 const VoitureModal = ({ voiture, isOpen, onClose, onSave, onDelete }) => {
@@ -130,7 +130,7 @@ const AdminVoitures = () => {
   const fetchVoitures = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/VoitureAdminController.php", {
+      const res = await axiosInstance.get("Administrateur/VoitureAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });
@@ -159,13 +159,13 @@ const AdminVoitures = () => {
   const handleSaveVoiture = async (voiture) => {
     try {
       if (voiture.voiture_id) {
-        await axios.put("http://localhost/api/ControllersAdministrateur/VoitureAdminController.php", voiture, {
+        await axiosInstance.put("Administrateur/VoitureAdminController.php", voiture, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
         setFeedback("Voiture modifiée !");
       } else {
-        await axios.post("http://localhost/api/ControllersAdministrateur/VoitureAdminController.php", voiture, {
+        await axiosInstance.post("Administrateur/VoitureAdminController.php", voiture, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
@@ -180,7 +180,7 @@ const AdminVoitures = () => {
 
   const handleDeleteVoiture = async (voitureId) => {
     try {
-      await axios.delete(`http://localhost/api/ControllersAdministrateur/VoitureAdminController.php?voiture_id=${voitureId}`, {
+      await axiosInstance.delete(`Administrateur/VoitureAdminController.php?voiture_id=${voitureId}`, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

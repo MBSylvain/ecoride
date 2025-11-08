@@ -1,10 +1,10 @@
 // filepath: c:\Users\mbeum\Documents\Nouveau dossier\ecoride\ecoride\src\utils\authUtils.js
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 export const checkAuth = async () => {
   try {
-    const response = await axios.get(
-      "http://localhost/api/Controllers/CheckAuth.php",
+    const response = await axiosInstance.get(
+      "CheckAuth.php",
       { withCredentials: true }
     );
     return response.data.authenticated || false;

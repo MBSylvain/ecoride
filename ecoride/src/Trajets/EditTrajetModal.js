@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 // Fonction utilitaire pour mapper les champs du trajet vers le formulaire
 const mapTrajetToFormData = (trajet) => {
@@ -32,8 +32,8 @@ const EditTrajetModal = ({ isOpen, onClose, onTrajetUpdated, trajet }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.put(
-        `http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajet.trajet_id}`,
+      const response = await axiosInstance.put(
+        `TrajetController.php?trajet_id=${trajet.trajet_id}`,
         formData
       );
       onTrajetUpdated(response.data);

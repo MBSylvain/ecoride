@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 import { PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const COLORS = ["#2563eb", "#facc15", "#22c55e"];
@@ -12,17 +12,17 @@ const StatistiquesUtilisateurs = () => {
   const utilisateur_role = localStorage.getItem("utilisateur_role") || localStorage.getItem("utilisateur.role");
 
   useEffect(() => {
-    axios
-      .get("http://localhost/api/Controllers/StatistiqueController.php?action=utilisateurs")
+    axiosInstance
+      .get("StatistiqueController.php?action=utilisateurs")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques utilisateurs."))
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    axios
-      .get("http://localhost/api/ControllersAdministrateur/StatistiqueAdminController.php?action=comptes_par_jour",
-        { withCredentials: true, headers: { 'Content-Type': 'application/json' } }, { utilisateur_role }
+    axiosInstance
+      .get("Administrateur/StatistiqueAdminController.php?action=comptes_par_jour",
+        { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
       .then(res => {
         setInscriptions(Array.isArray(res.data) ? res.data : []);

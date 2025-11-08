@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 const CreateVehicleModal = ({ isOpen, onClose, onVehicleCreated }) => {
   const [formData, setFormData] = useState({
@@ -47,8 +47,8 @@ const CreateVehicleModal = ({ isOpen, onClose, onVehicleCreated }) => {
     if (!validateForm()) return;
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        'http://localhost/api/Controllers/VoitureController.php',
+      const response = await axiosInstance.post(
+        'VoitureController.php',
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

@@ -1,10 +1,10 @@
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 
 
 const checkAuth = async () => {
   try {
-    const response = await axios.get("http://localhost/api/Controllers/checkAuth.php", {
+    const response = await axiosInstance.get("checkAuth.php", {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });

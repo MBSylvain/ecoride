@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 // Modale de création/édition trajet
 const TrajetModal = ({ trajet, isOpen, onClose, onSave, onDelete }) => {
@@ -141,7 +141,7 @@ const AdminTrajet = () => {
   const fetchTrajets = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/TrajetAdminController.php", {
+      const res = await axiosInstance.get("Administrateur/TrajetAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });
@@ -171,13 +171,13 @@ const AdminTrajet = () => {
   const handleSaveTrajet = async (trajet) => {
     try {
       if (trajet.trajet_id) {
-        await axios.put("http://localhost/api/ControllersAdministrateur/TrajetAdminController.php", trajet, {
+        await axiosInstance.put("Administrateur/TrajetAdminController.php", trajet, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
         setFeedback("Trajet modifié !");
       } else {
-        await axios.post("http://localhost/api/ControllersAdministrateur/TrajetAdminController.php", trajet, {
+        await axiosInstance.post("Administrateur/TrajetAdminController.php", trajet, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
@@ -192,7 +192,7 @@ const AdminTrajet = () => {
 
   const handleDeleteTrajet = async (trajetId) => {
     try {
-      await axios.delete(`http://localhost/api/ControllersAdministrateur/TrajetAdminController.php?trajet_id=${trajetId}`, {
+      await axiosInstance.delete(`Administrateur/TrajetAdminController.php?trajet_id=${trajetId}`, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

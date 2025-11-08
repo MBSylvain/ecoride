@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const TrajetsProblemes = () => {
   const [signalements, setSignalements] = useState([]);
@@ -16,8 +16,8 @@ const TrajetsProblemes = () => {
 
   const fetchSignalements = () => {
     setLoading(true);
-    axios
-      .get("http://localhost/api/ControllersAdministrateur/SignalementAdminController.php", {
+    axiosInstance
+      .get("Administrateur/SignalementAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       })
@@ -28,32 +28,32 @@ const TrajetsProblemes = () => {
 
   useEffect(() => {
     if (selected) {
-      axios
-        .get(`http://localhost/api/Controllers/TrajetController.php?trajet_id=${selected.trajet_id}`, {
+      axiosInstance
+        .get(`TrajetController.php?trajet_id=${selected.trajet_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })
         .then(res => setTrajetDetails(res.data))
         .catch(() => setTrajetDetails(null));
 
-      axios
-        .get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selected.conducteur_id}`, {
+      axiosInstance
+        .get(`UtilisateurController.php?utilisateur_id=${selected.conducteur_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })
         .then(res => setConducteurDetails(res.data))
         .catch(() => setConducteurDetails(null));
 
-      axios
-        .get(`http://localhost/api/Controllers/VoitureController.php?voiture_id=${selected.voiture_id}`, {
+      axiosInstance
+        .get(`VoitureController.php?voiture_id=${selected.voiture_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })
         .then(res => setVoitureDetails(res.data))
         .catch(() => setVoitureDetails(null));
 
-      axios
-        .get(`http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selected.utilisateur_id}`, {
+      axiosInstance
+        .get(`UtilisateurController.php?utilisateur_id=${selected.utilisateur_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })

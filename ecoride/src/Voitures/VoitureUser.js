@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { useNavigate, Link } from 'react-router-dom';
 import CreateVehicleModal from './CreateVehicleModal';
 import EditVehicleModal from './EditVehicleModal';
@@ -19,8 +19,8 @@ const VoitureUser = () => {
     const fetchVehicles = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`,
+        const response = await axiosInstance.get(
+          `VoitureController.php?utilisateur_id=${utilisateur_id}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(response.data || []);
@@ -40,8 +40,8 @@ const VoitureUser = () => {
   const handleDelete = async (vehicleId) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')) {
       try {
-        await axios.delete(
-          `http://localhost/api/Controllers/VoitureController.php?voiture_id=${vehicleId}`,
+        await axiosInstance.delete(
+          `VoitureController.php?voiture_id=${vehicleId}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(vehicles.filter((vehicle) => vehicle.voiture_id !== vehicleId));

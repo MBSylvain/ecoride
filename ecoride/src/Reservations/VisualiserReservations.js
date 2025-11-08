@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { useEffect, useState } from 'react';
 import Modal from './Modal';
 
@@ -20,8 +20,8 @@ const VisualiserReservations = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`,
+        const response = await axiosInstance.get(
+          `ReservationController.php?utilisateur_id=${utilisateur_id}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         if (Array.isArray(response.data)) {
@@ -46,8 +46,8 @@ const VisualiserReservations = () => {
       setUserError(null);
       setUserInfo(null);
 
-      axios.get(
-        `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedReservation.utilisateur_id}`,
+      axiosInstance.get(
+        `UtilisateurController.php?utilisateur_id=${selectedReservation.utilisateur_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then((res) => {
@@ -78,8 +78,8 @@ const VisualiserReservations = () => {
       return;
     }
     try {
-      await axios.put(
-        `http://localhost/api/Controllers/ReservationController.php`,
+      await axiosInstance.put(
+        `ReservationController.php`,
         { reservation_id: reservationId, statut: "annulée" },
         { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
       );

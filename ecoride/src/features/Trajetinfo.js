@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import EditTrajetModal from './EditTrajetModal'; // Assurez-vous que ce chemin est correct
 import CreateTrajetModal from './CreateTrajetModal'; // Assurez-vous que ce chemin est correct
@@ -37,7 +37,7 @@ const handleTrajetCreated = (newTrajet) => {
       const fetchTrajets = async () => {
         setTrajetsLoading(true);
         try {
-          const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`);
+          const response = await axiosInstance.get(`TrajetController.php?utilisateur_id=${utilisateur_id}`);
           
           // Handle different response formats cleanly
           if (response.data && typeof response.data === 'object') {

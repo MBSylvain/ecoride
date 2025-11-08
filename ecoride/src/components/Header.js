@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,8 +10,8 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        'http://localhost/api/Controllers/checkAuth.php', 
+      await axiosInstance.post(
+        'checkAuth.php', 
         { action: 'logout' },
         { headers: { 'Content-Type': 'application/json' }, timeout: 5000 }
       );

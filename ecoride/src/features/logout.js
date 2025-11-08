@@ -1,8 +1,8 @@
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const logout = async () => {
   try {
-    await axios.post("http://localhost/api/Controllers/checkAuth.php", {}, { withCredentials: true });
+    await axiosInstance.post("checkAuth.php", {}, { withCredentials: true });
     localStorage.removeItem("user_info"); // Supprime les données locales si nécessaire
     localStorage.removeItem("utilisateur_id");
   } catch (err) {

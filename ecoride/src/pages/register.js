@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 import RouteAutomne from "../assets/routeautonne.jpg";
 
 const RegisterPage = () => {
@@ -99,8 +99,8 @@ const RegisterPage = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost/api/Controllers/UtilisateurController.php",
+      const response = await axiosInstance.post(
+        "UtilisateurController.php",
         { ...formData, action: "register" },
         {
           headers: {
