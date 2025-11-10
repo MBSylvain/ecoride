@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://api-ecride-production.up.railway.app/Controllers/",
+  baseURL: "https://ecoride-sylvains-projects-15c39aad.vercel.app/Controllers/",
   // Vous pouvez ajouter ici des headers ou d'autres options si besoin
 });
 
