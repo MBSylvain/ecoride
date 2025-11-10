@@ -20,13 +20,7 @@ const LoginPage = () => {
           "checkAuth.php",
           { withCredentials: true }
         );
-        if (response.data.authenticated) {
-          await axiosInstance.post(
-            "logout.php",
-            {},
-            { withCredentials: true }
-          );
-        }
+        
       } catch (err) {
         // ignore
       }
