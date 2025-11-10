@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import StarRating from './StarRating';
-import checkAuth from '.utils/authUtils';
+//import checkAuth from '.utils/authUtils';
 
 useEffect(() => {
   const verifyAuth = async () => {
