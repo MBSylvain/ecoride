@@ -4,7 +4,7 @@ import axiosInstance from "../api/axiosInstance";
 export const checkAuth = async () => {
   try {
     const response = await axiosInstance.get(
-      "CheckAuth.php",
+      "checkAuth.php",
       { withCredentials: true }
     );
     return response.data.authenticated || false;
