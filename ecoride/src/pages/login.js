@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg";
 import axiosInstance from "../api/axiosInstance";
-import { useAuth } from "../contexts/AuthContext";
+import checkAuth from "../features/checkAuth";
+//import { useAuth } from "../contexts/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const LoginPage = () => {
     const checkAuth = async () => {
       try {
         const response = await axiosInstance.get(
-          "CheckAuth.php",
+          "checkAuth.php",
           { withCredentials: true }
         );
         if (response.data.authenticated) {
