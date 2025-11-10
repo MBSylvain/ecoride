@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg";
 import axiosInstance from "../api/axiosInstance";
-import checkAuth from "../features/checkAuth";
-//import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
