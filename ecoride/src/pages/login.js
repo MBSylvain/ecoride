@@ -13,21 +13,7 @@ const LoginPage = () => {
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axiosInstance.get(
-          "checkAuth.php",
-          { withCredentials: true }
-        );
-        
-      } catch (err) {
-        // ignore
-      }
-    };
-    checkAuth();
-  }, []);
-
+ 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
