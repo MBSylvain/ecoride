@@ -5,7 +5,7 @@ import EditUserModal from "../features/EditUserModal";
 import EditVehicleModal from "../Voitures/EditVehicleModal";
 import EditTrajetModal from "../features/EditTrajetModal";
 import CreateTrajetModal from "../features/CreateTrajetModal";
-import checkAuth from "../features/checkAuth";
+//import checkAuth from "../features/checkAuth";
 import Userinfo from "../Utilisateurs/Userinfo";
 import VoitureUser from "../Voitures/VoitureUser";
 import VisualiserTrajets from "../Trajets/VisualiserTrajets";
