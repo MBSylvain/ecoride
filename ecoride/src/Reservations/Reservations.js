@@ -15,7 +15,7 @@ const ReservationsSection = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost/api/Controllers/ReservationController.php?&utilisateur_id=${utilisateur_id}`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?&utilisateur_id=${utilisateur_id}`,
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
@@ -50,7 +50,7 @@ const ReservationsSection = () => {
     }
     try {
       const response = await axios.put(
-        `http://localhost/api/Controllers/ReservationController.php`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php`,
         {
           action: "put",
           reservation_id: reservation_id,

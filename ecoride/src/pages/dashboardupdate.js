@@ -26,7 +26,7 @@ const CarForm = () => {
     if (voiture_id) {
       setIsEdit(true);
       // Récupère les infos de la voiture à modifier
-      fetch(`http://localhost/ecoride-apie/Controllers/VoitureController.php?voiture_id=${voiture_id}`)
+      fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/VoitureController.php?voiture_id=${voiture_id}`)
         .then((res) => res.json())
         .then((data) => {
           setForm({
@@ -64,7 +64,7 @@ const CarForm = () => {
     payload.action = isEdit ? "update" : "create";
 
     try {
-      const response = await fetch("http://localhost/ecoride-apie/Controllers/VoitureController.php", {
+      const response = await fetch("https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/VoitureController.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

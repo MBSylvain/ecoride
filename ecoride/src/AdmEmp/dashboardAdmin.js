@@ -22,7 +22,7 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchAuth = async () => {
       try {
-        const reponse = await axios.get("http://localhost/api/Controllers/checkAuth.php", {
+        const reponse = await axios.get("https://api-ecride-production.up.railway.app/api/Controllers/checkAuth.php", {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
         });

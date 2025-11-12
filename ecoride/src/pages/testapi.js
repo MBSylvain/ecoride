@@ -1,21 +1,14 @@
 import React, { useState } from "react";
+import axiosInstance from "../utils/axiosInstance"; // importe l'instance
 
 function TestApi() {
   const [result, setResult] = useState(null);
 
   const handleTest = async () => {
     try {
-      const response = await fetch("http://localhost/ecorideapireact/config/Database.php", {
-        
-      
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setResult(data);
+      // Utilise axiosInstance pour faire un appel GET
+      const response = await axiosInstance.get("UtilisateurController.php?test=1");
+      setResult(response.data);
     } catch (err) {
       setResult({ error: `Erreur de connexion à l'API: ${err.message}` });
     }

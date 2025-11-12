@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Carlogin from "../assets/car-login.jpg";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import axiosInstance from "../utils/axiosInstance";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -13,27 +14,7 @@ const LoginPage = () => {
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost/api/Controllers/CheckAuth.php",
-          { withCredentials: true }
-        );
-        if (response.data.authenticated) {
-          await axios.post(
-            "http://localhost/api/Controllers/logout.php",
-            {},
-            { withCredentials: true }
-          );
-        }
-      } catch (err) {
-        // ignore
-      }
-    };
-    checkAuth();
-  }, []);
-
+ 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
@@ -54,8 +35,8 @@ const LoginPage = () => {
     setIsSubmitting(true);
     setApiError("");
     try {
-      const response = await axios.post(
-        "http://localhost/api/Controllers/UtilisateurController.php",
+      const response = await axiosInstance.post(
+        "UtilisateurController.php",
         formData,
         {
           headers: { "Content-Type": "application/json" },

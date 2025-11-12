@@ -48,7 +48,7 @@ const VisualiserAvis = ({ utilisateurId }) => {
       setError(null);
       try {
         const response = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateurId}`,
+          `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?utilisateur_id=${utilisateurId}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
 
@@ -82,7 +82,7 @@ const VisualiserAvis = ({ utilisateurId }) => {
         try {
           // Charger les données du créateur
           const creatorResponse = await axios.get(
-            `http://localhost/api/Controllers/TrajetController.php?trajet_id=${selectedTrajet.trajet_id}`,
+            `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?trajet_id=${selectedTrajet.trajet_id}`,
             { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
           );
 
@@ -94,7 +94,7 @@ const VisualiserAvis = ({ utilisateurId }) => {
 
           // Charger les avis
           const avisResponse = await axios.get(
-            `http://localhost/api/Controllers/AvisController.php?trajet_id=${selectedTrajet.trajet_id}`,
+            `https://api-ecride-production.up.railway.app/api/Controllers/AvisController.php?trajet_id=${selectedTrajet.trajet_id}`,
             { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
           );
 
@@ -120,7 +120,7 @@ const VisualiserAvis = ({ utilisateurId }) => {
     setSubmitting(true);
     try {
       const response = await axios.post(
-        `http://localhost/api/Controllers/AvisController.php`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/AvisController.php`,
         {
           trajet_id: selectedTrajet.trajet_id,
           auteur_id: localStorage.getItem("utilisateur_id") || localStorage.getItem("user.id"),
@@ -230,7 +230,7 @@ const VisualiserAvis = ({ utilisateurId }) => {
                             if (window.confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
                               try {
                                 await axios.delete(
-                                  `http://localhost/api/Controllers/ReservationController.php?reservation_id=${trajet.reservation_id}`,
+                                  `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?reservation_id=${trajet.reservation_id}`,
                                   { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
                                 );
                                 setTrajetsPasses(trajetsPasses.filter((t) => t.reservation_id !== trajet.reservation_id));

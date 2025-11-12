@@ -21,7 +21,7 @@ const VisualiserReservations = () => {
       setError(null);
       try {
         const response = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`,
+          `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         if (Array.isArray(response.data)) {
@@ -47,7 +47,7 @@ const VisualiserReservations = () => {
       setUserInfo(null);
 
       axios.get(
-        `http://localhost/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedReservation.utilisateur_id}`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedReservation.utilisateur_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then((res) => {
@@ -79,7 +79,7 @@ const VisualiserReservations = () => {
     }
     try {
       await axios.put(
-        `http://localhost/api/Controllers/ReservationController.php`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php`,
         { reservation_id: reservationId, statut: "annulée" },
         { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
       );

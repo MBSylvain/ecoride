@@ -54,7 +54,7 @@ const SearchPage = () => {
         queryParams.append("ecologique", "1");
 
       const response = await axios.get(
-        `http://localhost/api/Controllers/TrajetController.php?${queryParams.toString()}`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?${queryParams.toString()}`,
         { withCredentials: true }
       );
 

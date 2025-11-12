@@ -2,7 +2,7 @@ import axios from "axios";
 
 const logout = async () => {
   try {
-    await axios.post("http://localhost/api/Controllers/checkAuth.php", {}, { withCredentials: true });
+    await axios.post("https://api-ecride-production.up.railway.app/api/Controllers/checkAuth.php", {}, { withCredentials: true });
     localStorage.removeItem("user_info"); // Supprime les données locales si nécessaire
     localStorage.removeItem("utilisateur_id");
   } catch (err) {

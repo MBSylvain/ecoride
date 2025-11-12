@@ -37,7 +37,7 @@ const handleTrajetCreated = (newTrajet) => {
       const fetchTrajets = async () => {
         setTrajetsLoading(true);
         try {
-          const response = await axios.get(`http://localhost/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`);
+          const response = await axios.get(`https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`);
           
           // Handle different response formats cleanly
           if (response.data && typeof response.data === 'object') {

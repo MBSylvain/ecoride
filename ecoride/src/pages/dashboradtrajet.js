@@ -29,14 +29,14 @@ const TripForm = () => {
   useEffect(() => {
     // Récupère les voitures de l'utilisateur
     const utilisateur_id = getUserId();
-    fetch(`http://localhost/ecoride-apie/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`)
+    fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`)
       .then((res) => res.json())
       .then((data) => setVoitures(data))
       .catch(() => setVoitures([]));
     // Si modification, charge le trajet
     if (trajet_id) {
       setIsEdit(true);
-      fetch(`http://localhost/ecoride-apie/Controllers/TrajetController.php?trajet_id=${trajet_id}`)
+      fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/TrajetController.php?trajet_id=${trajet_id}`)
         .then((res) => res.json())
         .then((data) => {
           setForm({
@@ -80,7 +80,7 @@ const TripForm = () => {
     payload.action = isEdit ? "update_trip" : "add_trip";
 
     try {
-      const response = await fetch("http://localhost/ecoride-apie/Controllers/TrajetController.php", {
+      const response = await fetch("https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/TrajetController.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -12,12 +12,12 @@ const Statistiques = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get("http://localhost/api/Controllers/StatistiqueController.php?action=vue_admin", {
+        const response = await axios.get("https://api-ecride-production.up.railway.app/api/Controllers/StatistiqueController.php?action=vue_admin", {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
         });
         setStats(response.data.data);
-        const responsestat = await axios.get("http://localhost/api/Controllers/StatistiqueController.php?action=covoiturages_par_jour");
+        const responsestat = await axios.get("https://api-ecride-production.up.railway.app/api/Controllers/StatistiqueController.php?action=covoiturages_par_jour");
         setTrajetsParJour(responsestat.data.data);
       } catch (error) {
         setError("Erreur lors de la récupération des statistiques.");

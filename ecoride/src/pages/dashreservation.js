@@ -33,7 +33,7 @@ const DashboardReservations = () => {
     const checkAuth = async () => {
       try {
         const response = await axios.get(
-          "http://localhost/api/Controllers/CheckAuth.php",
+          "https://api-ecride-production.up.railway.app/api/Controllers/CheckAuth.php",
           { withCredentials: true }
         );
   
@@ -59,7 +59,7 @@ const DashboardReservations = () => {
     // Option 1: Détail d'une réservation
     if (searchParams.get("reservation_id")) {
       const id = searchParams.get("reservation_id");
-      const res = await fetch(`http://localhost/ecoride-apie/Controllers/ReservationController.php?reservation_id=${id}&utilisateur_id=${utilisateur_id}`);
+      const res = await fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/ReservationController.php?reservation_id=${id}&utilisateur_id=${utilisateur_id}`);
       const data = await res.json();
       if (data.error) {
         setMessage(data.error);
@@ -75,7 +75,7 @@ const DashboardReservations = () => {
     // Option 2: Liste des réservations pour un trajet (conducteur)
     if (searchParams.get("trajet_id")) {
       const id = searchParams.get("trajet_id");
-      const res = await fetch(`http://localhost/ecoride-apie/Controllers/ReservationController.php?trajet_id=${id}&utilisateur_id=${utilisateur_id}`);
+      const res = await fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/ReservationController.php?trajet_id=${id}&utilisateur_id=${utilisateur_id}`);
       const data = await res.json();
       if (data.error) {
         setMessage(data.error);
@@ -89,7 +89,7 @@ const DashboardReservations = () => {
       return;
     }
     // Option 3: Liste des réservations de l'utilisateur
-    const res = await fetch(`http://localhost/ecoride-apie/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`);
+    const res = await fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`);
     const data = await res.json();
     setReservations(data.reservations || []);
     setLoading(false);
@@ -105,7 +105,7 @@ const DashboardReservations = () => {
     if (action === "annuler" && !window.confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) return;
     setMessage("");
     setMessageType("");
-    const res = await fetch(`http://localhost/ecoride-apie/Controllers/ReservationController.php`, {
+    const res = await fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/ReservationController.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, reservation_id: id, utilisateur_id }),

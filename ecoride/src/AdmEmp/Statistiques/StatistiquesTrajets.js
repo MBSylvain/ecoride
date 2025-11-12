@@ -9,7 +9,7 @@ const StatistiquesTrajets = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost/api/Controllers/StatistiqueController.php?action=trajets")
+      .get("https://api-ecride-production.up.railway.app/api/Controllers/StatistiqueController.php?action=trajets")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques trajets."))
       .finally(() => setLoading(false));

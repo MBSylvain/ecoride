@@ -16,7 +16,7 @@ const EditUserModal = ({ isOpen, onClose, onUserUpdated, user }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.put(
-        `http://localhost/api/Controllers/UserController.php?user_id=${user.user_id}`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/UserController.php?user_id=${user.user_id}`,
         formData
       );
       onUserUpdated(response.data);

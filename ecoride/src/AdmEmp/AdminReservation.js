@@ -100,7 +100,7 @@ const AdminReservation = () => {
   const fetchReservations = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/ReservationAdminController.php", {
+      const res = await axios.get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/ReservationAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });
@@ -133,13 +133,13 @@ const AdminReservation = () => {
   const handleSaveReservation = async (reservation) => {
     try {
       if (reservation.reservation_id) {
-        await axios.put("http://localhost/api/ControllersAdministrateur/ReservationAdminController.php", reservation, {
+        await axios.put("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/ReservationAdminController.php", reservation, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
         setFeedback("Réservation modifiée !");
       } else {
-        await axios.post("http://localhost/api/ControllersAdministrateur/ReservationAdminController.php", reservation, {
+        await axios.post("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/ReservationAdminController.php", reservation, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
@@ -154,7 +154,7 @@ const AdminReservation = () => {
 
   const handleDeleteReservation = async (reservationId) => {
     try {
-      await axios.delete(`http://localhost/api/ControllersAdministrateur/ReservationAdminController.php?reservation_id=${reservationId}`, {
+      await axios.delete(`https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/ReservationAdminController.php?reservation_id=${reservationId}`, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

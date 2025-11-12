@@ -141,7 +141,7 @@ const AdminTrajet = () => {
   const fetchTrajets = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/TrajetAdminController.php", {
+      const res = await axios.get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/TrajetAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });
@@ -171,13 +171,13 @@ const AdminTrajet = () => {
   const handleSaveTrajet = async (trajet) => {
     try {
       if (trajet.trajet_id) {
-        await axios.put("http://localhost/api/ControllersAdministrateur/TrajetAdminController.php", trajet, {
+        await axios.put("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/TrajetAdminController.php", trajet, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
         setFeedback("Trajet modifié !");
       } else {
-        await axios.post("http://localhost/api/ControllersAdministrateur/TrajetAdminController.php", trajet, {
+        await axios.post("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/TrajetAdminController.php", trajet, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
@@ -192,7 +192,7 @@ const AdminTrajet = () => {
 
   const handleDeleteTrajet = async (trajetId) => {
     try {
-      await axios.delete(`http://localhost/api/ControllersAdministrateur/TrajetAdminController.php?trajet_id=${trajetId}`, {
+      await axios.delete(`https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/TrajetAdminController.php?trajet_id=${trajetId}`, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

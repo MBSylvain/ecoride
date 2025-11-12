@@ -100,7 +100,7 @@ const RegisterPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost/api/Controllers/UtilisateurController.php",
+        "https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php",
         { ...formData, action: "register" },
         {
           headers: {
@@ -123,183 +123,186 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-12 font-sans bg-gray-100 sm:px-6 lg:px-8">
+    <div className="flex flex-col min-h-screen font-sans md:flex-row bg-customGrey-100">
       <div className="hidden md:w-1/2 md:block">
-        <img src={RouteAutomne} alt="Route en automne" className="object-cover w-full h-full" />
+        <img src={RouteAutomne} alt="Route en automne" className="object-cover w-full h-full rounded-r-lg" />
       </div>
-      <div className="w-full max-w-lg p-8 space-y-8 bg-white rounded-lg shadow-lg">
-        <h2 className="mb-6 text-3xl font-bold text-center text-primary-100">
-          Créer un compte
-        </h2>
+      <div className="flex items-center justify-center p-8 md:w-1/2">
 
-        {apiError && (
-          <div className="p-4 mb-4 text-white bg-red-500 rounded-md shadow" role="alert">
-            {apiError}
-          </div>
-        )}
+        <div className="w-full max-w-lg p-8 space-y-8 bg-white rounded-lg shadow-lg">
+          <h2 className="mb-6 text-3xl font-bold text-center text-primary-100">
+            Créer un compte
+          </h2>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {apiError && (
+            <div className="p-4 mb-4 text-white bg-red-500 rounded-md shadow" role="alert">
+              {apiError}
+            </div>
+          )}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-semibold text-primary-100">Nom</label>
+                <input
+                  name="nom"
+                  type="text"
+                  required
+                  value={formData.nom}
+                  onChange={handleChange}
+                  className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+                />
+                {error.nom && (
+                  <p className="mt-1 text-sm text-red-500">{error.nom}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-primary-100">Prénom</label>
+                <input
+                  name="prenom"
+                  type="text"
+                  required
+                  value={formData.prenom}
+                  onChange={handleChange}
+                  className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+                />
+                {error.prenom && (
+                  <p className="mt-1 text-sm text-red-500">{error.prenom}</p>
+                )}
+              </div>
+            </div>
+
             <div>
-              <label className="block text-sm font-semibold text-primary-100">Nom</label>
+              <label className="block text-sm font-semibold text-primary-100">Email</label>
               <input
-                name="nom"
-                type="text"
+                name="email"
+                type="email"
                 required
-                value={formData.nom}
+                value={formData.email}
                 onChange={handleChange}
                 className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
               />
-              {error.nom && (
-                <p className="mt-1 text-sm text-red-500">{error.nom}</p>
+              {error.email && (
+                <p className="mt-1 text-sm text-red-500">{error.email}</p>
               )}
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-primary-100">Prénom</label>
+              <label className="block text-sm font-semibold text-primary-100">Mot de passe</label>
               <input
-                name="prenom"
-                type="text"
+                name="mot_de_passe"
+                type="password"
                 required
-                value={formData.prenom}
+                value={formData.mot_de_passe}
                 onChange={handleChange}
                 className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
               />
-              {error.prenom && (
-                <p className="mt-1 text-sm text-red-500">{error.prenom}</p>
+              {error.mot_de_passe && (
+                <p className="mt-1 text-sm text-red-500">{error.mot_de_passe}</p>
               )}
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Email</label>
-            <input
-              name="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
-            />
-            {error.email && (
-              <p className="mt-1 text-sm text-red-500">{error.email}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary-100">Confirmer le mot de passe</label>
+              <input
+                name="confirm_password"
+                type="password"
+                required
+                value={formData.confirm_password}
+                onChange={handleChange}
+                className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+              />
+              {error.confirm_password && (
+                <p className="mt-1 text-sm text-red-500">{error.confirm_password}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Mot de passe</label>
-            <input
-              name="mot_de_passe"
-              type="password"
-              required
-              value={formData.mot_de_passe}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
-            />
-            {error.mot_de_passe && (
-              <p className="mt-1 text-sm text-red-500">{error.mot_de_passe}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary-100">Pseudo (optionnel)</label>
+              <input
+                name="pseudo"
+                type="text"
+                value={formData.pseudo}
+                onChange={handleChange}
+                className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+              />
+              {error.pseudo && (
+                <p className="mt-1 text-sm text-red-500">{error.pseudo}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Confirmer le mot de passe</label>
-            <input
-              name="confirm_password"
-              type="password"
-              required
-              value={formData.confirm_password}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
-            />
-            {error.confirm_password && (
-              <p className="mt-1 text-sm text-red-500">{error.confirm_password}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary-100">Téléphone (optionnel)</label>
+              <input
+                name="telephone"
+                type="tel"
+                value={formData.telephone}
+                onChange={handleChange}
+                className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+              />
+              {error.telephone && (
+                <p className="mt-1 text-sm text-red-500">{error.telephone}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Pseudo (optionnel)</label>
-            <input
-              name="pseudo"
-              type="text"
-              value={formData.pseudo}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
-            />
-            {error.pseudo && (
-              <p className="mt-1 text-sm text-red-500">{error.pseudo}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary-100">Adresse (optionnelle)</label>
+              <textarea
+                name="adresse"
+                value={formData.adresse}
+                onChange={handleChange}
+                className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+                rows="2"
+              ></textarea>
+              {error.adresse && (
+                <p className="mt-1 text-sm text-red-500">{error.adresse}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Téléphone (optionnel)</label>
-            <input
-              name="telephone"
-              type="tel"
-              value={formData.telephone}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
-            />
-            {error.telephone && (
-              <p className="mt-1 text-sm text-red-500">{error.telephone}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary-100">Date de naissance (optionnelle)</label>
+              <input
+                name="date_naissance"
+                type="date"
+                value={formData.date_naissance}
+                onChange={handleChange}
+                className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+              />
+              {error.date_naissance && (
+                <p className="mt-1 text-sm text-red-500">{error.date_naissance}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Adresse (optionnelle)</label>
-            <textarea
-              name="adresse"
-              value={formData.adresse}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
-              rows="2"
-            ></textarea>
-            {error.adresse && (
-              <p className="mt-1 text-sm text-red-500">{error.adresse}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary-100">Je souhaite m'inscrire en tant que</label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+              >
+                <option value="Passager">Passager</option>
+                <option value="Conducteur">Conducteur</option>
+              </select>
+              {error.role && (
+                <p className="mt-1 text-sm text-red-500">{error.role}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Date de naissance (optionnelle)</label>
-            <input
-              name="date_naissance"
-              type="date"
-              value={formData.date_naissance}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
-            />
-            {error.date_naissance && (
-              <p className="mt-1 text-sm text-red-500">{error.date_naissance}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-primary-100">Je souhaite m'inscrire en tant que</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-customGreen2-100"
+            <button
+              type="submit"
+              className="w-full px-4 py-3 text-sm font-bold text-white transition-all duration-200 rounded-md shadow-md bg-primary-100 hover:bg-customPink-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-customGreen2-100"
+              disabled={isSubmitting}
             >
-              <option value="Passager">Passager</option>
-              <option value="Conducteur">Conducteur</option>
-            </select>
-            {error.role && (
-              <p className="mt-1 text-sm text-red-500">{error.role}</p>
-            )}
+              {isSubmitting ? "Inscription..." : "S'inscrire"}
+            </button>
+          </form>
+
+          <div className="mt-4 text-sm text-center">
+            <Link to="/login" className="font-semibold text-customGreen2-100 hover:text-primary-100">
+              Déjà un compte ? Se connecter
+            </Link>
           </div>
-
-          <button
-            type="submit"
-            className="w-full px-4 py-3 text-sm font-bold text-white transition-all duration-200 rounded-md shadow-md bg-primary-100 hover:bg-customPink-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-customGreen2-100"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Inscription..." : "S'inscrire"}
-          </button>
-        </form>
-
-        <div className="mt-4 text-sm text-center">
-          <Link to="/login" className="font-semibold text-customGreen2-100 hover:text-primary-100">
-            Déjà un compte ? Se connecter
-          </Link>
         </div>
       </div>
     </div>

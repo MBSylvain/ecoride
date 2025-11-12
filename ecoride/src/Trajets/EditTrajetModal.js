@@ -33,7 +33,7 @@ const EditTrajetModal = ({ isOpen, onClose, onTrajetUpdated, trajet }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.put(
-        `http://localhost/api/Controllers/TrajetController.php?trajet_id=${trajet.trajet_id}`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?trajet_id=${trajet.trajet_id}`,
         formData
       );
       onTrajetUpdated(response.data);

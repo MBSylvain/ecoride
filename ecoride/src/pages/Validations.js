@@ -9,7 +9,7 @@ const Validations = () => {
   useEffect(() => {
     axios
       .get(
-        "http://localhost/api/Controllers/ReservationController.php?action=to_validate",
+        "https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?action=to_validate",
         {
           withCredentials: true,
         }
@@ -27,7 +27,7 @@ const Validations = () => {
   const handleValidation = (reservationId, status) => {
     axios
       .post(
-        "http://localhost/api/Controllers/ReservationController.php",
+        "https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php",
         {
           action: "validate",
           reservation_id: reservationId,

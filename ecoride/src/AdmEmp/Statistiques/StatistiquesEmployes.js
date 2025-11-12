@@ -8,7 +8,7 @@ const StatistiquesEmployes = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost/api/Controllers/StatistiqueController.php?action=employes")
+      .get("https://api-ecride-production.up.railway.app/api/Controllers/StatistiqueController.php?action=employes")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques employés."))
       .finally(() => setLoading(false));

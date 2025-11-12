@@ -14,7 +14,7 @@ const TraitementSignalements = () => {
 
   const fetchSignalements = async () => {
     try {
-      const res = await axios.get("http://localhost/api/ControllersAdministrateur/SignalementAdminController.php", {
+      const res = await axios.get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/SignalementAdminController.php", {
         withCredentials: true
       });
       setSignalements(Array.isArray(res.data) ? res.data : []);
@@ -25,7 +25,7 @@ const TraitementSignalements = () => {
 
   const handleUpdate = async (data) => {
     try {
-      await axios.put("http://localhost/api/ControllersAdministrateur/SignalementAdminController.php", {
+      await axios.put("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/SignalementAdminController.php", {
         id: data.id,
         statut: data.statut,
         employe_id: localStorage.getItem("utilisateur_id"),

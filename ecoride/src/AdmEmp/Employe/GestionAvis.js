@@ -14,7 +14,7 @@ const GestionAvis = () => {
   const fetchAvis = () => {
     setLoading(true);
     axios
-      .get("http://localhost/api/ControllersAdministrateur/AvisAdminController.php", {
+      .get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/AvisAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       })
@@ -26,7 +26,7 @@ const GestionAvis = () => {
   const handleValidation = (id, valider) => {
     axios
       .put(
-        "http://localhost/api/ControllersAdministrateur/AvisAdminController.php",
+        "https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/AvisAdminController.php",
         { avis_id: id, statut: valider ? "publié" : "refusé" },
         {
           withCredentials: true,

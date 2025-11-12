@@ -15,7 +15,7 @@ const UserManagement = () => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('http://localhost/api/Controllers/UserController.php');
+        const response = await axios.get('https://api-ecride-production.up.railway.app/api/Controllers/UserController.php');
         setUsers(response.data || []);
       } catch (error) {
         console.error('Erreur lors de la récupération des utilisateurs:', error);
@@ -31,7 +31,7 @@ const UserManagement = () => {
   const handleDelete = async (userId) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       try {
-        await axios.delete(`http://localhost/api/Controllers/UserController.php?user_id=${userId}`);
+        await axios.delete(`https://api-ecride-production.up.railway.app/api/Controllers/UserController.php?user_id=${userId}`);
         setUsers(users.filter((user) => user.user_id !== userId));
       } catch (error) {
         console.error('Erreur lors de la suppression de l\'utilisateur:', error);

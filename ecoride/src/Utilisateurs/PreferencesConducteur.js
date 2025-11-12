@@ -28,7 +28,7 @@ const PreferencesConducteur = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost/api/Controllers/PreferenceConducteurController.php?utilisateur_id=${utilisateur_id}`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/PreferenceConducteurController.php?utilisateur_id=${utilisateur_id}`,
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
@@ -53,7 +53,7 @@ const PreferencesConducteur = () => {
     if (!window.confirm('Supprimer cette préférence ?')) return;
     try {
       await axios.delete(
-        `http://localhost/api/Controllers/PreferenceConducteurController.php?preference_id=${preference_id}`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/PreferenceConducteurController.php?preference_id=${preference_id}`,
         { withCredentials: true }
       );
       setPreferences(prefs => prefs.filter(p => p.preference_id !== preference_id));
@@ -72,7 +72,7 @@ const PreferencesConducteur = () => {
   const handleSave = async (preference_id) => {
     try {
       await axios.put(
-        `http://localhost/api/Controllers/PreferenceConducteurController.php`,
+        `https://api-ecride-production.up.railway.app/api/Controllers/PreferenceConducteurController.php`,
         { preference_id, valeur: editValue },
         { withCredentials: true }
       );
@@ -101,14 +101,14 @@ const PreferencesConducteur = () => {
       if (preferences && preferences.length > 0) {
         // Mise à jour
         await axios.put(
-          `http://localhost/api/Controllers/PreferenceConducteurController.php`,
+          `https://api-ecride-production.up.railway.app/api/Controllers/PreferenceConducteurController.php`,
           { utilisateur_id, ...newPrefs, preference_id: preferences[0].preference_id },
           { withCredentials: true }
         );
       } else {
         // Création
         await axios.post(
-          `http://localhost/api/Controllers/PreferenceConducteurController.php`,
+          `https://api-ecride-production.up.railway.app/api/Controllers/PreferenceConducteurController.php`,
           { utilisateur_id, ...newPrefs },
           { withCredentials: true }
         );

@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const isLocalhost = window.location.hostname === "localhost";
+const baseURL = isLocalhost
+  ? "http://localhost/api/Controllers/"
+  : "https://api-ecride-production.up.railway.app/Controllers/";
+
 const axiosInstance = axios.create({
-  baseURL: "https://api-ecride-production.up.railway.app/",
+  baseURL,
   timeout: 10000,
   withCredentials: true, // Important pour les sessions PHP
 });

@@ -17,7 +17,7 @@ const ReservationUser = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`
+          `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?utilisateur_id=${utilisateur_id}`
         );
         setReservations(response.data || []);
       } catch (error) {
@@ -36,7 +36,7 @@ const ReservationUser = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')) {
       try {
         await axios.delete(
-          `http://localhost/api/Controllers/ReservationController.php?reservation_id=${reservationId}`
+          `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?reservation_id=${reservationId}`
         );
         setReservations(
           reservations.filter((reservation) => reservation.reservation_id !== reservationId)

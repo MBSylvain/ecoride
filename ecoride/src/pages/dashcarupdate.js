@@ -34,7 +34,7 @@ const CarForm = ({ initialData = null }) => {
     const payload = { ...form, utilisateur_id, action: initialData ? "update" : "create" };
 
     try {
-      const response = await fetch("http://localhost/ecoride-apie/Controllers/VoitureController.php", {
+      const response = await fetch("https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/VoitureController.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
