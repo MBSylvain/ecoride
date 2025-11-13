@@ -28,7 +28,7 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
     const fetchVoitures = async () => {
       try {
         const response = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?utilisateur_id=${localStorage.getItem('utilisateur_id')}`,
+          `https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?utilisateur_id=${localStorage.getItem('utilisateur_id')}`,
           { withCredentials: true }
         );
         setVoitures(response.data);
@@ -71,7 +71,7 @@ const CreateTrajetModal = ({ isOpen, onClose, onTrajetCreated }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        'https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php',
+        'https://api-ecride-production.up.railway.app/Controllers/TrajetController.php',
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

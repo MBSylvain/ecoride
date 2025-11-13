@@ -17,7 +17,7 @@ const TrajetsProblemes = () => {
   const fetchSignalements = () => {
     setLoading(true);
     axios
-      .get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/SignalementAdminController.php", {
+      .get("https://api-ecride-production.up.railway.app/ControllersAdministrateur/SignalementAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       })
@@ -29,7 +29,7 @@ const TrajetsProblemes = () => {
   useEffect(() => {
     if (selected) {
       axios
-        .get(`https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?trajet_id=${selected.trajet_id}`, {
+        .get(`https://api-ecride-production.up.railway.app/Controllers/TrajetController.php?trajet_id=${selected.trajet_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })
@@ -37,7 +37,7 @@ const TrajetsProblemes = () => {
         .catch(() => setTrajetDetails(null));
 
       axios
-        .get(`https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php?utilisateur_id=${selected.conducteur_id}`, {
+        .get(`https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php?utilisateur_id=${selected.conducteur_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })
@@ -45,7 +45,7 @@ const TrajetsProblemes = () => {
         .catch(() => setConducteurDetails(null));
 
       axios
-        .get(`https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?voiture_id=${selected.voiture_id}`, {
+        .get(`https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?voiture_id=${selected.voiture_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })
@@ -53,7 +53,7 @@ const TrajetsProblemes = () => {
         .catch(() => setVoitureDetails(null));
 
       axios
-        .get(`https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php?utilisateur_id=${selected.utilisateur_id}`, {
+        .get(`https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php?utilisateur_id=${selected.utilisateur_id}`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         })

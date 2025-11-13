@@ -10,7 +10,7 @@ const HistoriqueOperations = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://api-ecride-production.up.railway.app/api/Controllers/CreditController.php?utilisateur_id=${utilisateur_id}`,
+        `https://api-ecride-production.up.railway.app/Controllers/CreditController.php?utilisateur_id=${utilisateur_id}`,
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
@@ -71,7 +71,7 @@ const HistoriqueOperations = () => {
               }
               try {
                 await axios.post(
-                  "https://api-ecride-production.up.railway.app/api/Controllers/CreditController.php",
+                  "https://api-ecride-production.up.railway.app/Controllers/CreditController.php",
                   { utilisateur_id, montant, type_operation: 'ajout', Commentaire: 'Ajout de crédits' },
                   {
                     withCredentials: true,
@@ -121,7 +121,7 @@ const HistoriqueOperations = () => {
               }
               try {
                 await axios.post(
-                  "https://api-ecride-production.up.railway.app/api/Controllers/CreditController.php",
+                  "https://api-ecride-production.up.railway.app/Controllers/CreditController.php",
                   { utilisateur_id, montant, type_operation: 'ajout', Commentaire: 'Ajout de crédits' },
                   {
                     withCredentials: true,

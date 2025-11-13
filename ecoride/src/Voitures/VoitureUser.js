@@ -20,7 +20,7 @@ const VoitureUser = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`,
+          `https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?utilisateur_id=${utilisateur_id}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(response.data || []);
@@ -41,7 +41,7 @@ const VoitureUser = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')) {
       try {
         await axios.delete(
-          `https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?voiture_id=${vehicleId}`,
+          `https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?voiture_id=${vehicleId}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setVehicles(vehicles.filter((vehicle) => vehicle.voiture_id !== vehicleId));

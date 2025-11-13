@@ -91,7 +91,7 @@ const AdminAvis = () => {
   const fetchAvis = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/AvisAdminController.php", {
+      const res = await axios.get("https://api-ecride-production.up.railway.app/ControllersAdministrateur/AvisAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });
@@ -119,13 +119,13 @@ const AdminAvis = () => {
   const handleSaveAvis = async (avis) => {
     try {
       if (avis.id) {
-        await axios.put("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/AvisAdminController.php", avis, {
+        await axios.put("https://api-ecride-production.up.railway.app/ControllersAdministrateur/AvisAdminController.php", avis, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
         setFeedback("Avis modifié !");
       } else {
-        await axios.post("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/AvisAdminController.php", avis, {
+        await axios.post("https://api-ecride-production.up.railway.app/ControllersAdministrateur/AvisAdminController.php", avis, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         });
@@ -140,7 +140,7 @@ const AdminAvis = () => {
 
   const handleDeleteAvis = async (avisId) => {
     try {
-      await axios.delete(`https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/AvisAdminController.php?id=${avisId}`, {
+      await axios.delete(`https://api-ecride-production.up.railway.app/ControllersAdministrateur/AvisAdminController.php?id=${avisId}`, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

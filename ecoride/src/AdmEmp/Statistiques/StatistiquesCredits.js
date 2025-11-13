@@ -9,7 +9,7 @@ const StatistiquesCredits = () => {
 
   useEffect(() => {
     axios
-      .get("https://api-ecride-production.up.railway.app/api/Controllers/StatistiqueController.php?action=credits")
+      .get("https://api-ecride-production.up.railway.app/Controllers/StatistiqueController.php?action=credits")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques crédits."))
       .finally(() => setLoading(false));

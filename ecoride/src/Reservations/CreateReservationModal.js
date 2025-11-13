@@ -20,7 +20,7 @@ const CreateReservationModal = ({ isOpen, onClose, onReservationCreated }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        'https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php',
+        'https://api-ecride-production.up.railway.app/Controllers/ReservationController.php',
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

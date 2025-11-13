@@ -16,7 +16,7 @@ const ListeUtilisateurs = () => {
   const fetchUtilisateurs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/UtilisateurAdminController.php", {
+      const res = await axios.get("https://api-ecride-production.up.railway.app/ControllersAdministrateur/UtilisateurAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       });

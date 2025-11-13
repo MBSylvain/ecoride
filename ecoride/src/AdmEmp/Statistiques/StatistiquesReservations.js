@@ -11,7 +11,7 @@ const StatistiquesReservations = () => {
 
   useEffect(() => {
     axios
-      .get("https://api-ecride-production.up.railway.app/api/Controllers/StatistiqueController.php?action=reservations")
+      .get("https://api-ecride-production.up.railway.app/Controllers/StatistiqueController.php?action=reservations")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques réservations."))
       .finally(() => setLoading(false));

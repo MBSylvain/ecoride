@@ -51,7 +51,7 @@ const VisualiserTrajets = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+        `https://api-ecride-production.up.railway.app/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       );
       if (Array.isArray(response.data)) {
@@ -85,7 +85,7 @@ const VisualiserTrajets = () => {
       setReservationsError(null);
 
       axios.get(
-        `https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`,
+        `https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php?utilisateur_id=${selectedTrajet.utilisateur_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then(res => {
@@ -104,7 +104,7 @@ const VisualiserTrajets = () => {
         .finally(() => setUserLoading(false));
 
       axios.get(
-        `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`,
+        `https://api-ecride-production.up.railway.app/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`,
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
       )
         .then(res => {
@@ -118,7 +118,7 @@ const VisualiserTrajets = () => {
           if (reservationsList.length > 0) {
             Promise.all(reservationsList.map(r =>
               axios.get(
-                `https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`,
+                `https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php?utilisateur_id=${r.utilisateur_id}`,
                 { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
               )
                 .then(uRes => {
@@ -158,13 +158,13 @@ const VisualiserTrajets = () => {
   // Mise à jour du statut d'une réservation
   const handleUpdateReservationStatus = async (reservationId, newStatus) => {
     try {
-      await axios.post(`https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php`, {
+      await axios.post(`https://api-ecride-production.up.railway.app/Controllers/ReservationController.php`, {
         reservation_id: reservationId,
         statut: newStatus
       });
       if (selectedTrajet) {
         const res = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`
+          `https://api-ecride-production.up.railway.app/Controllers/ReservationController.php?trajet_id=${selectedTrajet.trajet_id}`
         );
         let reservationsList = [];
         if (res.data && Array.isArray(res.data)) {
@@ -185,7 +185,7 @@ const VisualiserTrajets = () => {
       setIsDeleting(true);
       setDeleteError('');
       try {
-        await axios.delete(`https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?trajet_id=${trajetId}`);
+        await axios.delete(`https://api-ecride-production.up.railway.app/Controllers/TrajetController.php?trajet_id=${trajetId}`);
         fetchTrajets();
       } catch {
         setDeleteError("Erreur lors de la suppression du trajet.");

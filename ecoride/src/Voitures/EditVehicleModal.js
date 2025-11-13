@@ -27,7 +27,7 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?${voitureId}`,
+          `https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?${voitureId}`,
           { withCredentials: true }
         );
         if (response.data && response.data.data) {
@@ -79,7 +79,7 @@ const EditVehicleModal = ({ isOpen, onClose, onVehicleUpdated }) => {
     setError('');
     try {
       const response = await axios.put(
-        `https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?${voitureId}`,
+        `https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?${voitureId}`,
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

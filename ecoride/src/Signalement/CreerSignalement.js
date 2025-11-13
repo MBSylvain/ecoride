@@ -31,7 +31,7 @@ const CreerSignalement = ({ trajet_id, utilisateur_id, onSuccess }) => {
     setFeedback(null);
     try {
       await axios.post(
-        "https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/SignalementAdminController.php",
+        "https://api-ecride-production.up.railway.app/ControllersAdministrateur/SignalementAdminController.php",
         form,
         {
           withCredentials: true,

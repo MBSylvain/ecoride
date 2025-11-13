@@ -11,7 +11,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        'https://api-ecride-production.up.railway.app/api/Controllers/checkAuth.php', 
+        'https://api-ecride-production.up.railway.app/Controllers/checkAuth.php', 
         { action: 'logout' },
         { headers: { 'Content-Type': 'application/json' }, timeout: 5000 }
       );

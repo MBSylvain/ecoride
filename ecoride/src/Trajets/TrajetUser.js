@@ -18,7 +18,7 @@ const TrajetUser = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
+          `https://api-ecride-production.up.railway.app/Controllers/TrajetController.php?utilisateur_id=${utilisateur_id}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setTrajets(response.data || []);
@@ -39,7 +39,7 @@ const TrajetUser = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce trajet ?')) {
       try {
         await axios.delete(
-          `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?trajet_id=${trajetId}`,
+          `https://api-ecride-production.up.railway.app/Controllers/TrajetController.php?trajet_id=${trajetId}`,
           { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
         );
         setTrajets(trajets.filter((trajet) => trajet.trajet_id !== trajetId));

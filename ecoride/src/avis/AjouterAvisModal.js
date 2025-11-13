@@ -14,7 +14,7 @@ const AjouterAvisModal = ({ trajetId, onClose, onAvisAdded }) => {
 
     try {
       const response = await axios.post(
-        `https://api-ecride-production.up.railway.app/api/Controllers/AvisController.php`,
+        `https://api-ecride-production.up.railway.app/Controllers/AvisController.php`,
         {
           trajet_id: trajetId,
           note,

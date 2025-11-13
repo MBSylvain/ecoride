@@ -12,7 +12,7 @@ const UserInfoSection = () => {
     setUserLoading(true);
     try {
       const response = await axios.get(
-        `https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
+        `https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php?utilisateur_id=${utilisateur_id}`,
         {
           withCredentials: true,
           headers: {

@@ -14,7 +14,7 @@ const GestionAvis = () => {
   const fetchAvis = () => {
     setLoading(true);
     axios
-      .get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/AvisAdminController.php", {
+      .get("https://api-ecride-production.up.railway.app/ControllersAdministrateur/AvisAdminController.php", {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
       })

@@ -4,7 +4,7 @@ import axios from "axios";
 
 const checkAuth = async () => {
   try {
-    const response = await axios.get("https://api-ecride-production.up.railway.app/api/Controllers/checkAuth.php", {
+    const response = await axios.get("https://api-ecride-production.up.railway.app/Controllers/checkAuth.php", {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });

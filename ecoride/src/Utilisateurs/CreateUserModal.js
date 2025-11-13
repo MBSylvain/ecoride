@@ -20,7 +20,7 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post('https://api-ecride-production.up.railway.app/api/Controllers/UserController.php', formData);
+      const response = await axios.post('https://api-ecride-production.up.railway.app/Controllers/UserController.php', formData);
       onUserCreated(response.data);
       onClose();
     } catch (error) {

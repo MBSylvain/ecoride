@@ -42,7 +42,7 @@ const ReserverPage = () => {
       setIsLoading(true);
       try {
         const trajetResponse = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php?trajet_id=${trajetId}`,
+          `https://api-ecride-production.up.railway.app/Controllers/TrajetController.php?trajet_id=${trajetId}`,
           { withCredentials: true, responseType: "json" }
         );
         const trajetData = trajetResponse.data.trajet || trajetResponse.data.data || trajetResponse.data;
@@ -51,7 +51,7 @@ const ReserverPage = () => {
         const conducteur_Id = trajetData.utilisateur_id;
         if (conducteur_Id) {
           const conducteurResponse = await axios.get(
-            `https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php?utilisateur_id=${conducteur_Id}`,
+            `https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php?utilisateur_id=${conducteur_Id}`,
             { withCredentials: true, responseType: "json" }
           );
           const conducteurData = conducteurResponse.data.utilisateur || conducteurResponse.data;
@@ -59,7 +59,7 @@ const ReserverPage = () => {
         }
 
         const placesOccupeesResponse = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?trajet_id=${trajetId}`,
+          `https://api-ecride-production.up.railway.app/Controllers/ReservationController.php?trajet_id=${trajetId}`,
           { withCredentials: true, responseType: "json" }
         );
         const placesOccupees = placesOccupeesResponse.data.placesoccupees || 0;
@@ -107,7 +107,7 @@ const ReserverPage = () => {
 
     try {
       const response = await axios.post(
-        `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php`,
+        `https://api-ecride-production.up.railway.app/Controllers/ReservationController.php`,
         {
           utilisateur_id: utilisateur_id,
           trajet_id: trajetId,

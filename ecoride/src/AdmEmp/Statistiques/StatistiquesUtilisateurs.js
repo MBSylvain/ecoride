@@ -13,7 +13,7 @@ const StatistiquesUtilisateurs = () => {
 
   useEffect(() => {
     axios
-      .get("https://api-ecride-production.up.railway.app/api/Controllers/StatistiqueController.php?action=utilisateurs")
+      .get("https://api-ecride-production.up.railway.app/Controllers/StatistiqueController.php?action=utilisateurs")
       .then(res => setStats(res.data))
       .catch(() => setError("Erreur lors du chargement des statistiques utilisateurs."))
       .finally(() => setLoading(false));
@@ -21,7 +21,7 @@ const StatistiquesUtilisateurs = () => {
 
   useEffect(() => {
     axios
-      .get("https://api-ecride-production.up.railway.app/api/ControllersAdministrateur/StatistiqueAdminController.php?action=comptes_par_jour",
+      .get("https://api-ecride-production.up.railway.app/ControllersAdministrateur/StatistiqueAdminController.php?action=comptes_par_jour",
         { withCredentials: true, headers: { 'Content-Type': 'application/json' } }, { utilisateur_role }
       )
       .then(res => {

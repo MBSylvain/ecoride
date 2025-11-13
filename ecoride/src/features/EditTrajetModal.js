@@ -61,7 +61,7 @@ const EditTrajetModal = ({ isOpen, onClose, trajet, onTrajetUpdated }) => {
     
     try {
       const response = await axios.put(
-        `https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php`,
+        `https://api-ecride-production.up.railway.app/Controllers/TrajetController.php`,
         {
           ...formData,
           date_depart: dateComplete,

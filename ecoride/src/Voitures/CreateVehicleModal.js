@@ -48,7 +48,7 @@ const CreateVehicleModal = ({ isOpen, onClose, onVehicleCreated }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        'https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php',
+        'https://api-ecride-production.up.railway.app/Controllers/VoitureController.php',
         {
           ...formData,
           utilisateur_id: localStorage.getItem('utilisateur_id'),

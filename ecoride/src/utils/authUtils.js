@@ -4,7 +4,7 @@ import axios from "axios";
 export const checkAuth = async () => {
   try {
     const response = await axios.get(
-      "https://api-ecride-production.up.railway.app/api/Controllers/CheckAuth.php",
+      "https://api-ecride-production.up.railway.app/Controllers/CheckAuth.php",
       { withCredentials: true }
     );
     return response.data.authenticated || false;

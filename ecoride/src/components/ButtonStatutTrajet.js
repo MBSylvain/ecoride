@@ -17,7 +17,7 @@ const BoutonStatutTrajet = ({ trajet }) => {
 
     try {
       const response = await axios.post(
-        "https://api-ecride-production.up.railway.app/api/Controllers/TrajetController.php",
+        "https://api-ecride-production.up.railway.app/Controllers/TrajetController.php",
         {
           trajet_id: trajet.trajet_id,
           statut: nouveauStatut,

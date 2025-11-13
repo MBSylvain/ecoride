@@ -44,7 +44,7 @@ const EditUserModal = ({ isOpen, onClose, user, onUserUpdated }) => {
     setError('');
     
     try {
-      const response = await axios.post('https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php',
+      const response = await axios.post('https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php',
         {
           ...formData,
           utilisateur_id: user.id,

@@ -25,7 +25,7 @@ const EditVehicleForm = () => {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          `https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?voiture_id=${voitureId}`,
+          `https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?voiture_id=${voitureId}`,
           { withCredentials: true }
         );
         if (response.data) {
@@ -62,7 +62,7 @@ const EditVehicleForm = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `https://api-ecride-production.up.railway.app/api/Controllers/VoitureController.php?voiture_id=${voitureId}`,
+        `https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?voiture_id=${voitureId}`,
         {
           ...formData,
           utilisateur_id: localStorage.getItem("utilisateur_id")

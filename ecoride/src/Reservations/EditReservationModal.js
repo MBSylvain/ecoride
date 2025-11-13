@@ -16,7 +16,7 @@ const EditReservationModal = ({ isOpen, onClose, onReservationUpdated, reservati
     setIsSubmitting(true);
     try {
       const response = await axios.put(
-        `https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?reservation_id=${reservation.reservation_id}`,
+        `https://api-ecride-production.up.railway.app/Controllers/ReservationController.php?reservation_id=${reservation.reservation_id}`,
         formData
       );
       onReservationUpdated(response.data);
