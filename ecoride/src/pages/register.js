@@ -100,7 +100,7 @@ const RegisterPage = () => {
 
     try {
       const response = await axios.post(
-        "https://api-ecride-production.up.railway.app/api/Controllers/UtilisateurController.php",
+        "https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php",
         { ...formData, action: "register" },
         {
           headers: {

@@ -35,8 +35,7 @@ const LoginPage = () => {
     setIsSubmitting(true);
     setApiError("");
     try {
-      const response = await axiosInstance.post(
-        "UtilisateurController.php",
+      const response = await axios.post("https://api-ecride-production.up.railway.app/Controllers/UtilisateurController.php",
         formData,
         {
           headers: { "Content-Type": "application/json" },

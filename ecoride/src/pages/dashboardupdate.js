@@ -26,7 +26,7 @@ const CarForm = () => {
     if (voiture_id) {
       setIsEdit(true);
       // Récupère les infos de la voiture à modifier
-      fetch(`https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/VoitureController.php?voiture_id=${voiture_id}`)
+      fetch(`https://api-ecride-production.up.railway.app/Controllers/VoitureController.php?voiture_id=${voiture_id}`)
         .then((res) => res.json())
         .then((data) => {
           setForm({
@@ -64,7 +64,7 @@ const CarForm = () => {
     payload.action = isEdit ? "update" : "create";
 
     try {
-      const response = await fetch("https://api-ecride-production.up.railway.app/ecoride-apie/Controllers/VoitureController.php", {
+      const response = await fetch("https://api-ecride-production.up.railway.app/Controllers/VoitureController.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -83,13 +83,13 @@ const CarForm = () => {
   if (loading) return <div>Chargement...</div>;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-6 max-w-2xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4">{isEdit ? "Modifier la voiture" : "Ajouter une voiture"}</h2>
-      {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
+    <div className="max-w-2xl p-6 mx-auto mb-6 bg-white rounded-lg shadow-md">
+      <h2 className="mb-4 text-xl font-semibold">{isEdit ? "Modifier la voiture" : "Ajouter une voiture"}</h2>
+      {error && <div className="p-3 mb-4 text-red-700 bg-red-100 rounded">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
           <div>
-            <label className="block text-gray-700 mb-2">Marque</label>
+            <label className="block mb-2 text-gray-700">Marque</label>
             <input
               type="text"
               name="marque"
@@ -101,7 +101,7 @@ const CarForm = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 mb-2">Modèle</label>
+            <label className="block mb-2 text-gray-700">Modèle</label>
             <input
               type="text"
               name="modele"
@@ -113,7 +113,7 @@ const CarForm = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 mb-2">Immatriculation</label>
+            <label className="block mb-2 text-gray-700">Immatriculation</label>
             <input
               type="text"
               name="immatriculation"
@@ -125,7 +125,7 @@ const CarForm = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 mb-2">Date de première immatriculation</label>
+            <label className="block mb-2 text-gray-700">Date de première immatriculation</label>
             <input
               type="date"
               name="date_premiere_immatriculation"
@@ -136,7 +136,7 @@ const CarForm = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 mb-2">Couleur</label>
+            <label className="block mb-2 text-gray-700">Couleur</label>
             <input
               type="text"
               name="couleur"
@@ -147,7 +147,7 @@ const CarForm = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 mb-2">Énergie</label>
+            <label className="block mb-2 text-gray-700">Énergie</label>
             <select
               name="energie"
               value={form.energie}
@@ -161,7 +161,7 @@ const CarForm = () => {
             </select>
           </div>
           <div>
-            <label className="block text-gray-700 mb-2">Nombre de places</label>
+            <label className="block mb-2 text-gray-700">Nombre de places</label>
             <input
               type="number"
               name="nombre_places"
@@ -175,7 +175,7 @@ const CarForm = () => {
           </div>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2">URL de la photo</label>
+          <label className="block mb-2 text-gray-700">URL de la photo</label>
           <input
             type="text"
             name="photo_url"
@@ -186,7 +186,7 @@ const CarForm = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Description (optionnelle)</label>
+          <label className="block mb-2 text-gray-700">Description (optionnelle)</label>
           <textarea
             name="description"
             value={form.description}
@@ -200,13 +200,13 @@ const CarForm = () => {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md mr-2"
+            className="px-4 py-2 mr-2 font-semibold text-gray-800 bg-gray-300 rounded-md hover:bg-gray-400"
           >
             Annuler
           </button>
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md"
+            className="px-4 py-2 font-semibold text-white bg-green-600 rounded-md hover:bg-green-700"
           >
             {isEdit ? "Mettre à jour" : "Ajouter"}
           </button>

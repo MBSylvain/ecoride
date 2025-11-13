@@ -9,7 +9,7 @@ const Validations = () => {
   useEffect(() => {
     axios
       .get(
-        "https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php?action=to_validate",
+        "https://api-ecride-production.up.railway.app/Controllers/ReservationController.php?action=to_validate",
         {
           withCredentials: true,
         }
@@ -27,7 +27,7 @@ const Validations = () => {
   const handleValidation = (reservationId, status) => {
     axios
       .post(
-        "https://api-ecride-production.up.railway.app/api/Controllers/ReservationController.php",
+        "https://api-ecride-production.up.railway.app/Controllers/ReservationController.php",
         {
           action: "validate",
           reservation_id: reservationId,
@@ -47,10 +47,10 @@ const Validations = () => {
   };
 
   if (loading) return <div className="p-6 text-center">Chargement...</div>;
-  if (error) return <div className="p-6 text-red-600 text-center">{error}</div>;
+  if (error) return <div className="p-6 text-center text-red-600">{error}</div>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+    <div className="max-w-3xl p-6 mx-auto mt-8 bg-white rounded-lg shadow-md">
       <h2 className="mb-6 text-2xl font-bold text-primary-100">
         Réservations à valider
       </h2>
@@ -61,13 +61,13 @@ const Validations = () => {
           {reservations.map((reservation) => (
             <li
               key={reservation.id}
-              className="border border-gray-200 rounded-lg p-5 bg-gray-50"
+              className="p-5 border border-gray-200 rounded-lg bg-gray-50"
             >
               <div className="mb-4">
-                <h3 className="font-semibold text-lg text-primary-100 mb-2">
+                <h3 className="mb-2 text-lg font-semibold text-primary-100">
                   Informations du trajet
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <div>
                     <span className="font-medium">Départ :</span>{" "}
                     {reservation.trajet_depart}
@@ -91,10 +91,10 @@ const Validations = () => {
                 </div>
               </div>
               <div className="mb-4">
-                <h3 className="font-semibold text-lg text-primary-100 mb-2">
+                <h3 className="mb-2 text-lg font-semibold text-primary-100">
                   Informations du réservant
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <div>
                     <span className="font-medium">Nom :</span>{" "}
                     {reservation.utilisateur_nom}
@@ -122,13 +122,13 @@ const Validations = () => {
               <div className="flex gap-4 mt-2">
                 <button
                   onClick={() => handleValidation(reservation.id, "valide")}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                  className="px-4 py-2 text-white transition bg-green-600 rounded hover:bg-green-700"
                 >
                   Valider
                 </button>
                 <button
                   onClick={() => handleValidation(reservation.id, "refuse")}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                  className="px-4 py-2 text-white transition bg-red-500 rounded hover:bg-red-600"
                 >
                   Refuser
                 </button>
